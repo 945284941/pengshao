@@ -1,0 +1,74 @@
+<template>
+    <oo> for(var i=0;i< data.list.length;i++){</oo>
+
+    <div class="noteList col-md-12" style="padding-top: 10px;padding-left:10px;margin-top:10px;height:100%;">
+        <img src="<oo>=data.list[i].img</oo>" class="img-circle col-md-1">
+        <div class="noteCreater col-md-3" style="margin-left: 10px;">
+            <div style="margin-top: 5px;">
+                <oo>=data.list[i].nick_name</oo>
+            </div>
+            <div class="noteTime">
+                <oo>=data.list[i].createtime</oo>
+            </div>
+        </div>
+        <div class="col-md-12" style="padding-right: 10px;    margin-top: -10px;">
+            <hr>
+
+        </div>
+        <div class="col-md-11" style="margin-left:73px;padding-right:7px; overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical; max-height:80px;min-height:20px;">
+            <oo>=data.list[i].context</oo>
+        </div>
+        <div class="col-md-10 noteTime pinglun" pid="<oo>=data.list[i].id</oo>"
+             style="cursor: pointer;    padding-right: 10px;    text-align: right;">
+            评论
+        </div>
+        <div class="col-md-1  noteTime pinglun"  pid="<oo>=data.list[i].id</oo>" style="float: right;cursor: pointer; ">详情</div>
+
+    </div>
+
+
+    <oo>}</oo>
+</template>
+<script>
+
+    $f("df",__,function (_page,_data) {
+        var data={}
+        var url="";
+        var page="";
+        if(_data.context==null){
+            url = "/schoolcms/archive/note/findDynamicsbyUserId";
+            var userId;
+  if(localStorage.getItem("userId")==null||localStorage.getItem("userId")==""){
+      userId=1;
+  }else{
+      userId=localStorage.getItem("userId")
+  }
+
+            page=_data.page;
+            data={'userId':userId,'page':page}
+        }else{
+
+            var personName=_data.personName;
+            var context=_data.context;
+            data={'personName':personName,'context':context,'page':page}
+            url="/schoolcms/archive/note/selectDynamics";
+
+        }
+
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    })
+    $f("df", "__.list", function (_data, _page) {
+        var html = $f('TPPL', _page, _data);
+        $('#dynamicsText').html(html);
+        $('.pinglun').click(function () {
+
+            var id=$(this).attr("pid");
+            if(_data.data.list.length<4){
+                $('#moreOther').hide();
+            }
+
+            $f('plugin', 'dynamicsSed.dynamicsSedComment', id);
+        })
+    })
+</script>

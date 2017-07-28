@@ -1,0 +1,131 @@
+<template>
+
+    <div data-page="resident-add" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;padding-right: 40px;">
+                    <span>增加居委会职责</span>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 55px">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="title" placeholder="请输入标题">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-block">
+                <ul>
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <textarea id="content" placeholder="请输入内容"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                </ul>
+            </div>
+
+            <!--<div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-img"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="img" placeholder="请输入图片url">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+-->
+            <a href="#"  class="button active confirm qdd" style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+
+        </div>
+
+    </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page,_data)();
+    });
+
+    $f("df", "__.list", function(_data, _page,classid) {
+        var content = $f("TPPL",_page,_data);
+        mainView.router.load({content: content});
+
+        $('.qdd').click(function () {
+
+            var title = $('#title').val();
+            var content = $('#content').val();
+            /*var imgurl = $('#img').val().trim();*/
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+            /*if (imgurl == "" || imgurl == null) {
+             alert("图片地址不能为空");
+             return;
+             }*/
+            $.ajax({
+                url: "/schoolcms/archive/note/addNote",
+                type: "POST",
+                data: {
+                    "title": title,
+                    "content": content,
+                    "userId":localStorage.getItem("userId"),
+                    // "userId": 1,
+                    "type": classid,
+
+                },
+                success: function (resp) {
+
+                    alert(resp.message);
+
+                    $f('plugin', 'resident', 148);
+                    $("div[data-page='resident']").remove();
+                }
+            });
+
+        });
+
+
+
+    });
+</script>
+
+

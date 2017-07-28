@@ -1,0 +1,123 @@
+ <template>
+    <style>
+
+    </style>
+    <div data-page="weixinproperty" class="page">
+        <div class="speed-dial speed-dial-closed"><a href="#" class="floating-button"><i
+                class="icon f7-icons">add</i><i
+                class="icon f7-icons">close</i></a>
+            <div class="speed-dial-buttons">
+                <!--<a href="#" id="volume"><i style="font-size: 20px" class="icon f7-icons">volume</i></a>-->
+                <a href="#" onclick="$f('plugin','eighborhood.weixin.property.add',0)"><i style="font-size: 20px"
+                                                                         class="icon f7-icons">dcompose</i></a>
+                <!--<a href="#" id="camera"><i style="font-size: 20px" class="icon f7-icons">camera</i></a>-->
+            </div>
+        </div>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>小区物业</span>
+                </div>
+            </div>
+        </div>
+        <div id="bt" style="margin: 55px 10px 10px 10px;">
+            <p class="buttons-row">
+                <a href="#" class="title button button-round active" id="one" data="<oo>=data[1].id</oo>">
+                    <oo>=data[1].classname</oo>
+                    </oo></a>
+                <a href="#" class="title button button-round " id="two" data="<oo>=data[0].id</oo>">
+                    <oo>=data[0].classname</oo>
+                </a>
+            </p>
+        </div>
+        <div id="nr" style="height: 85%">
+
+        </div>
+    </div>
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = $f("server","archive/classification/findClassificationByParent");
+
+        var classId = _data;
+        var data = {
+            "pid": "145"
+        }
+
+
+        $f("ajax.get", url, data, "__.list", _page,classId)();
+
+    });
+
+    $f("df", "__.list", function (_data, _page,classId) {
+
+        var content = $f("TPPL", _page, _data);
+        $("div[data-page='weixinproperty']").remove();
+        homeView.router.load({content: content});
+
+        if(classId!=0){
+            var cidone = $("#one").attr("data");
+            var cidtwo = $("#two").attr("data");
+            if(classId==cidone){
+                var data = {
+                    "classId": classId,
+                    "pageSize": 7,
+                    //"userId":19,
+                    "userId":localStorage.getItem("userId"),
+                    "page": 1,
+                };
+                $f('plugin', 'eighborhood.weixin.property', data);
+            }
+            if(classId==cidtwo){
+                $("#two").addClass("active");
+                $("#one").removeClass("active");
+
+                var data = {
+                    "classId": classId,
+                    "pageSize": 7,
+                    //"userId":19,
+                    "userId":localStorage.getItem("userId"),
+                    "page": 1,
+                };
+                $f('plugin', 'property', data);
+            }
+        }else{
+            $("#volume").click(function(){
+                alert("敬请期待");
+            });
+            $("#camera").click(function(){
+                alert("敬请期待");
+            });
+            $(".title").click(function(){
+                $(this).addClass("active");
+                $(this).siblings().removeClass("active");
+                var id =$(this).attr("data");
+                //alert("点击投诉建议========"+id);
+
+                var data = {
+                    "classId": id,
+                    "pageSize": 7,
+                    //"userId":19,
+                    "userId":localStorage.getItem("userId"),
+                    "page": 1,
+                };
+                $f('plugin', 'eighborhood.weixin.property', data);
+            });
+
+            $f('plugin', 'eighborhood.weixin.property', 0);
+
+
+        }
+
+
+
+    });
+
+</script>

@@ -1,0 +1,123 @@
+<template>
+    <div id="role-add-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">发布信息</h4>
+                </div>
+                <div class="modal-body" style="height: 400px;">
+                        <div class="col-md-12" style="margin-top:10px;">
+                            <div class="title detail-table-label col-md-2" >标题<span class="require-mark ">*</span></div>
+
+                            <div class="col-md-10" >
+                                <input class="editor form-control" type="text" id="notrtitle" placeholder="请输入标题">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="margin-top:10px;">
+                            <div class="title col-md-2" >内容<span class="require-mark ">*</span></div>
+                            <div class="col-md-10">
+                                <textarea class="editor form-control col-md-10" id="content" rows="3" placeholder="请输入内容" ></textarea>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12" style="margin-top:10px;">
+                            <div class="title col-md-2">方式<span class="require-mark ">*</span></div>
+                            <div class="col-md-10">
+                                <select class="editor form-control" type="text"  id="mode"  placeholder="图片url">
+                                    <option value="">--您要选择的分类--</option>
+                                    <option value="2">工作宣传</option>
+                                    <option value="1">政策引导</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addTask" style="margin-left:70%">添加</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        $('#dynamicsMore').hide();
+        var url=null;
+
+
+
+        data = null
+        $f("ajax.get", url,data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+
+
+        var html = $f("TPPL", _page, _data);
+        $("#role-add-form").remove();
+        $("#page-inner").append(html);
+        $("#role-add-form").modal();
+        $("#role-add-form").show();
+        $('#addTask').click(function () {
+            var mode= $('#mode').val();
+            var title=$('#notrtitle').val();
+            var content=$('#content').val();
+
+            var classId=$('#grantId').val();
+            if(mode==""||mode==null){
+                alert("类别不能为空");
+                return false;
+            }
+            if(title==""||title==null){
+                alert("标题不能为空");
+                return
+            }
+            if(title.length>50){
+                alert("标题请在50字以内");
+                return
+            }
+            if(content==""||content==null){
+                alert("内容不能为空");
+                return
+            }
+            var userBaby=$('#userBaby').val()
+            $.ajax({
+                url:"/schoolcms/archive/note/addDynamicsByUserId",
+                type:"POST",
+            data:{
+                'mode':mode,
+                'title':title,
+                'context':content,
+
+                'classId':classId,
+            /*    "userId":localStorage.getItem("userId")*/
+                'userId':userBaby
+            },
+            success:function (_data) {
+                alert(_data.message);
+                $('#grantId').val(classId);
+
+                $("#role-add-form").modal("toggle");
+                $f('plugin','poacy.section',{"id":classId});
+
+            }
+            })
+        })
+
+
+    });
+
+
+</script>
+

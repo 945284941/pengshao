@@ -1,0 +1,91 @@
+<template>
+    <div id="role-add-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">创建工作</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <table style=" width: 100%;" class="typec">
+                        <tbody>
+                        <tr>
+                            <td class="title detail-table-label" style="width:100px">日程类型<span
+                                    class="require-mark">*</span></td>
+
+                            <td class="text detail-table-text">
+
+                                        <select class="editor form-control" id="chootype">
+                                            <option>请选择</option>
+                                            <option value="pre1">一般通知</option>
+                                            <option value="pre2">日常工作</option>
+                                            <option value="pre3">紧急工作</option>
+                                            <option value="pre4">会议</option>
+                                            <option value="pre5">请假</option>
+                                            <option value="pre6">调休</option>
+                                        </select>
+
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="addwork">
+
+
+                    </div>
+                    <div class="addpeoplelist" style="margin:10px 20px">
+
+
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = null;
+        var data = null;
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#role-add-form").remove();
+        $("#wrapper").append(html);
+        $("#role-add-form").modal();
+        $("#role-add-form").show();
+        localStorage.setItem("userinfoe","");
+        $("#chootype").change(function(){
+         var pre= $(this).val();
+            if(pre=="pre1"){
+                $f('plugin','__.addWorknotice', data);
+
+            }else if(pre=="pre4"){
+                $f('plugin','__.addMeeting', data);
+
+            }
+        });
+
+
+
+    });
+
+
+</script>
+

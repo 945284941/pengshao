@@ -1,0 +1,82 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+
+         .demo-card-header-pic .card-header {
+             height: 40vw;
+             background-size: cover;
+             background-position: center;
+         }
+
+
+        img{
+            border-radius: 50%;
+            width:60px;
+        }
+
+        .app-item{
+            text-align: center;
+            display: inline-block;
+            height:90px;
+            margin-top: 20px;
+        }
+    </style>
+
+    <div data-page="agency-agencySetUp-addWork" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="color:black;" class="back">< 返回</a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <div style="margin-right:20px;">  <span>新增工作</span></div>
+                </div>
+            </div>
+        </div>
+
+<!--        <div class="card demo-card-header-pic app-list row" style="margin:50px 10px 10px 10px;background-color:#EFEFF4;">-->
+        <div style="height: 40vw; background-size: cover;background-position: center;margin:50px 10px 10px 10px;background-color:#EFEFF4;">
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','__.addNotice',0)"><img src="img/app5.jpg" style="border-radius: 50%;width:60px;"/><div>一般通知</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" id="dayWork"><img src="img/app3.jpg"style="border-radius: 50%;width:60px;" /><div>日常工作</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" id="urgentWork" ><img src="img/app2.jpg" style="border-radius: 50%;width:60px;"/><div>紧急工作</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','__.addMeeting',0);"><img src="img/app4.jpg" style="border-radius: 50%;width:60px;"/><div>会议</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" id="activity"><img src="img/app1.jpg" style="border-radius: 50%;width:60px;"/><div>活动开展</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" style="text-align: center;display: inline-block;height:90px;margin-top: 20px;"  id="leave"><img src="img/app6.jpg" style="border-radius: 50%;width:60px;"/><div>请假</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;"  id="Off"><img src="img/app7.jpg" style="border-radius: 50%;width:60px;"/><div>调休</div></div>
+            <!--<div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','schedule',0)"><img src="img/app8.jpg" style="border-radius: 50%;width:60px;"/><div>我的日程</div></div>-->
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page) {
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var page = $f("TPPL", _page, {"data": _data});
+        mainView.router.load({content: page});
+        $('#dayWork').click(function () {
+            alert("项目正在开发 敬请期待！！！")
+        })
+        $('#urgentWork').click(function () {
+            alert("项目正在开发 敬请期待！！！")
+        })
+        $('#activity').click(function () {
+            alert("项目正在开发 敬请期待！！！")
+        }) ;
+        $('#leave').click(function () {
+            alert("项目正在开发 敬请期待！！！")
+        })
+        $('#Off').click(function () {
+            alert("项目正在开发 敬请期待！！！")
+        })
+
+    });
+
+</script>

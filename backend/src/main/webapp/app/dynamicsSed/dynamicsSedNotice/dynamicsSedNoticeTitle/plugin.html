@@ -1,0 +1,38 @@
+<template>
+    <div class="col-md-12" style="margin: 6px 0;font-size: 16px;border-bottom: 1px solid #cccccc;">
+        <span>通知</span>
+        <img src="img/tongzhi.png" style="float: right;height: 20px;">
+    </div>
+    <div class="btn-group btn-group-justified" role="group" aria-label="..."
+         style="margin:0px auto">
+        <div class="btn-group searchtype" role="group" data="0">
+            <button type="button" class="btn btn-default" id="notice">通知</button>
+        </div>
+        <div class="btn-group searchtype" role="group" data="网站">
+            <button type="button" class="btn btn-default" id="myNotice">我的通知</button>
+        </div>
+    </div>
+    <div id="dynamicsSedNotice">
+
+    </div>
+</template>
+<script>
+    $f("df",__,function (_page) {
+        $f('ajax.get',null,null,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#notice').html(html);
+        $f('plugin','dynamicsSed.dynamicsSedNotice',0);
+        $('#notice').click(function () {
+            $f('plugin','dynamicsSed.dynamicsSedNotice',0);
+            return false;
+        });
+        $('#myNotice').click(function () {
+
+            $f('plugin','dynamicsSed.dynamicsSedNotice',1);
+            return false;
+        });
+
+    })
+</script>

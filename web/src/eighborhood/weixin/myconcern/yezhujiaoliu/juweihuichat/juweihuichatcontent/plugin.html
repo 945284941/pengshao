@@ -1,0 +1,147 @@
+<template>
+
+    <style>
+        .demo-card-header-pic{
+            height: 10vw;
+            background-size: cover;
+            background-position: center;
+        }
+        .card-header{
+            height: 10vw;
+         /*   background-size: cover;
+            background-position: center;*/
+        }
+        .pages{
+            background-color: #CCCCCC;
+        }
+    </style>
+
+
+
+<!--    <div class="infinite-scroll-preloader">
+        <div class="preloader"></div>
+    </div>-->
+    <div class="pull-to-refresh-layer" style="margin-top:44px;">
+        <div class="preloader"></div>
+        <div class="pull-to-refresh-arrow"></div>
+    </div>
+
+<div class="baby" style="margin-top:50px;"></div>
+    <div class="dynamic-container" >
+           <oo>for(var i=data.list.length-1;i>=0 ;i--){</oo>
+<div class="sa" style="min-height:83px;" >
+            <oo>if(data.list[i].creater!=localStorage.getItem("userId")){</oo>
+            <div style="margin-top:10px;">
+                <div  style="font-size:14px;width:100%;height:100%;">
+                    <div style="padding-left: 10px;height:100%;height:100%;">
+                        <img src="img/app1.jpg" style="float:left;width:38px;height:38px;" >
+                        <div style="float:left;padding-left:10px;"><oo>=data.list[i].nick_name</oo>   <oo>=data.list[i].sendtime</oo></div>
+                        <div class="card ks-facebook-card" style="float:left;width:80%; height:100%;">
+                            <div class="card-content-inner" style="height:100%;word-break:break-all;width:80%;">
+                                <p><oo>=data.list[i].sendcontent</oo></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <oo>}else{</oo>
+            <div style="margin-top:10px;">
+                <div  style="font-size:14px;width:100%;height: 100%;">
+                    <div style="padding-right: 10px;height:100%;">
+                        <img src="<oo>=data.list[i].image</oo>" style="float:right;width:38px;height:38px;" >
+                        <div style="float:right;padding-right:10px;">我   <oo>=data.list[i].sendtime</oo></div>
+                        <div class="card ks-facebook-card" style="float:right;width:80%; height:100%;">
+                            <div class="card-content-inner" style="height:100%;word-break:break-all;width:80%;">
+                                <p><oo>=data.list[i].sendcontent</oo></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<oo>}</oo>
+</div>
+ <oo>}</oo>
+</div>
+
+</template>
+<script>
+
+    $f("df", __, function (_page,_data) {
+        var url = $f('server','archive/note/concernMessageGLZ');
+
+        var data={
+            page:_data.page,
+            pageSize:_data.pageSize,
+            uuId:_data.uuId
+        }
+        $f("ajax.get", url, data, "__.list",_page,_data)();
+    });
+
+    $f("df", "__.list", function (_data,_page,_baby) {
+
+        var content = $f("TPPL", _page,_data);
+
+        $('#juweihuicontent').html(content);
+
+        var div=document.getElementById("gundong");
+        div.scrollTop = div.scrollHeight
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 10;
+
+        if (_data.data.list.length < pageSize) {
+            $$('.pull-to-refresh-layer').remove();
+            return;
+        }
+        /*AppFramework.attachInfiniteScroll($$('.pull-to-refresh-content'));*/
+        /*var ptrContent = $$('.pull-to-refresh-content')*/
+// 每次加载添加多少条目
+        $$('.pull-to-refresh-content').on('refresh', function () {
+/*alert(1)*/
+// 如果正在加载，则退出
+            if (loading) return;
+// 设置flag
+            loading = true;
+// 模拟1s的加载过程
+            setTimeout(function () {
+// 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+// 加载完毕，则注销无限加载事件，以防不必要的加载
+                    /*AppFramework.detachInfiniteScroll($$('.infinite-scroll'));*/
+                    AppFramework.pullToRefreshDone();
+// 删除加载提示符
+                    $$('.pull-to-refresh-layer').remove();
+                    return;
+                }
+                current_page += 1;
+
+
+                var data = {"pageSize": pageSize, "page": current_page,'uuId':_baby.uuId};
+                $f("ajax.get", $f("server","archive/note/concernMessageGLZ"), data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function (_data, _page) {
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".baby").prepend($(html).find(".sa"));
+
+                    AppFramework.pullToRefreshDone();
+                    if (_data.data.list.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+// 删除加载提示符
+                        $$('.pull-to-refresh-layer').remove();
+                        return;
+                    }
+
+                });
+
+            }, 2000);
+
+        });
+    });
+
+</script>
+

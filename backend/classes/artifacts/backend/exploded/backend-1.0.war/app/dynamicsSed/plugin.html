@@ -1,0 +1,170 @@
+<template>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        #oul li {
+            display: block;
+            float: left;
+            list-style: none;
+            margin-left: 10px;
+        }
+
+        .noteList {
+            height: 70px;
+
+            background-color: white;
+            margin-top: -8px;
+
+        }
+
+        .noteCreater {
+            height: 63px;
+        }
+
+        .noteContext {
+
+            padding-right: 40px;
+            margin-bottom: 20px;
+        }
+
+        .noteTime {
+
+            color: #d0d0d0;
+            font-size: 10px;
+
+        }
+
+        .board {
+            height: 50px;
+
+            background-color: white;
+        }
+
+        .noteListText {
+            max-height: 300px;
+            min-height: 50px;
+            background-color: white
+        }
+
+        .classList {
+
+            height: 60px;
+            float: left;
+            background-color: white;
+            text-align: center;
+            line-height: 60px;
+            border: 1px solid #F0F0F0;
+            /*padding:0px 10px;*/
+        }
+
+        .taskbar {
+            height: 400px;
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        .taskbarBlock {
+            height: 60px;
+
+            margin: 5px 5px
+        }
+
+        .taskbarSmallBloack {
+            height: 30px;
+
+        }
+
+        .taskbarCreater {
+            color: #d0d0d0;
+            font-size: 10px;
+            float: left;
+        }
+
+        .taskbarTime {
+            color: #d0d0d0;
+            font-size: 10px;
+            float: right;
+        }
+
+        .imgStyle {
+            height: 50px;
+            margin-left: 20px;
+            float: left;
+        }
+
+        .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+            position: relative;
+            min-height: 1px;
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+        #page-inner {
+            background: #f0f0f0 !important;
+        }
+
+    </style>
+    <div class="row" style="background-color: #F0F0F0;margin:10px;">
+        <div class="col-md-8" style="padding-right: 6px;">
+            <div class="col-md-12" id="noteAdd">
+            </div>
+            <div class="col-md-12" id="searchPlace">
+            </div>
+            <div class="col-md-12" id="dynamicsText">
+            </div>
+            <div class="col-md-12" id="dynamicsMore">
+            </div>
+            <div class="col-md-12 "  style="margin-top:10px;" id="moreOther">
+                <div style="text-align: center;line-height:50px;background: #fff;">
+                    <div href="#"  style="cursor: pointer" id="more">查看更多...</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" style="">
+            <div class="col-md-12" id="interesting" style="background: #fff; padding: 10px;">
+            </div>
+            <div class=" col-md-12 taskbar" style="margin-top:10px;padding: 10px;">
+                <div id="notice"></div>
+
+            </div>
+            <div class="col-md-12 taskbar" style="padding: 10px;">
+                <div id="taskTitle"></div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="morePage" value="1">
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        $f('ajax.get', null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("#page-inner").html(content);
+        $("#more").click(function () {
+            var page = $('#morePage').val();
+            var i = parseInt(page);
+            page = i + 1;
+            $('#morePage').val(page);
+            /*  $('#moreOther').remove();*/
+            $f('plugin', 'dynamicsSed.dynamicsSedMore', {page: page});
+        });
+        $f('plugin', 'dynamicsSed.dynamicsSedSearch', 0);
+        $f('plugin', 'dynamicsSed.dynamicsSedText', 0);
+        $f('plugin', 'dynamicsSed.dynamicsSedAdd', 0);
+        $f('plugin', 'dynamicsSed.dynamicsSedTask.dynamicsSedTaskTitle', 0);
+        $f('plugin', 'dynamicsSed.dynamicsSedNotice.dynamicsSedNoticeTitle', 0);
+        $f('plugin', 'dynamicsSed.dynamicsSedintere', 0);
+
+
+    });
+
+
+</script>

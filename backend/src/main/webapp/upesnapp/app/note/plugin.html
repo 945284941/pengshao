@@ -1,0 +1,178 @@
+<template>
+    <div data-page="home" class="page">
+        <div id="home-content" class="page-content infinite-scroll" data-distance="20">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back"><h2><</h2></a>
+                    </div>
+                </div>
+            </div>
+
+                <div class="tabs" >
+                    <div class="tab active">
+                        <div class="home-view">
+                           <!-- <div class="card" style=" margin: 10px 0px;">
+                                <div class="card-header">
+                                    <oo>=data.classification.classname</oo>
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-content-inner">
+                                        <oo>=data.classification.introduce</oo>
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <div class="card demo-card-header-pic" style="background-image:url(<oo>=data.classification.img</oo>);    margin: 10px 0px;">
+                                <div valign="bottom" class="card-header color-white no-border"><oo>=data.classification.classname</oo></div>
+                                <div class="card-content">
+                                    <div class="card-content-inner color-white">
+                                        <p> <oo>=data.classification.introduce</oo></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="dynamic-container">
+                            <oo>for(var i = 0; i < data.list.list.length; i++){</oo>
+                            <div class="card ks-card-header-pic note-card" onclick="$f('plugin','note.query',this);"
+                                 noteid="<oo>=data.list.list[i].id</oo>" typeid="<oo>=data.list.list[i].type_id</oo>">
+                                <div style="background:url(<oo>=data.list.list[i].img</oo>); width:100%;height:80px; padding-left: 20px;"
+                                     valign="bottom"
+                                     class="card-header color-white no-border">
+                                    <oo>=data.list.list[i].title</oo>
+                                </div>
+                                <input type="hidden" id="typeId" value="<oo>=data.list.list[i].type_id</oo>">
+                                <div class="card-header" style="font-size:12px">
+                                    <div class="avatar">
+                                        <img src="img/head1.jpg" width="34" height="34">
+                                        <div class="user"
+                                             style="color: grey;display: inline-block;line-height: 18px; margin-left:13px;vertical-align:top">
+                                            <div class="name">
+                                                <oo>=data.list.list[i].nick_name</oo>
+                                            </div>
+                                            <div class="time">
+                                                <oo>=data.list.list[i].createtime</oo>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-content">
+                                    <div class="card-content-inner">
+                                        <p class="">
+                                            <oo>=data.list.list[i].context</oo>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <oo>}</oo>
+                            </div>
+                            <input type="hidden" id="contact-other-numberOne" value="<oo>=baby</oo>">
+                        </div>
+                    </div>
+                </div>
+            <div class="infinite-scroll-preloader">
+                <div class="preloader"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</template>
+
+<script>
+    $f("df", __, function (_page, _data) {
+        var id = $(_data).attr("typeId");
+
+        var user_id = localStorage.getItem("weixinId");
+
+        var pid = _data.typeId;
+        var bid = "";
+        if (id == null) {
+            bid = pid
+        } else {
+            bid = id
+        }
+        $f("ajax.get", $f("tools.serverURL", "archive/note/findNotesByClassId"), {
+            'id': bid,
+            'user_id': user_id
+        }, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+        var baby=$('#contact-other-baby').val();
+
+        $f("tools.dateListFormat", _data.data.list);
+        var content = $f("TPPL", _page, {"data": _data.data, "pname": _data.data.pname,"baby":baby});
+
+        mainView.router.load({content:content});
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////             无限加载事件             ///////////////////////////////////////
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 3;
+
+        if(_data.data.list.list.length < pageSize){
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"id": _data.data.list.list[0].id, "pageSize": pageSize, "page": current_page};
+
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findNotesByClassId"), data, "__.infiScr", _page)();
+
+                $f("df", "__.infiScr", function(_data,_page) {
+
+                    $f("tools.dateListFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".dynamic-container").append($(html).find(".note-card"));
+
+                    if (_data.data.list.list.length < pageSize) {
+
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+
+
+    });
+
+
+</script>

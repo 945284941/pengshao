@@ -1,0 +1,34 @@
+<template>
+<div class="col-md-12" style="background: #fff;margin-top: 10px; height: 54px;">
+    <div class="form-inline" style="margin-top:10px; float:right;padding-right: 10px;">
+       <!-- <div class="form-group">
+
+            <input type="text" class="form-control" placeholder="请输用户名" id="personName">
+
+        </div>-->
+        <div class="form-group">
+
+            <input type="text" class="form-control" placeholder="请输内容" id="context">
+        </div>
+        <button type="button" class="btn btn-default" id="baby">搜索</button>
+        <!--onclick="$f('plugin','shenhelist',0)"-->
+    </div>
+</div>
+
+</template>
+<script>
+    $f("df",__,function (_page) {
+        $f('ajax.get',null,null,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#searchPlace').html(html);
+       /* $f('plugin','dynamicsSed',0);*/
+        $('#baby').click(function () {
+            var personName=$('#personName').val();
+            var context=$('#context').val();
+            var data={"personName":personName,"context":context};
+            $f('plugin','dynamicsSed.dynamicsSedText',data);
+        })
+    })
+</script>

@@ -1,0 +1,90 @@
+<template>
+    <style>
+        .modal-header {
+            color: #aaaaaa;
+            text-align: center !important;
+
+        }
+    </style>
+    <div id="section-add-form" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">发布新帖</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group form-group-sm">
+                        <label>帖子标题</label>
+                        <input type="text" id="title" class="form-control"/>
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        <label>帖子内容</label>
+                        <textarea id="context" class="form-control" rows="10" style="resize: vertical;height: 140px"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-primary confirm" style="margin-left:70%">确认添加</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+    $f("df", __, function (_page, id) {
+        var url = $f('tools.serverURL', 'archive/roleAuthor/findAllAuthor');
+        $f("ajax.get", url, null, "__.list", _page, id)();
+    });
+
+    $f("df", "__.list", function (_data, _page, id) {
+        var html = $f("TPPL", _page, _data);
+        $("#section-add-form").remove();
+        $("body").append(html);
+        $("#section-add-form").modal();
+
+
+        //确认添加
+        $('.confirm').click(function () {
+            var name = $('#title').val();
+            var intro = $('#context').val();
+            var classid = id;
+            if (Checkor.isEmpty(name) || Checkor.isEmpty(intro)) {
+                alert("标题及内容不能为空!");
+                return;
+            }else if(name.length > 50){
+                alert("标题字数过长，请重新界定!");
+                return;
+            }
+
+            Samous.confirm({message: "确认发布吗？"}).on(function (e) {
+                if (!e) {
+                    return;
+                }
+                $.ajax({
+                    url: $f('tools.serverURL', 'archive/note/addNote'),
+                    type: 'POST',
+                    data: {
+                        "userId":localStorage.getItem("userId"),
+                        "title": name,
+                        "type": classid,
+                        "content":intro
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+                        $("#section-add-form").modal("toggle");
+                        $f('plugin','neighbor-help.section',{id:id});
+                    }
+                });
+            });
+        });
+    });
+
+
+</script>
+

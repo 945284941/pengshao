@@ -1,0 +1,31 @@
+<template>
+    <div id="intro-details" class="modal fade">
+            <div class="row">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">板块介绍</h4>
+                </div>
+                <div class="modal-body col-md-12" style="height:100%; background-color:white;">
+                    <p><oo>=text</oo></p>
+                </div>
+            </div>
+        </div>
+</div>
+        </div>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+
+        $f('ajax.get',null,null,"__.detail", _page, _data)();
+    });
+    $f("df","__.detail",function (_data,_page, text) {
+        var html=$f('TPPL',_page, text);
+        $("#intro-details").remove();
+        $("body").append(html);
+        $('#intro-details').modal();
+
+
+    });
+</script>

@@ -1,0 +1,81 @@
+<template>
+    <div data-page="contact-notification-replyAdd" class="page">
+  <div class="page-content">
+      <div class="navbar">
+          <div class="navbar-inner">
+              <div class="left ">
+                  <a class="back"><h3><</h3></a>
+              </div>
+              <div class="center">活动通知</div>
+          </div>
+      </div>
+      <form class="list-block">
+          <ul>
+              <input type="hidden" value="<oo>=noteIdThere</oo>" id="wowo">
+              <input type="hidden" value="<oo>=noteId</oo>" id="xixi">
+              <li class="align-top">
+                  <div class="item-content">
+                      <div class="item-media"><i class="icon f7-icons">chat</i></div>
+                      <div class="item-inner "><textarea id="contact" style="padding:0;"></textarea></div>
+                  </div>
+              </li>
+          </ul>
+      </form>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-50"><a href="#"   class="button button-big button-fill color-green babyy ">发表</a></div>
+          <div class="col-50"><a href="#"  noteid="<oo>=noteId</oo>" class="button button-big button-fill color-red fanhui">取消</a></div>
+        </div>
+      </div>
+
+  </div>
+        </div>
+
+</template>
+<script>
+  $f("df", __, function(_page) {
+
+    $f("ajax.get", null, null, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+var noteId=$('#noteId').val();
+    var content = $f("TPPL",_page,{"noteId":noteId});
+    homeView.router.load({content:content});
+
+      $('.fanhui').click(function () {
+          var noteId=$(this).attr('noteid');
+  /*        $("div[data-page='contact-notification-query']").remove();*/
+          $f('plugin','contact.notification.query.reply',noteId);
+          homeView.router.back();
+      })
+      $('.babyy').click(function () {
+
+          var context=$('#contact').val();
+
+          $.ajax({
+              url:$f("tools.serverURL","archive/note/addReply"),
+              type:"GET",
+              data:{
+                  "noteId":noteId,
+                  "context":context,
+                  "userId":localStorage.getItem("userId")
+              },
+              success:function(resp){
+                  alert(resp.message);
+                  //刷新页面
+              /*    $("div[data-page='contact-notification-replyAdd']").remove();*/
+                  $f('plugin','contact.notification.query.reply',noteId);
+         /*         $f('plugin','contact.notification.query',{"noteid":noteId})*/
+                   homeView.router.back();
+              }
+          });
+
+      });
+
+
+
+
+  });
+
+</script>

@@ -1,0 +1,172 @@
+<template>
+    <div data-page="neighbour-note-update" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left"><a style="padding: 10px 20px 10px 0;" class="back"><h2><</h2></a></div>
+                <div class="center">修改帖子</div>
+            </div>
+        </div>
+
+        <div class="list-block"  style="margin-top:60px;">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="departid" class="btn" placeholder="发布单位">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="list-block" >
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" class="nb-title" value="<oo>=title</oo>">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <textarea class="nb-content"><oo>=context</oo></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <a href="#" class="confirm button active" style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, data) {
+
+        $f("ajax.get", null, null, "__.list", _page, data)();
+    });
+
+    $f("df", "__.list", function (_data, _page, data) {
+
+        var content = $f("TPPL", _page, data);
+        mainView.router.load({content: content});
+
+        //删除dom中的修改页面，使抓取页面元素不会出现抓取错误
+        var updatePage = $("div[data-page='neighbour-note-update']").filter(".cached");
+        if(updatePage.length != 0) {
+            updatePage.remove();
+        }
+
+        //获取发布单位
+        var arc=[];
+        var arcid=[];
+        $.ajax({
+
+            url:$f("server","archive/department/findDepartByPid"),
+            type:"GET",
+            data:{
+                "pid":9
+            },
+            success:function(resp){
+
+                var dename=""
+                for(var i=0;i<resp.data.length;i++){
+                    if(data.expand!=null&&JSON.parse(data.expand).departid==resp.data[i].id){
+
+                        dename=resp.data[i].name;
+                        $("#departid").val(dename);
+                        $("#departid").val(dename);
+                    }
+                    arc.push(resp.data[i].name);
+                    arcid.push(resp.data[i].id);
+
+
+                }
+                var pickerDevice = AppFramework.picker({
+                    input: '#departid',
+                    cols: [
+                        {
+                            textAlign: 'center',
+                            values: arc,
+                        }
+                    ],
+                    //myPickerEnd.cols[0].setValue(year);
+                });
+                $('#departid').click(function () {
+                    pickerDevice.cols[0].setValue(dename);
+
+                })
+
+
+
+
+            }
+        });
+
+
+        $('.confirm').click(function () {
+            var title = $('.nb-title').val().trim();
+            var content = $('.nb-content').val().trim();
+            //获取单位的id
+            var departid;
+            var depart = $('#departid').val().trim();
+            for (var i = 0; i < arc.length; i++) {
+                if (arc[i] == depart)
+
+                    departid= arcid[i]
+            }
+            if (depart == "" || depart == null) {
+                alert("单位不能为空");
+                return;
+            }
+
+            if (title == "" || title == null) {
+                alert("标题不能为空!");
+                return;
+            } else if (content == "" || content == null) {
+                alert("内容不能为空!");
+                return;
+            }
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+            $.ajax({
+                url:$f("server","archive/note/updateNote"),
+                type: "POST",
+                data: {
+                    "id":data.id,
+                    "title": title,
+                    "content": content,
+                    "departId":departid,
+                    "userId":localStorage.getItem("userId")
+                    //"userId": 1,
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $f('plugin', 'eighborhood.upesnapp.neighbour-help', data.classid);
+                }
+            });
+
+        });
+
+    });
+
+</script>

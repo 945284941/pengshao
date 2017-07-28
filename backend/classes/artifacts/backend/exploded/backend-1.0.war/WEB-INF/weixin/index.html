@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>schoolcms</title>
+
+    <!-- jquery -->
+    <script type="text/javascript" src="js/zepto.min.js"></script>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/framework7-icons.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/my-app.css">
+</head>
+
+<body>
+<!-- Tabs, 现在容器是"views" -->
+<div class="views tabs toolbar-fixed">
+    <!-- Tab 1 同时也是 View 1, 默认激活 -->
+    <div id="tab1" class="view view-home tab active">
+        <div class="pages">
+
+        </div>
+    </div>
+
+    <!-- Tab 2 - View 2 -->
+    <div id="tab2" class="view tab view-person">
+        <div class="pages">
+
+        </div>
+    </div>
+
+    <!-- 带有链接的标签栏 -->
+    <div class="toolbar tabbar tabbar-labels">
+        <div class="toolbar-inner">
+            <a href="#tab1" onclick="changepage('home')" class="tab-link">
+                <i class="f7-icons">home</i>
+                <span class="tabbar-label">大厅</span>
+            </a>
+
+            <a href="#tab2"  onclick="changepage('person');" class="tab-link">
+                <i class="f7-icons">person</i>
+                <span class="tabbar-label">我的</span>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Path to Framework7 Library JS-->
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/hrframe.js"></script>
+<!-- Path to your app js-->
+<script type="text/javascript" src="js/my-app.js"></script>
+<!-- upesn style js file -->
+<script type="text/javascript" src="js/bridge.js"></script>
+<!-- samous common-tools -->
+<script type="text/javascript" src="js/common-tool.js"></script>
+<script>
+
+     var userid = "#(userid)";
+     var weixinid = "#(weixinid)";
+     var weixinName = "#(weixinname)";
+
+     localStorage.setItem("userId",userid);
+     localStorage.setItem("weixinName",weixinName);
+</script>
+</body>
+</html>

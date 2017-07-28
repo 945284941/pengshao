@@ -1,0 +1,43 @@
+<template>
+    <div class="form-inline" style="float:right;margin-bottom:20px">
+
+        <div class="form-group">
+            <label>用户名：</label>
+            <input type="text" class="form-control" placeholder="请输入用户名" id="name">
+        </div>
+        <button type="button" class="btn btn-default" id="search">搜索</button>
+
+    </div>
+    <div id="userList"></div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = null;
+        data = {};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("#page-inner").html(content);
+
+
+        $("#search").click(function () {
+            var name = $("#name").val();
+
+            var data = {
+                "name": name,
+                "page": 1,
+                "pageSize": 10
+            }
+            $f('plugin', 'home.upuser-role', data);
+        });
+        $f('plugin','upuser-role',0);
+    });
+
+
+</script>

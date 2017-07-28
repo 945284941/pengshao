@@ -1,0 +1,73 @@
+<template>
+    <div data-page="neighbour-reply-add" class="page">
+        <div class="page-content">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left "><a class="back"><h2><</h2></a></div>
+                    <div class="center" style="font-weight: bold">回复</div>
+                </div>
+            </div>
+            <form class="list-block">
+                <ul>
+                    <input type="hidden" value="<oo>=noteIdThere</oo>" id="wowo">
+                    <input type="hidden" value="<oo>=noteId</oo>" id="xixi">
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon f7-icons">chat</i></div>
+                            <div class="item-inner "><textarea id="contact" style="padding:0;"></textarea></div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+            <a href="#" class="reply-confirm button active" style="height: 35px; font-size: 16px; line-height: 35px">确&nbsp;&nbsp;认</a>
+
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var noteId = $('#noteId').val();
+        var content = $f("TPPL", _page, {"noteId": noteId});
+
+        var thisPage = $("div[data-page='neighbour-reply-add']");
+        if(thisPage.length != 0) {
+            thisPage.remove();
+        }
+
+        homeView.router.load({content: content});
+
+        $('.reply-confirm').click(function () {
+            var context = $('#contact').val();
+            if (Checkor.isEmpty(context)) {
+                alert("说点什么吧");
+                return;
+            }
+            $.ajax({
+                url: $f("tools.serverURL", "archive/note/addReply"),
+                type: "GET",
+                data: {
+                    "noteId": noteId,
+                    "context": context,
+                    "userId": localStorage.getItem("userId")
+                },
+                success: function (resp) {
+                    alert(resp.message);
+
+                    //刷新页面
+                    $f('plugin', 'neighbour-help.note-list.query', {"noteid": noteId});
+                }
+            });
+
+        });
+
+
+    });
+
+</script>

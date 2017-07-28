@@ -1,0 +1,79 @@
+<template>
+    <style>
+        .board{
+            border-top: 1px solid #ccc;
+            margin-top: -7px;
+        }
+        #noteContext{
+            height:130px;
+            width: 100%;
+            border: none;
+        }
+    </style>
+       <textarea class="form-control" id="noteContext" placeholder="请输入内容"></textarea>
+        <div class="board">
+            <div style="margin:10px " class="col-sm-2">
+
+                        <div>
+                            <span class="glyphicon glyphicon-pencil" style="padding-right: 15px;"></span>
+
+                            <span class="glyphicon glyphicon-film pic" ></span>
+
+                        </div>
+
+
+
+                </ul>
+            </div>
+
+            <div class="col-sm-1" style="margin-top:10px;float:right;margin-right: 4px;">
+                <a class="btn btn-danger" id="addNote" >
+                    发布
+                </a>
+            </div>
+        </div>
+</template>
+<script>
+    $f("df",__,function (_page) {
+        $f('ajax.get',null,null,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#noteAdd').html(html);
+
+        $('#addNote').click(function () {
+
+
+
+
+            var context=$('#noteContext').val();
+            context=$.trim(context)
+            if(context==null||context==""){
+                alert("内容不能为空,请重新输入");
+                return ;
+            }
+            var userId;
+            if(localStorage.getItem("userId")==null||localStorage.getItem("userId")==""){
+                userId=1;
+            }else {
+                userId=localStorage.getItem("userId");
+            }
+
+            $.ajax({
+                url:"/schoolcms/archive/note/addDynamicsByUserId",
+                data:{
+                   context:context,
+                   userId:userId
+                },
+                success:function (_data) {
+                    alert(_data.message);
+                    $f('plugin','dynamicsSed.dynamicsSedSearch',0);
+                    $f('plugin','dynamicsSed.dynamicsSedText',0);
+                }
+            })
+
+
+
+        })
+    })
+</script>

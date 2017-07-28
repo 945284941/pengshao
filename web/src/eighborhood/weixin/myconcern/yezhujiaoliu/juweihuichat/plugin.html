@@ -1,0 +1,92 @@
+<template>
+
+    <style>
+        .demo-card-header-pic{
+            height: 10vw;
+            background-size: cover;
+            background-position: center;
+        }
+        .card-header{
+            height: 10vw;
+         /*   background-size: cover;
+            background-position: center;*/
+        }
+        .pages{
+            background-color: #CCCCCC;
+        }
+    </style>
+    <div data-page="cards-juweihui" class="page page-on-center" name="juweihui">
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                </div>
+                <div style="text-align: center;">
+                    <span><oo>=weixinname</oo></span>
+                </div>
+                <div style="text-align: left;color: #61aafc;font-size: 25px;">
+                    <span class="addcontent" ><i class="f7-icons">person<sup>add</sup></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="page-content pull-to-refresh-content" data-ptr-distance="55" style="height: 100%;" id="gundong">
+            <div id="juweihuicontent" ></div>
+        </div>
+    </div>
+</template>
+<script>
+
+    $f("df", __, function (_page,_data) {
+
+        $f("ajax.get", null, null, "__.list",_page,_data)();
+    });
+
+    $f("df", "__.list", function (_data,_page,_baby) {
+        $("div[name='juweihui']").remove();
+        $("div[name='yezhu']").remove();
+        var content = $f("TPPL",_page,{weixinname:_baby.yourName});
+
+        peopleView.router.load({content: content});
+        $f('plugin','__.juweihuichatcontent',_baby);
+        
+        $('.addcontent').click(function () {
+            $f('plugin','eighborhood.weixin.userInfo_myconcern',_baby.yourId,"1");
+            $('.write').remove();
+            $('.tab-link').show();
+        })
+        $('.tab-link').hide();
+        $('.toolbar-inner').append("<div class='write' style='width:100%;'> <input type='text' id='writer' style='border-left:0px;border-top:0px;border-right:0px;border-bottom:0px;width:70%;margin-left:10px;height:35px;'/> <a href='#' class='button button-big button-fill color-green babyy' style='width:20%;float:right;height:41px;margin-right:10px;'>发表</a> </div>")
+        $('.back').click(function () {
+            $('.write').remove();
+            $('.tab-link').show();
+
+        });
+        $('.babyy').click(function () {
+            var content = $('#writer').val().trim();
+            $('#writer').val(" ")
+
+            if(content==""){
+                alert("内容不能为空");
+                return ;
+            }
+            $.ajax({
+                url:$f('server','archive/note/addMessage'),
+                data:{
+                    userId:localStorage.getItem("userId"),
+                    uuId:_baby.uuId,
+                    content:content
+                },
+                success:function (_data) {
+
+                    $f('plugin','__.juweihuichatcontent',_baby);
+                }
+            });
+
+        })
+
+
+    });
+
+</script>
+

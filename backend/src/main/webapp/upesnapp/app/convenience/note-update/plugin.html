@@ -1,0 +1,123 @@
+<template>
+
+    <div data-page="convenience-note-updata" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;padding-right: 40px;">
+                    <span>修改</span>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 55px">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="title" placeholder="请输入标题" value="<oo>=data.title</oo>">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-block">
+                <ul>
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <textarea id="content" placeholder="请输入内容"><oo>=data.context</oo></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                </ul>
+            </div>
+
+            <!--<div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-img"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="img" placeholder="请输入图片url">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+-->
+            <a href="#" id="qd" class="button active confirm" style="height: 35px; font-size: 16px; line-height: 35px">修改</a>
+
+        </div>
+
+    </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+        var url="/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page,_data)();
+    });
+
+    $f("df", "__.list", function(_data, _page,classid) {
+        var content = $f("TPPL",_page,_data);
+        mainView.router.load({content: content});
+
+        $('#qd').click(function () {
+
+
+            var title = $('#title').val();
+            var content = $('#content').val();
+            /*var imgurl = $('#img').val().trim();*/
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+
+            $.ajax({
+                url:"/schoolcms/archive/note/updateNote",
+                type:"POST",
+                data:{
+                    "title":title,
+                    "content":content,
+                    "id":classid,
+
+                },
+                success:function(resp){
+                    alert(resp.message);
+                    //刷新页面
+                    $f('plugin', 'convenience', 148);
+                }
+            });
+
+
+        });
+
+
+
+    });
+</script>
+
+

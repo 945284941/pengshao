@@ -1,0 +1,244 @@
+<template>
+    <div class="dynamic-container">
+        <oo>if(data.length == 0){</oo>
+        <div class="tip-style" style="text-align: center;"><h3>暂无数据</h3></div>
+        <oo>} else{</oo>
+        <oo>for(var i = 0; i < data.length; i++){</oo>
+
+
+        <div class="list-block media-list for-container babyy details-link" style="margin: 0 0;" data-classname="<oo>=data[i].classname</oo>" data-id="<oo>=data[i].id</oo>" data-classid="<oo>=data[i].classid</oo>">
+            <ul>
+                <li>
+                    <div class="item-link item-content">
+                        <div class="item-inner">
+                            <div class="item-subtitle" style="margin-bottom: 12px;">
+                                <div style="width: 30%;float:left;overflow: hidden;">
+                                <oo>=data[i].title</oo></div>
+
+                                <div style="float: right;font-size: 13px;width: 30%; overflow: hidden;"><oo>=data[i].classname</oo></div>
+                            </div>
+
+                            <div class="item-subtitle" style="height: 21px; padding-top: 20px">
+                                <div style="width: 30%;float:left;overflow: hidden;margin-right:20px;font-size:13px;">
+                                    发布人:<oo>=data[i].nick_name</oo>
+                                </div>
+
+                                <div style="width:30%;float:left;font-size: 13px;overflow: hidden;">
+                                <span style="">地点:<oo>=data[i].location</oo></span>
+                                </div>
+                                <div style="float: right;font-size: 13px;width: 30%; overflow: hidden;">         状态:
+                                    <oo>if(data[i].status==2){</oo>待办<oo>}</oo>
+                                    <oo>if(data[i].status==3){</oo>待审<oo>}</oo>
+                                    <oo>if(data[i].status==5){</oo>指派<oo>}</oo>
+                                    <oo>if(data[i].status==4){</oo>完成<oo>}</oo>
+                                    <oo>if(data[i].status==1){</oo>未读<oo>}else{</oo>
+                                    <oo>}</oo></span></div>
+
+
+
+                            </div>
+                            <div class="item-subtitle" style="height: 21px; padding-top: 20px">
+                                <div style="width: 45%;float:left;overflow: hidden;margin-right:10px;font-size:13px;">
+                                    开始时间:<oo>=data[i].startTime</oo>
+                                </div>
+
+
+                                <div style="overflow: hidden;width: 45%;float:right;font-size:13px;" >
+                                    结束时间：
+                                </div>
+
+
+
+                            </div>
+                         <!--   <div class="item-subtitle " style="height: 25px; padding-top: 15px;">-->
+                        <!--        <div style="width: 45%;float:left;overflow: hidden;margin-right:10px;font-size:13px;">
+                                    开始时间:<oo>=data[i].startTime</oo>
+                                </div>-->
+
+                  <!--              <div style="width:45%;float:right;font-size: 13px;overflow: hidden;">
+                                    <span style="">结束时间:<oo>=data[i].endTime</oo></span>
+                                </div>-->
+                               <!-- <div style="overflow: hidden;" class="col-35">-->
+
+                              <!-- </div>-->
+                   <!--             <div style="overflow: hidden;" class="col-35">
+                                    结束时间：
+                                </div>-->
+                                <!--<div style="overflow: hidden;float:right;" class="col-30">-->
+
+                            <!--    </div>-->
+<!--                                <span style="float: left;overflow: hidden;width:30%;">
+                                   结束时间：
+</span>-->
+
+<!--                                <div style="overflow: hidden;width:30%;">
+                                    结束时间：
+                                </div>-->
+                                <!--   <div style="width:30%;overflow: hidden;font-size: 13px;float: left;">发布人:<oo>=data[i].nick_name</oo></div>-->
+  <!--                              <div style="width: 30%;float:right;font-size: 13px;overflow: hidden;">
+                            <span style="">-->
+                                  <!--   </div>-->
+                          <!--  </div>-->
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <oo>if(data[i].classname=='11'){</oo>
+        <div class="list-block media-list for-container babyy details-link" style="margin: 0 0;" data-classname="<oo>=data[i].classname</oo>" data-id="<oo>=data[i].id</oo>" data-classid="<oo>=data[i].classid</oo>">
+            <ul>
+                <li>
+                    <div class="item-link item-content">
+                        <div class="item-inner">
+                            <div class="item-subtitle" style="margin-bottom: 12px;">
+                                <oo>=data[i].title</oo>
+                                <div style="float: right;font-size: 13px;"></oo>
+                                    <!--<img src="img/jinxingzhong.png" style="height: 40px;">--></div>
+                            </div>
+                            <div class="item-text" style="height: 21px; padding-top: 20px">
+                                <span style="margin-right: 15px;font-size: 13px">状态:
+                                    <oo>if(data[i].status==2){</oo>待办<oo>}</oo>
+                                    <oo>if(data[i].status==3){</oo>待审<oo>}</oo>
+                                    <oo>if(data[i].status==5){</oo>指派<oo>}</oo>
+                                            <oo>if(data[i].status==4){</oo>完成<oo>}</oo>
+                                            <oo>if(data[i].status==1){</oo>未读<oo>}else{</oo>
+                                            <oo>}</oo></span>
+                                <span style="float:right;font-size: 13px">开始时间:<oo>=data[i].startTime</oo></span>
+
+                            </div>
+                            <div class="item-text" style="height: 21px; padding-top: 20px">
+                                <span style=" margin-right: 15px;font-size: 13px">所属分类:<oo>=data[i].classname</oo></span>
+                                <span style=" float:right;font-size: 13px">结束时间:<oo>=data[i].endTime</oo></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <oo>}}}</oo>
+    </div>
+    <div class="infinite-scroll-preloader">
+        <div class="preloader"></div>
+    </div>
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+
+
+        var time = _data.time;
+        var state = _data.state;
+        var brff = _data.brff;
+
+
+        $f("ajax.get", $f("tools.serverURL", "archive/note/findNoteListJSON"), {
+            'id': 327,
+
+            'userId':localStorage.getItem("userId"),
+            'pageSize': 10,
+            'time': time,
+            'state': state,
+            'brff': brff
+
+        }, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $('#agencyList').html(content);
+
+
+        //拿取分类id，跳转至页面分转中心
+        $(".details-link").click(function () {
+            var data_ = {};
+            data_.classname = $(this).data("classname");
+
+            if($(this).data("classname")=="一般通知"){
+                return false
+            }
+            else {
+                data_.id = $(this).data("id");
+                data_.classid = $(this).data("classid");
+                $f('plugin', '__.details', data_);
+            }
+        });
+
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 10;
+        if (_data.data.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+
+
+                current_page += 1;
+                var time=$('#time').text();
+                var state=$('#state').text();
+                var brff=$('#responsibility').text();
+                var data = {"id": 327, "pageSize": pageSize, "page":current_page,'userId':localStorage.getItem("userId"),'time': time, 'state': state, 'brff': brff};
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findNoteListJSON"), data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function (_data, _page) {
+
+                    /*     $f("tools.replyDateFormat", _data.data.list.list);*/
+                    var html = $f("TPPL", _page, _data);
+
+
+                    $(".dynamic-container").append($(html).find(".babyy"));
+                    $(".details-link").unbind().click(function () {
+                        var data_ = {};
+                        data_.classname = $(this).data("classname");
+                        if($(this).data("classname")=="一般通知"){
+                            return false
+                        }
+                        else {
+                            data_.id = $(this).data("id");
+                            data_.classid = $(this).data("classid");
+                            $f('plugin', '__.details', data_);
+                        }
+
+
+                    });
+                    if (_data.data.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+                        return;
+                    }
+
+                });
+
+            }, 800);
+
+
+        });
+
+
+    });
+
+</script>

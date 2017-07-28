@@ -1,0 +1,55 @@
+<template>
+    <style>
+        .demo-card-header-pic .card-header {
+            height: 40vw;
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        img{
+            border-radius: 50%;
+            width:60px;
+        }
+
+        .app-item{
+            text-align: center;
+            display: inline-block;
+            height:90px;
+            margin-top: 20px;
+        }
+    </style>
+    <div class="card demo-card-header-pic app-list row" style="margin:10px">
+        <div class="app-item col-25" onclick="$f('plugin','neighbour-help',0)"><img src="img/app5.jpg" /><div>邻里互助</div></div>
+        <div class="app-item col-25" onclick="$f('plugin','contact.notification',163)"><img src="img/app3.jpg" /><div>活动通知</div></div>
+        <div class="app-item col-25" onclick="$f('plugin','contact.poacy.procon',7)"><img src="img/app2.jpg" /><div>政务宣传</div></div>
+
+        <div class="app-item col-25" onclick="$f('plugin','convenience',148);"><img src="img/app4.jpg" /><div>便民服务</div></div>
+
+
+        <div class="app-item col-25" onclick="$f('plugin','property.search',0)"><img src="img/app1.jpg" /><div>小区物业</div></div>
+        <div class="app-item col-25" onclick="$f('plugin','workflow',0)"><img src="img/app6.jpg" /><div>办事流程</div></div>
+        <div class="app-item col-25" onclick="$f('plugin','resident',0)"><img src="img/app7.jpg" /><div>居委会职责</div></div>
+        <div class="app-item col-25"></div>
+
+
+    </div>
+</template>
+<script>
+    $f("df",__, function (_page) {
+
+        $f("ajax.get",null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var content = $f("TPPL", _page);
+        $(".home-app-list").html(content);
+
+
+
+    });
+
+
+
+
+</script>

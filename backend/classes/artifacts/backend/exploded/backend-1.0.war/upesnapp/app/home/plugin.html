@@ -1,0 +1,76 @@
+<template>
+  <style>
+
+
+  </style>
+
+
+    <div data-page="home-page-home" class="page">
+
+
+      <form class="searchbar">
+        <div class="searchbar-input">
+          <input type="search" placeholder="">
+          <a href="#" class="searchbar-clear"></a>
+        </div>
+        <a href="#" class="searchbar-cancel">Cancel</a>
+      </form>
+      <!-- Search Bar overlay-->
+      <div class="searchbar-overlay"></div>
+      <div class="page-content infinite-scroll" data-distance="20">
+        <!--每日金句-->
+        <div id="daily-quotes"></div>
+
+        <!--最近联系人-->
+        <div id="recent-contact"> </div>
+
+        <!--今日任务-->
+        <div id="task"> </div>
+
+        <!--每周食谱-->
+        <!-- <div id="recipe"> </div> -->
+
+        <!--社会热点-->
+        <div id="point"></div>
+
+        <!--兴趣小组-->
+        <div id="interest"></div>
+
+        <!--每天一篇好文章-->
+        <div id="article"></div>
+
+        <!--社会动态-->
+        <div id="dynamic"></div>
+
+      </div>
+
+    </div>
+
+</template>
+<script>
+$f("df", __, function(_page) {
+  AppFramework.hideIndicator();
+  mainView.router.load({content:_page});
+
+  //加载每日金句
+  $f("plugin","__.daily-quotes",{"type":73});
+
+  //加载今日任务
+  $f("plugin","__.task",{"type":71, "pageSize":4});
+
+  /*社会热点*/
+  $f("plugin","__.point",{"type":72, "pageSize":4 });
+
+  /*兴趣小组*/
+  $f("plugin","__.interest",{"pid":74});
+
+  /*每天一篇好文章*/
+  $f("plugin","__.article",{"type":75});
+
+  /*学校动态*/
+  $f("plugin","__.dynamic",{"type":76});
+
+
+});
+
+</script>

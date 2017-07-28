@@ -1,0 +1,111 @@
+<template>
+    <div data-page="person-info" class="page" style=" background-image:url('img/photo.jpg');font-size: 20px;">
+        <div id="person-info-content" class="page-content">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                    </div>
+                    <div style="width: 100%;text-align: center;">
+                        <span>个人头像</span>
+                    </div>
+                </div>
+            </div>
+            <div class="content-block" style="margin: 0 auto">
+                <div class="login-screen-title">
+                    <ul  style="padding-left: 0">
+                        <!--<img class="ac-3" src="#"/></br>-->
+                        <img id="photo" class="ac-3" style="border-radius: 50%;border: none;width:150px" src="img/head3.jpg"/></br>
+                        <!--<input type="file" id="upload" name="upload" />
+                        <input type="file" accept="video/*;capture=camcorder">
+                        <input type="file" accept="audio/*;capture=microphone">-->
+                        <!--<input type="file" accept="image/*;capture=camera">--><!--直接调用相机-->
+                        <!--<input type="file" accept="image/*" />-->
+                    </ul>
+                </div>
+                <div id="baby">
+                    <input type="file" name="baby" id="findPhoto">
+                    <input type="file" id="camera" accept="image/*;capture=camera">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function(_page, _data) {
+        var url = null,
+            data =null;
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+        var content = $f("TPPL",_page,_data);
+        mainView.router.load({
+            content:content
+        });
+
+        $('#baby').hide();
+        $$('.ac-3').on('click', function () {
+            var buttons1 = [
+                {
+                    text: '修改头像',
+                    label: true
+
+                },
+                {
+                    text: '从相册选择图片',
+                    onClick:function(){
+                        return  $("#findPhoto").click()
+
+                    }
+                },
+                {
+                    text:'选择系统图片',
+                    onClick:function(){
+                        var myPhotoBrowser = AppFramework.photoBrowser({
+                            zoom: 400,
+                            photos: ['img/back1.jpg', 'img/back2.jpg','img/back3.jpg','img/back4.jpg']
+                        });
+                        myPhotoBrowser.open();
+
+
+
+                    }
+                }/*,
+                {
+                    text: '拍照',
+                    onClick:function(){
+                        return  $("#camera").click()
+                    }
+                }*/,
+                {
+                    text: '查看大图',
+                    onClick:function(){
+                        var myPhotoBrowser = AppFramework.photoBrowser({
+                            zoom:700,
+                            photos: ['img/head3.jpg']
+                        });
+                        myPhotoBrowser.open();
+
+                    }
+                }
+            ];
+            var buttons2 = [
+                {
+                    text: '取消'
+                    /*color: 'red'*/
+                }
+            ];
+            var groups = [buttons1, buttons2];
+            AppFramework.actions(groups);
+        });
+
+
+    });
+
+
+
+</script>

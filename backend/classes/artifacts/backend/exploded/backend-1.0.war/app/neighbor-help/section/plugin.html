@@ -1,0 +1,237 @@
+<template>
+    <style>
+        /*1.table必须加宽度值*/
+        /*2.table必须加table-layour: fixed;属性*/
+        /*3.给每个<td>加四个属性。*/
+        table > tbody > tr > td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        table {
+            table-layout: fixed;
+        }
+
+        .tool-bar-right{
+            margin: 10px 0;
+            text-align: right
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > td{
+            vertical-align: middle;
+            text-align: center !important
+        }
+
+
+        .serachInput{
+            padding:0 10px;
+            display: inline-block;
+            height: 34px;
+            font: 400 14px/34px consolas;
+            border-radius: 4px;
+            border:1px solid #CCC;
+            vertical-align: middle
+        }
+
+        button {
+            vertical-align: middle
+        }
+
+        .tip-style{
+            color: #AAAAAA;
+            text-align: center;
+        }
+    </style>
+
+        <div class='table-style'>
+            <div class="tool-bar-right">
+                <input type="text" class="title-serach serachInput" placeholder="请输入帖子标题">
+                <input type="text" class="creator-serach serachInput" placeholder="请输入帖子发布人">
+                <button type="button" class="btn btn-default search-btn" >搜索</button>
+                <button type="button" class="btn btn-success nb-create">发布</button>
+            </div>
+
+            <oo>if(list.length == 0){</oo>
+                <div class="tip-style"><h3 >暂无数据</h3></div>
+            <oo>} else{</oo>
+                <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:100%;">
+                    <thead>
+                    <tr>
+                        <th>帖子标题</th>
+                        <th>帖子内容</th>
+                        <th style="width: 140px">发帖时间</th>
+                        <th style="width: 140px">发布者</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <oo>for(var i = 0; i < list.length; i ++){</oo>
+                    <tr>
+                        <td class="title"><oo>=list[i].title</oo></td>
+                        <td class="context"><oo>=list[i].context</oo></td>
+                        <td class="time"><oo>=list[i].createtime</oo></td>
+                        <td class="username"><oo>=list[i].nick_name</oo></td>
+                        <td class="center">
+                            <button class="btn btn-sm btn-info nb-details" data-id="<oo>=list[i].id</oo>" >
+                                <i class="glyphicon glyphicon-zoom-in icon-white"></i>
+                                详情
+                            </button>
+
+                            <button class="btn btn-sm btn-success nb-reply" data-id="<oo>=list[i].id</oo>" >
+                                <i class="glyphicon glyphicon-pencil icon-white"></i>
+                                回复
+                            </button>
+
+                            <button class="btn btn-sm btn-danger nb-delete" href="#" data-id="<oo>=list[i].id</oo>">
+                                <i class="glyphicon glyphicon-trash icon-white"></i>
+                                删除
+                            </button>
+                        </td>
+                    </tr>
+                    <oo>}</oo>
+                    </tbody>
+                </table>
+                <div style="text-align: center" class="page-bar">
+
+                </div>
+            <oo>}</oo>
+        </div>
+
+
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL","archive/note/findNoteList");
+        if(_data.name != null || _data.title != null){
+            var data = {"page": _data.page, "pageSize": 10, "classId": _data.id, name: _data.name, title: _data.title};
+        } else{
+            var data = {"page": _data.page, "pageSize": 10, "classId": _data.id};
+        }
+
+        $f("ajax.get", url, data, "__.list", _page, _data.id)();
+    });
+
+    $f("df", "__.list", function (_data, _page, classId) {
+        $f("tools.dateListFormat", _data.data.list);
+        var content = $f("TPPL", _page, _data.data);
+        $("#content-"+classId).html(content);
+
+        // 加载分页组件
+        //记录当前页
+        var currPage;
+        initPageBar(".page-bar", _data);
+        $(".page-bar").find("button").click(function(){
+            var pageNum = $(this).data("page");
+            var currentPage=_data.data.pageNumber;
+            currPage=_data.data.pageNumber;
+            var maxPage=_data.data.totalPage;
+            if(pageNum == "next"){
+                pageNum=currentPage+1;
+                if(pageNum>maxPage){
+                    pageNum=maxPage;
+                }
+            }
+            if(pageNum == "Prev"){
+                pageNum=currentPage-1;
+                if(pageNum == 0){
+                    pageNum=1;
+                }
+            }
+
+            $f('plugin','__',{page:pageNum, id:classId});
+        });
+
+        //发布新帖
+        $(".nb-create").click(function(){
+            $f('plugin', '__.add', classId);
+        });
+
+        //详情
+        $(".nb-details").click(function(){
+            var detail_data = {};
+            detail_data.id = $(this).data("id");
+            detail_data.title = $(this).parents("tr").find(".title").text();
+            detail_data.context = $(this).parents("tr").find(".context").text();
+            detail_data.time = $(this).parents("tr").find(".time").text();
+            detail_data.username = $(this).parents("tr").find(".username").text();
+            $f('plugin','__.details', detail_data);
+
+        });
+
+        //回复
+        $(".nb-reply").click(function(){
+            var dataid = $(this).data("id");
+            $f('plugin','__.reply-list', dataid);
+
+        });
+
+        //删除帖子
+        $(".nb-delete").bind('click', function(){
+            var id = $(this).attr("data-id");
+            Samous.confirm({message: "确定删除该帖子吗？"}).on(function(e){
+                if(!e)return;
+
+                $.ajax({
+                    url: $f('tools.serverURL', 'archive/note/deleteNoteById'),
+                    type: 'GET',
+                    data: {
+                        "id":id
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+                        $f('plugin','__',{page:currPage, id:classId});
+
+                    }
+                });
+            });
+        });
+
+        //根据用户搜索
+        $('.search-btn').bind('click', function () {
+            var name = $('.creator-serach').val();
+            var title = $('.title-serach').val();
+            if(Checkor.isEmpty(name) && Checkor.isEmpty(title)){
+                alert("请输入查询内容！");
+                return;
+            }
+
+            var data = {page: 1, pageSize: 10, name: name, title: title, id: classId};
+            $f("plugin", __, data);
+
+        });
+
+
+
+    });
+
+    $f("df", "__.userRole", function (_data, _page) {
+        var content = $f("TPPL", _page, _data.data);
+        $("#page-inner").html(content);
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

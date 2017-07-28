@@ -1,0 +1,124 @@
+<template>
+    <style>
+        /*1.table必须加宽度值*/
+        /*2.table必须加table-layour: fixed;属性*/
+        /*3.给每个<td>加四个属性。*/
+        table > tbody > tr > td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        table {
+            table-layout: fixed;
+        }
+
+        .tool-bar-right {
+            margin: 10px 0;
+            text-align: right
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > td {
+            vertical-align: middle;
+            text-align: center !important
+        }
+
+        button {
+            vertical-align: middle
+        }
+    </style>
+
+    <input type="hidden" id="grantId" value="1">
+    <input type="hidden" id="lei">
+    <input type="hidden" id="sousuo">
+    <!-- Nav tabs -->
+    <div>
+
+        <ul class="nav nav-tabs" role="tablist" >
+            <!--            <li role="presentation" ><a data-id="1" class="col-md-12 active" role="tab" data-toggle="tab" aria-expanded="true">全部</a></li>-->
+            <oo>for(var i = 0; i < list.length; i ++){</oo>
+            <li role="presentation"><a data-id="<oo>=list[i].id</oo>" class="col-md-12"
+                                       href="#content-<oo>=list[i].id</oo>" aria-controls="content-<oo>=list[i].id</oo>"
+                                       role="tab" data-toggle="tab">
+                <oo>=list[i].classname</oo>
+            </a></li>
+            <oo>}</oo>
+            <li role="presentation" class="active"><a epend="shezhi" class="col-md-12 active" role="tab"
+                                                      data-toggle="tab" aria-expanded="true">模块设置</a></li>
+        </ul>
+
+
+            <!-- Tab panes -->
+            <div class="tab-content ">
+                <div role="tabpanel" class="tab-pane fade in active col-md-12" id="home" style="height:100%;">
+                </div>
+                <div id="homeSearch" class="col-md-12">
+                </div>
+                <div id="homeContext" class="col-md-12">
+                </div>
+            </div>
+</div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var pageSize = 10;
+        var url = "/schoolcms/archive/classification/findListByPid"
+        var data = {"page": _data.page, "pageSize": 1000, "pid": 1};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data.data.list);
+        var content = $f("TPPL", _page, _data.data);
+        $("#page-inner").html(content);
+        $f('plugin', '__.smallclassification', 0);
+        $f('plugin', '__.smallclassificationadd', 0);
+
+
+        $("ul li a").click(function () {
+            var shezhi = $(this).attr("epend");
+            if (shezhi == "shezhi") {
+                $f('plugin', 'poacy.smallclassification', 0);
+                $f('plugin', 'poacy.smallclassificationadd', 0);
+            } else {
+                var id = $(this).data("id");
+                $('#grantId').val(id);
+                $('#lei').val("");
+                $('#sousuo').val("");
+
+
+                $f('plugin', '__.poacySearch', 0);
+                $f('plugin', '__.section', 0);
+            }
+        });
+
+
+        //修改板块
+
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,131 @@
+<template>
+    <div class="content-block-title">
+        社区动态
+    </div>
+    <div class="dynamic-container">
+        <oo>for(var i = 0; i < data.list.length; i++){</oo>
+        <div class="card demo-card-header-pic dynamic-card" onclick="$f('plugin','.note.query',this);"
+             noteid="<oo>=data.list[i].id</oo>" typeid="<oo>=data.list[i].type_id</oo>">
+            <div style="background-image:url(<oo>=data.list[i].img</oo>)" valign="bottom"
+                 class="card-header color-white no-border">
+                <oo>=data.list[i].title</oo>
+            </div>
+            <div class="card-content">
+                <div class="card-content-inner">
+                    <p class="color-gray">
+                        <oo>=data.list[i].createtime</oo>
+                    </p>
+                    <p>
+                        <oo>=data.list[i].context</oo>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <oo>}</oo>
+        <!-- 加载提示符 -->
+    </div>
+    <div class="infinite-scroll-preloader">
+        <div class="preloader"></div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = "",
+            data = {};
+
+        url = $f("tools.serverURL", "archive/note/findDynamicList");
+        data = {'classId': _data.type, "page": 1, "pageSize": 3};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data.data.list);
+        var html = $f("TPPL", _page, _data);
+        $(".dynamic").html(html);
+
+
+
+        /*
+         * 上拉无限加载js。
+         *         -- created by Samous
+         *
+         * 加载机制：
+         *     每次上拉屏幕，发送后台请求加载数据
+         *
+         * 传入参数说明:
+         *     1. _page: 需要渲染的页面：直接传_page即可
+         *     2. pageSize: 每次加载的数据个数，相当于分页的pagesize，参照你第一次加载数据时的pageSize进行设置，否则会有重复或缺失的数据
+         *     3. paramList： 加载成功之后的数据列表，根据后台输出的不同数据结构而定： 例如：_data.data.list
+         *     4. url: 请求后台数据的地址： 按照：---- $f("tools.serverURL", "archive/note/findDynamicList") ----格式
+         *     5. classId: 要查询的帖子的分类id
+         *     6. $parent: 加载出来的页面的父级包裹元素: 也就是for循环上一行的div
+         *     7. $card: 加载出来的元素本身  也就是for循环内的第一级div  一般是class='card'的元素
+         *
+         *
+         * */
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 3;
+        if (_data.data.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        $$('.infinite-scroll').on('infinite', function () {
+
+// 如果正在加载，则退出
+            if (loading) return;
+
+// 设置flag
+            loading = true;
+
+// 模拟1s的加载过程
+            setTimeout(function () {
+
+// 重置加载flag
+                loading = false;
+                if (_data.data.list.length < pageSize) {
+
+// 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+// 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"classId": _data.data.list[0].classid, "pageSize": pageSize, "page": current_page};
+
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findDynamicList"), data, "__.infiScr", _page)();
+
+                $f("df", "__.infiScr", function (_data, _page) {
+
+                    $f("tools.dateListFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".dynamic-container").append($(html).find(".dynamic-card"));
+
+                    if (_data.data.list.length < pageSize) {
+
+// 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+// 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+
+    });
+
+
+</script>

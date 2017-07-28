@@ -1,0 +1,49 @@
+<template>
+  <div class="content-block-title">
+      办事流程
+  </div>
+  <div class="card">
+
+  <div style="margin: 0 0 2px 0" class="card demo-card-header-pic" onclick="$f('plugin','.note.query',this);" noteid="<oo>=data.id</oo>" typeid="<oo>=data.classid</oo>">
+      <div style="background-image:url(<oo>=data.img</oo>)" valign="bottom"
+           class="card-header color-white no-border">
+          <oo>=data.title</oo>
+      </div>
+          <div class="card-content">
+              <div class="card-content-inner">
+                  <p class="color-gray">
+                      <oo>=data.createtime</oo>
+                  </p>
+                  <p>
+                      <oo>=data.context</oo>
+                  </p>
+              </div>
+          </div>
+  </div>
+  <div class="card-footer" onclick="$f('plugin','note',this);" typeid="<oo>=data.classid</oo>">
+      <span>查看更多...</span>
+  </div>
+  </div>
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+    var url = "",
+        data = {};
+    if (_data != 0) {
+        url = $f("tools.serverURL", "archive/note/findOneDailyNote");
+        data = {'classId': _data.type};
+    } else {
+        url = null;
+        data = null;
+    }
+    $f("ajax.get", url, data, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    _data.data.createtime = $f("tools.dateFormat",_data.data.createtime);//修改时间格式
+    var content = $f("TPPL",_page,_data);
+    $("#property").html(content);
+  });
+
+
+</script>

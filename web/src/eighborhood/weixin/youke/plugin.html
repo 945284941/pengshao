@@ -1,0 +1,104 @@
+<template>
+    <div data-page="person-info" class="page">
+        <div id="person-info-content" class="page-content">
+           <!-- <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                    </div>
+                    <div class="center">
+                        <span>实名认证</span>
+                    </div>
+                </div>
+            </div>-->
+            <div style="height: 120px;width: 100%;background: #007aff;padding-left: 20px;line-height: 50px;padding-top: 25px;margin-bottom: 80px;">
+               <div style="display: inline-block;">
+                <span style="font-size: 30px;color: #fff;">游客</span></br>
+                <span style="    font-size: 16px;color: #fff;">实名认证，解锁更多功能，立即&nbsp&nbsp<a onclick="$f('plugin','eighborhood.weixin.ykauthentication',0)" style="font-size: 18px;color: #fff;text-decoration:underline">实名认证</a></span>
+               </div>
+
+            </div>
+
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">请选择所在居委会</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="departid1" class="btn" placeholder="所在居委会">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block" style="margin-top: 80px;">
+
+
+                        <a href="#" style="height: 45px;font-size: 17px;padding-top: 9px;" class="button active qd">确定</a>
+
+
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+   $f("df", __, function (_page, _data) {
+       var url=$f("server","archive/department/findDepartByPid");
+       var data = {
+           "pid":9
+       };
+       $f("ajax.get",url,data, "__.list", _page)();
+
+   });
+
+    $f("df", "__.list", function (_data, _page) {
+        var content = $f("TPPL", _page, _data);
+        homeView.router.load({content: content});
+        //选择居委会插件
+        var arc=[];
+        var arcid=[];
+        for(var i=0;i<_data.data.length;i++){
+            arc.push(_data.data[i].name);
+            arcid.push(_data.data[i].id);
+
+
+        }
+        var pickerDevice = AppFramework.picker({
+            input: '#departid1',
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: arc,
+                }
+            ]
+        });
+
+
+        $(".qd").click(function(){
+
+
+            $.ajax({
+                url:$f("server","archive/weixinUser/addAndUpdateInfo"),
+                type:"POST",
+                data:{
+                    "name":name,
+                    "phone":phone,
+                    "departid":depart
+
+                },
+                success:function(resp){
+                    alert(resp.message);
+                }
+            });
+        });
+
+
+    });
+
+
+
+</script>

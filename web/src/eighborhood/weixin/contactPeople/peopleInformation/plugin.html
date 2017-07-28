@@ -1,0 +1,74 @@
+<template>
+    <div data-page="peopleInformation" class="page">
+        <div class="page-content">
+            <div class="contact-header">
+                <div class="list-block">
+                    <div class="list-group">
+                        <ul>
+                            <li class="item-content">
+                                <div class="item-media" style="margin-top:12px">
+                                    <img src="<oo>=data.img</oo>" width="44">
+                                </div>
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title" style="">
+                                            <lable style="font-size:17px;"><oo>=data.nick_name</oo></lable>
+                                            <input type="hidden" value="<oo>=data.img</oo>" id="babyImg">
+                                            <input type="hidden" value="<oo>=data.nick_name</oo>" id="nickName">
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="list-block">
+                <div class="list-group">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-media">电话号码</div>
+                            <div class="item-inner"><oo>=data.phone</oo></div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-media">所在地区</div>
+                            <div class="item-inner">
+                                <div class="item-title"><oo>=data.address</oo></div>
+                            </div>
+                        </li>
+                        <li class="item-content ">
+                            <div class="item-media">邮箱地址</div>
+                            <div class="item-inner"><oo>=data.email</oo></div>
+                        </li>
+                        <li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    $f("df", __, function (_page,_data) {
+
+        $f("ajax.get",$f("server","archive/weixinUser/findWeiXinPeopleList"),
+                {id:_data.id}, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+       $('.tabs').click(function () {
+        AppFramework.closePanel();
+       });
+        $('.navbar').click(function () {
+            AppFramework.closePanel();
+        });
+
+        var content = $f("TPPL",_page,_data);
+
+        homeView.router.load({content:content})
+
+
+    });
+
+
+</script>

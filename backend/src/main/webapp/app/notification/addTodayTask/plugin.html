@@ -1,0 +1,159 @@
+<template>
+    <div id="role-add-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">发布帖子</h4>
+                </div>
+                <div class="modal-body" style="height: 300px;">
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title detail-table-label col-md-2" >标题<span class="require-mark">*</span></div>
+                        <div class=" col-md-10">
+                            <input class="editor form-control col-md-10" type="text" id="titleSed" placeholder="请输入标题" ">
+                            <input type="hidden" id="id" value="<oo>=data.id</oo>">
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2" >内容<span class="require-mark">*</span></div>
+                        <div class=" col-md-10" style="height: 100px;">
+                            <textarea class=" form-control" id="contentt" placeholder="请输入内容" style="height:100%"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2">开始时间<span class="require-mark"></span></div>
+                        <div class="text col-md-10">
+                            <input class="editor form-control datatimeSed" type="text" id="startTimee" placeholder="创建时间" >
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2">结束时间<span class="require-mark"></span></div>
+                        <div class="text col-md-10">
+                            <input class="editor form-control datatimeSed" type="text" id="endTimee" placeholder="结束时间" >
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addTask" style="margin-left:70%">添加</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url="/schoolcms/archive/note/sendClassid";
+
+        var classid =_data;
+
+        data = {
+            "classid":classid
+        };
+        $f("ajax.get", url,data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var classid = _data.data.classid;
+
+        var html = $f("TPPL", _page, _data);
+        $("#role-add-form").remove();
+        $("#wrapper").append(html);
+
+        $("#role-add-form").modal();
+        $("#role-add-form").show();
+        $('.datatimeSed').datetimepicker({
+
+        });
+        $('#addTask').click(function () {
+
+            var title = $('#titleSed').val().trim();
+
+            var content = $('#contentt').val().trim();
+            var startTime=$('#startTimee').val().trim();
+            var endTime=$('#endTimee').val().trim();
+
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+            if(title.length>50){
+                alert("标题字数50字以内！！！");
+                return;
+            }
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+
+            if( startTime==""||startTime==null){
+                alert('活动开始时间不能为空')
+                return false
+            }
+            if( endTime==""||endTime==null){
+                alert('活动结束时间不能为空')
+                return false
+            }
+             startTime=startTime.replace(/-/g,"/");
+            var a=new Date(startTime);
+             endTime=endTime.replace(/-/g,"/");
+            var b=new Date(endTime);
+
+            if(a.getTime()==b.getTime()){
+                alert("开始与结束时间不能相同");
+                return;
+            }
+              if(a>b){
+                  alert("开始与结束时间不准确")
+                  return
+              }
+
+              var myDate=new Date();
+
+
+            if(a<myDate){
+                alert("开始时间不能早于当前时间");
+                return ;
+            }
+
+
+            var userBaby=$('#userBaby').val()
+                $.ajax({
+                    url:"/schoolcms/archive/note/addNote",
+                    type:"post",
+                    data:{
+                        "title":title,
+                        "content":content,
+
+
+                        "startTime":startTime,
+                        "endTime":endTime,
+
+                        "userId":userBaby,
+                        "type":classid,//发帖类型/今日任务
+
+                    },
+                    success:function(resp){
+                        alert(resp.message);
+                        //刷新页面
+                        $("#role-add-form").modal("toggle");
+
+                        $f('plugin','notification',{"classid":classid});
+                    }
+                });
+
+
+        });
+    });
+
+
+</script>
+

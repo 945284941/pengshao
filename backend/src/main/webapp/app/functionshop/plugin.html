@@ -1,0 +1,122 @@
+<template>
+  <style>
+.div-a{
+  width: 100%;
+  padding-left: 30px;
+  margin-top:40px
+}
+.div-b{
+  background: #f7f7f7;
+  display: inline-block;
+  width: 380px;
+  height: 170px;
+  margin-right:10px;
+
+}
+
+.div-c{
+  background: #f7f7f7;
+  display: inline-block;
+  width: 400px;
+  height: 170px;
+
+}
+.div-b-a{
+  width: 100px;
+  display: inline-block;
+  margin-top: 20px
+}
+.div-b-b{
+      width: 250px;
+      display: inline-block;
+      text-align: left;
+      line-height: 30px;
+      position: relative;
+      top: 20px;
+}
+.div-b-c{
+  display: inline-block;
+  width: calc(100% - 400px);
+  text-align: right;
+}
+    .div-b-b-a{
+      display: block;
+      font-size: 20px
+    }
+    .div-b-b-b{
+      text-align: left;
+      padding-left: 40px;
+      margin-top: 6px;
+
+    }
+  </style>
+
+
+
+
+
+<div class="div-a" >
+    <oo>for(var i = 0; i < data.length; i++){ </oo>
+  <div class="div-b" style="margin-top: 10px;" onclick="$f('plugin','functionshop.functionDetail','<oo>=data[i].id</oo>')">
+    <div class="div-b-a" >
+      <img src="<oo>=data[i].simg</oo>" style="width: 70px;height: 70px;margin-left: 20px;">
+    </div>
+    <div class="div-b-b">
+      <span class="div-b-b-a" ><oo>=data[i].name</oo></span>
+      <span><oo>=data[i].company</oo></span>
+    </div>
+    <div class="div-b-b-b" style=""><oo>=data[i].introduction</oo></div>
+  </div>
+
+    <oo>}</oo>
+</div>
+
+ <!-- <oo>if(data.length%2!=0){ var k=data.length-1;</oo>
+   <div class="div-a" onclick="$f('plugin','functionshop.functionDetail','<oo>=data[k].id</oo>')">
+    <div class="div-b" style="margin-right: 450px;">
+      <div class="div-b-a" >
+        <img src="<oo>=data[k].simg</oo>">
+      </div>
+      <div class="div-b-b">
+        <span class="div-b-b-a" ><oo>=data[k].name</oo></span>
+        <span><oo>=data[k].company</oo></span>
+      </div>
+      <div class="div-b-b-b" style=""><oo>=data[k].introduction</oo></div>
+    </div>
+
+    </div>
+  <oo>}</oo>
+-->
+
+
+
+
+
+
+</template>
+<script>
+
+
+$f("df", __, function(_page, _data) {
+  var url=window.serverURL.functionShopList;
+    var data = {
+        "type": _data
+    }
+    $f("ajax.get", url, data, "__.list", _page)();
+});
+
+$f("df", "__.list", function(_data, _page) {
+
+    var content = $f("TPPL",_page,_data);
+
+
+    //$("#page-inner").html(content);
+    $("#functionbody").html(content);
+
+
+
+});
+
+
+
+</script>

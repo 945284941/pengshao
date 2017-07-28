@@ -1,0 +1,131 @@
+<template>
+    <style>
+        .div-a {
+
+            overflow-x: auto;
+            font-size: 16px;
+            margin-top: 50px;
+            height: 30px;
+            margin-left: -23px;
+
+        }
+
+        .divul {
+            display: inline;
+            white-space: nowrap;
+
+        }
+
+        .divli {
+            display: inline-block;
+            margin: 0px 10px;
+
+        }
+
+
+        #tab1 {
+            overflow-y: auto;
+        }
+
+        #functionbody {
+            background: #ececec;
+            overflow-y: auto;
+
+        }
+    </style>
+
+    <div data-page="convenience" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="div-a-back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>便民服务</span>
+                </div>
+                <div style="text-align: left;color: #61aafc;font-size: 35px;padding-left: 20px;">
+                    <span id="addcontent">+</span>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="hv">
+        <div class="div-a" style="overflow-x: auto;font-size: 16px; margin-top: 55px; height: 30px; margin-left: -23px;border-bottom: 1px solid #9a9a9e;">
+            <ul class="divul" style=" display: inline;white-space: nowrap;">
+                <oo>for(var i = 0; i < data.length; i ++){ if(i==0){</oo>
+
+                <li class="div-span divli" id="div<oo>=data[i].id</oo>" data="<oo>=data[i].id</oo>" style="color: #62abfc;display: inline-block; margin: 0px 10px;">
+                    <oo>=data[i].classname</oo>
+                </li>
+                <oo>}else{</oo>
+                <li class="div-span divli" id="div<oo>=data[i].id</oo>" data="<oo>=data[i].id</oo>" style="display: inline-block; margin: 0px 10px;"  >
+                    <oo>=data[i].classname</oo>
+                </li>
+                <oo>}}</oo>
+
+            </ul>
+        </div>
+        <hr style="border: none;">
+        <div id="functionbody" style="height: 100%;">
+
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, classId) {
+        var url = $f("tools.serverURL", "archive/classification/findClassificationByParent");
+        var data = {
+            "pid": 148
+        };
+
+        $f("ajax.get", url, data, "__.list", _page,classId)();
+    });
+
+    $f("df", "__.list", function (_data, _page,classId) {
+        var html = $f("TPPL", _page, _data);
+       // homeView.router.loadContent(html);
+        $(".pages").html(html);
+
+        //传参必须以对象形式传入以下三个参数 以便调用下层plugin
+        var param = {
+            classId: _data.data[0].id,
+            pageSize: 7,
+            page: 1
+        };
+        $f('plugin', '__.note-list', param);
+
+
+        //分类查询
+        $(".div-span").click(function () {
+            var id = $(this).attr("data");
+            $("#hv").val(id);
+            $('.div-span').css('color', '#000')
+            $(this).css('color', '#62abfc');
+            var data = {
+                classId: id,
+                page: 1,
+                pageSize: 7
+            };
+            $f('plugin', '__.note-list', data);
+        });
+        //点击添加
+        $("#addcontent").click(function(){
+
+            var hv=$("#hv").val();
+
+            $f('plugin', 'convenience.note-add', hv);
+        })
+        if(classId!=148){
+            $("#div"+classId).click();
+
+        }
+        $(".div-a-back").click(function(){
+            yyesn.client.closePage();
+
+        })
+
+    });
+
+
+
+</script>
+

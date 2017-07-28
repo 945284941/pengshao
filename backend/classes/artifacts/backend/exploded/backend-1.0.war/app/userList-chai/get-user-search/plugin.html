@@ -1,0 +1,135 @@
+<template>
+
+    <div style="margin-top: 1px; height:78%; padding: 0">
+        <div class="content-a">
+
+            <oo>for(var j = 0; j < data.length; j++){</oo>
+            <div class="inner-container">
+                <ul style="border-bottom: 1px solid #eee;">
+                    <li style="height: 36px; min-height: 36px;list-style-type:none;">
+                        <label class="">
+                            <input type="checkbox" name="meetingcheck"  value="<oo>=data[j].userid</oo>"
+                                   data-name="<oo>=data[j].nick_name</oo>" style="margin-right: 30px;">
+
+                            <oo>=data[j].nick_name</oo>
+
+
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <oo>}</oo>
+
+
+        </div>
+
+    </div>
+    <oo>if(data.length!=0){</oo>
+    <div style="text-align: center" id="page-bar1">
+
+    </div>
+    <oo> }</oo>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addPeople12" style="margin-right:10px">确认添加</button>
+        <button type="button" class="btn btn-success" id="quxiaoPeople12" data-dismiss="modal">取消</button>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var data1=_data.data;//参数
+
+        var url = $f("tools.serverURL", "archive/upesnUser/findUserByName");
+        //var url = $f("tools.serverURL", "archive/upesnUser/findMeetingUser");
+        var data = {name:data1 , page: 1, pageSize: 10};
+        $f("ajax.get", url, data, "__.list", _page,_data)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+
+        $(".xuanren").html(content);
+
+        //非首次加载时，实现上次选中的checkbox样式
+        var info = localStorage.getItem("userinfoe");
+        var strs = new Array(); //定义一数组
+        strs = info.split(","); //字符分割
+        for (var i = 0; i < strs.length; i++) {
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val() + ":" + $(this).attr("data-name") == strs[i]) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        }
+        var info="";
+        $("input[name='meetingcheck']").change(function () {
+
+            info = localStorage.getItem("userinfoe");
+            var val = $(this).val();
+            var valu = $(this).attr("data-name");
+            if ($(this).is(':checked')) {
+                info += val + ":" + valu + ",";
+                localStorage.setItem("userinfoe", info);
+            } else {
+                var info = localStorage.getItem("userinfoe");
+                var strs = new Array(); //定义一数组
+                strs = info.split(","); //字符分割
+                var html = "";
+                for (var i = 0; i < strs.length; i++) {
+                    if ((strs[i] != val + ":" + valu)) {
+                        html +=strs[i] + ",";
+                    }
+                }
+                localStorage.setItem("userinfoe", html);
+
+
+            }
+
+        });
+
+        $("#quxiaoPeople12").click(function(){
+            $(".addpeoplelist").html("");
+            $(".addwork").show();
+            $(".typec").show();
+        });
+        var arr = [];
+        $("#addPeople12").click(function(){
+            var html = "";
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"&&strs[i].split(":")[0]!=0){
+                    arr.push({
+                        id: strs[i].split(":")[0],
+                    });
+                    html+=strs[i].split(":")[1]+"、";
+
+                }
+
+            }
+
+            $("#people").html(html);
+            $(".addpeoplelist").html("");
+            $(".addwork").show();
+            $(".typec").show();
+
+
+
+        });
+
+
+
+    });
+
+</script>

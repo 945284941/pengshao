@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <title>schoolcms</title>
+
+        <!-- Path to Framework7 Library CSS-->
+        <script type="text/javascript" src="js/jquery-3.0.0.min.js"></script>
+        <link rel="stylesheet" href="css/framework7.ios.min.css">
+        <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+        <link rel="stylesheet" href="css/framework7-icons.css">
+
+
+
+    </head>
+
+    <body>
+        <div class="views">
+            <div class="view view-main">
+                <div class="pages">
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Path to Framework7 Library JS-->
+        <script type="text/javascript" src="js/framework7.min.js"></script>
+        <script type="text/javascript" src="js/hrframe.js"></script>
+
+
+        <script type="text/javascript" src="js/my-app.js"></script>
+        <script type="text/javascript" src="js/common-tool.js"></script>
+        <script type="text/javascript" src="js/bridge.js"></script>
+        <script>
+           var userid =#(userid);
+           var access_token="#(access_token)";
+           localStorage.setItem("userId", userid);
+           localStorage.setItem("access_token",access_token);
+
+
+
+           $(function () {
+               yyesn.ready(function() {
+                // alert("调用成功");
+
+               });
+
+               yyesn.client.hiddenMenu();
+            var actionParam = '#(action)';
+               var acc=actionParam.split(",");
+                   $f('plugin', acc[0], acc[1]);
+
+            });
+
+
+        </script>
+    </body>
+</html>

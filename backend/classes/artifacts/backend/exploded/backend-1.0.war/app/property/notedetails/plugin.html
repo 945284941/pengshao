@@ -1,0 +1,81 @@
+<template>
+    <style>
+        .title{
+            width:100px;
+            font-weight:900;
+        }
+    </style>
+    <div id="task-detail-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">详情</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table >
+                        <tbody>
+                        <tr>
+                            <td class="title detail-table-label" style="width:100px">标题<span class="require-mark">*</span></td>
+
+                            <td class="text detail-table-text">
+
+                                <input class="editor form-control" type="text" id="notrtitle" readonly  value="<oo>=data.title</oo>">
+                                <input type="hidden" id="id" value="<oo>=data.id</oo>">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="title">内容<span class="require-mark">*</span></td>
+                            <td class="text">
+                                <textarea class="editor form-control" id="content" readonly><oo>=data.context</oo></textarea>
+
+                            </td>
+                        </tr>
+                       <!-- <tr>
+                            <td class="title">图片<span class="require-mark">*</span></td>
+                            <td class="text">
+                                <input class="editor form-control" type="text" id="imgurl" readonly value="<oo>=data.img</oo>">
+
+                            </td>
+                        </tr>-->
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url="/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#task-detail-form").remove();
+        $("#page-inner").append(html);
+        $("#task-detail-form").modal();
+
+
+
+    });
+
+
+</script>
+

@@ -1,0 +1,42 @@
+<template>
+    <style>
+        .demo-card-header-pic .card-header {
+            height: 40vw;
+            background-size: cover;
+            background-position: center;
+        }
+
+    </style>
+    <div class="card demo-card-header-pic" style="background-image:url(<oo>=data.img</oo>);margin:10px">
+        <div valign="bottom" class="card-header color-white no-border"><oo>=data.title</oo></div>
+        <div class="card-content">
+            <div class="card-content-inner color-white">
+                <p><oo>=data.context</oo></p>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df",__, function (_page, _data) {
+        var url = "", data = {};
+        if (_data != 0) {
+            url = $f("tools.serverURL", "archive/note/findOneDailyNote");
+            data = {
+                'classId': _data.type
+            };
+        } else {
+            url = null;
+            data = null;
+        }
+        $f("ajax.get",url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data);
+        var content = $f("TPPL", _page, _data);
+        $(".daily-quotes").html(content);
+
+    });
+
+
+</script>

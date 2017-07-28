@@ -1,0 +1,87 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="agency-agencySetUp" class="page">
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>工作中心设置</span>
+                </div>
+            </div>
+        </div>
+        <div class="list-block media-list" style="margin-top:50px;">
+            <ul>
+                <li onclick="$f('plugin','__.agencyTime',0)">
+                    <div class="item-content">
+
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div>
+                                    <i class="f7-icons">alarm_fill</i>
+
+                                    <span class="" style="margin-left:20px;">提醒时间</span>
+                                </div>
+
+                                <div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li  onclick="$f('plugin','__.agencyStatistics',0)">
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div>
+                                    <i class="f7-icons">graph_square_fill</i>
+
+                                    <span class="" style="margin-left:20px;">代办统计</span>
+                                </div>
+
+                                <div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+
+
+
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+
+        var p = $f("TPPL", _page, {"data": _data});
+
+        mainView.router.load({content: p});
+
+    });
+
+</script>

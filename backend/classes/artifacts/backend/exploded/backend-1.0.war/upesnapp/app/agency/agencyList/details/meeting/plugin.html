@@ -1,0 +1,164 @@
+<template>
+    <div class="card ks-card-header-pic">
+        <div class="card-header" style="display: block">
+            <div style="font-size:18px"><span style="margin-top: 5px; font-size:12px; color: #aaaaaa">会议主题：&nbsp;&nbsp;</span><oo>=data.title</oo></div>
+            <div>
+                <span style="margin-top: 5px; font-size:12px; color: #aaaaaa">开始时间：&nbsp;&nbsp;</span>
+                <span style="font-size: 12px; font-weight: bold"><oo>=data.startTime</oo></span>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="card-content-inner">
+                <span style="margin-top: 5px; font-size:12px; color: #aaaaaa">会议内容：&nbsp;&nbsp;</span><oo>=data.context</oo>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="assigned-container" style="display: block; width: 100%">
+                <!--<oo>if (data.people != ""){</oo>-->
+                    <!--<div style="font: 300 12px/15px consolas; color: #aaaaaa; margin-bottom: 10px; ">我已指派:</div>-->
+                    <!--<oo>for(var i = 0; i < data.people.length; i++){</oo>-->
+                        <!--<a class="button meeting-list-btn" style="margin-right: 8px; width:83px; display: inline-block"><oo>=data.people[i].name</oo></a>-->
+                <!--<oo>}  }</oo>-->
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function(_page, _data) {
+        var url = $f("tools.serverURL","archive/note/findNoteExpandById");
+        var data = {"id":_data.id};
+        $f("ajax.get", url, data, "__.list", _page, _data)();
+    });
+
+    $f("df", "__.list", function(_data, _page, data) {
+        if(_data.data.people == undefined){
+            _data.data.people = "";
+
+        }
+        var page = $f("TPPL",_page, _data);
+        $('.content-container').html(page);
+
+        //修改完成按钮的样式
+        if(_data.data.status == 4){
+            $(".meeting-complete").css({"background-color":"#ff2d55","color":"#FFF"});
+            $(".meeting-complete").text("已完成");
+        }
+
+        //拆解
+        $(".spliting").click(function(){
+            $f('plugin', '__.spliting', data);
+        });
+
+        //指派
+        var data_ = "";
+        var ids = [];
+        $(".assigned").click(function(){
+            $f('plugin','agency.get-user-list',data_, function(names){
+                //记录已选取的人员名单
+                data_ = names;
+
+                //清空html页面中前一次选过的名单
+                var assignedCon = $(".assigned-container");
+                assignedCon.empty();
+                ids = [];
+
+                //回调函数 将选取的与会人放到页面中显示
+                var html = "<div style='font: 300 12px/15px consolas; color: #aaaaaa; margin-bottom: 10px; '>我已指派:</div>";
+                $.each(names, function(i, n){
+                    html += "<a class='button meeting-list-btn' " +
+                        "style='margin-right: 8px; width:83px; display: inline-block'>" + n.name + "</a>";
+
+                    //将选中的与会人id取出来，放入数组，创给后台持久化
+                    ids.push(n.id);
+                });
+                html += '<div style="text-align: right;margin-top: 10px"><a class="complete-now button" ' +
+                    'style="border:1px solid #ff2d55; font:300 13px/28px consolas; color: #ff2d55;width: 80px; height: 28px; display: inline-block">保存</a></div>';
+                assignedCon.append(html);
+
+                //绑定保存事件
+                $(".complete-now").unbind().click(function(){
+                    var noteId=_data.data.id;
+                    var title = _data.data.title;
+                    var time = _data.data.startTime;
+                    var location = _data.data.location;
+                    var content = _data.data.context;
+                    var people=_data.data.people;
+                    $.ajax({
+                        url:$f("tools.serverURL","archive/note/sendMessageConfig"),
+                        data:{
+                            ids: ids,
+                            userId:localStorage.getItem("userId"),
+                            title: title,
+                            content:content,
+                            classification:'工作中心',
+                        },
+
+                        success:function (_data) {
+
+
+                        }
+
+                    })
+                    ids.unshift(0);
+                    ids.push(0);
+                    $.ajax({
+                        url:$f("tools.serverURL","archive/note/addMeetingNote"),
+                        type: "POST",
+                        data: {
+                            noteId:noteId,
+                            title: title,
+                            location: location,
+                            startTime: time,
+                            ids: ids,
+                            content: content,
+
+                            userId: localStorage.getItem("userId"),
+                            //"userId": 1,
+                            type: data.classid
+
+                        },
+                        success: function (resp) {
+                            if(resp.message == "发布成功"){
+                                alert("指派成功！");
+                            }else {
+                                alert("系统异常，请稍后再试！");
+                            }
+                            $(".complete-now").hide();
+                        }
+                    });
+
+                });
+
+            });
+
+        });
+
+        var btn;
+        $(".meeting-complete").click(function(){
+            btn = $(this);
+            if(_data.data.status == 4)return;
+            if(btn.text()=="已完成")return;
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/updateStatus"),
+                type: "POST",
+                data: {
+                    id: _data.data.id,
+                    status: 4
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    btn.css({"background-color":"#ff2d55","color":"#FFF"});
+                    btn.text("已完成");
+
+                }
+            });
+
+
+
+
+        });
+
+    });
+
+</script>

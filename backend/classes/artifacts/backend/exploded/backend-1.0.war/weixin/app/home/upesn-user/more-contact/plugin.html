@@ -1,0 +1,58 @@
+<template>
+  <div data-page="moreteacher-info" class="page">
+
+      <div class="navbar">
+        <div class="navbar-inner">
+          <div class="left">
+            <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+          </div>
+        </div>
+      </div>
+
+
+  <div class="card" style="margin-top: 50px;">
+    <div class="card-header">最近联系人</div>
+    <div class="card-content">
+      <oo>for(var i = 0; i < data.list.length; i++){</oo>
+        <div class="list-block media-list">
+          <ul>
+            <a href="#" onclick="$f('plugin','home.teacher',this);" tid="<oo>=data.list[i].userid
+</oo>">
+              <li class="item-content" >
+                <div class="item-media">
+                  <img src="<oo>=data.list[i].img</oo>" width="44">
+                </div>
+                <div class="item-inner">
+                  <div class="item-title-row">
+                    <div class="item-title"><oo>=data.list[i].nick_name</oo></div>
+                  </div>
+                </div>
+              </li>
+            </a>
+          </ul>
+        </div>
+      <oo>}</oo>
+    </div>
+</div>
+</div>
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+    var url = "",data={};
+    url = $f("tools.serverURL","archive/upesnUser/findUser");
+
+    $f("ajax.get", url, data, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    $f("tools.dateListFormat",_data.data);//修改时间格式
+    var content = $f("TPPL",_page,_data);
+    homeView.router.load({
+      content: content
+
+    });
+    /*$("#home-content").html(content);
+    homeView.router.load({pageName:'home_info'});*/
+  });
+
+</script>

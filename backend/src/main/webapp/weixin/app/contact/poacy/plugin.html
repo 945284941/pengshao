@@ -1,0 +1,86 @@
+<template>
+    <div data-page="contact-poacy" class="page">
+        <div id="home-content" class="page-content infinite-scroll" >
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left ">
+                        <a class="back" ><h3><</h3></a>
+                    </div>
+                    <div class="center ">
+
+                    </div>
+                    <div class="right "></div>
+                </div>
+            </div>
+
+            <div class="page-content infinite-scroll" data-distance="44">
+                <div id="poacyContext" style="margin-top:50px;">
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+</template>
+
+<script>
+    $f("df", __, function (_page, _data) {
+        var id = _data;
+
+        var user_id = 1;
+
+
+        var bid = "";
+        if (id == null) {
+            bid = pid
+        } else {
+            bid = id
+        }
+        $f("ajax.get", $f("tools.serverURL", "archive/note/findNotesByClassId"), {
+            'id': bid,
+            'user_id': user_id
+        }, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+        var baby=$('#contact-other-baby').val();
+       $('.tabs').click(function () {
+        AppFramework.closePanel();
+       });
+        $('.navbar').click(function () {
+            AppFramework.closePanel();
+        })
+        $f("tools.dateListFormat", _data.data.list);
+        for(var i=0;i<_data.data.list.list.length;i++){
+            if(_data.data.list.list[i].expand==null||_data.data.list.list[i].expand==""){
+
+            }else{
+                var obj=JSON.parse(_data.data.list.list[i].expand);
+                _data.data.list.list[i].startTime=obj.startTime;
+                _data.data.list.list[i].endTime=obj.endTime;
+            }
+        }
+
+        var content = $f("TPPL", _page, {"data": _data.data, "pname": _data.data.pname,"baby":baby});
+
+
+            homeView.router.load({content:content});
+             $f('plugin','contact.poacy.poacyContext',1);
+
+        $('#addTT').click(function () {
+
+            $f('plugin','contact.note.add.text',0);
+        });
+
+
+
+
+
+    });
+
+
+</script>

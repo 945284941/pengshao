@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>schoolcms</title>
+
+    <!-- Path to Framework7 Library CSS-->
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/framework7-icons.css">
+
+
+
+</head>
+
+<body>
+<div class="views">
+    <div class="view view-main">
+        <div class="pages">
+
+        </div>
+    </div>
+</div>
+
+<!-- Path to Framework7 Library JS-->
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/hrframe.js"></script>
+
+
+<script type="text/javascript" src="js/my-app.js"></script>
+<script type="text/javascript" src="js/common-tool.js"></script>
+<script type="text/javascript" src="js/bridge.js"></script>
+<script>
+    var userid=8;
+    //var access_token="#(access_token)";
+    localStorage.setItem("userId", userid);
+    //localStorage.setItem("access_token",access_token);
+
+
+
+    $(function () {
+        localStorage.setItem("departid", 10);
+        //$f('plugin','eighborhood.upesnapp.convenience',0)//便民服务
+        //$f('plugin','eighborhood.upesnapp.property.search',0)//小区物业
+       // $f('plugin','eighborhood.upesnapp.workflow',0)//办事流程
+        // $f('plugin','eighborhood.upesnapp.notification',0)//活动通知
+       // $f('plugin','eighborhood.upesnapp.poacy.procon',0)//政务宣传
+       // $f('plugin','eighborhood.upesnapp.residents',1)//居委会职责
+        //$f('plugin','eighborhood.upesnapp.neighbour-help',0)//邻里互助
+        $f('plugin','eighborhood.upesnapp.home',0)//邻里互助
+
+    });
+
+
+</script>
+</body>
+</html>

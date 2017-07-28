@@ -1,0 +1,175 @@
+<template>
+    <style>
+        .modal-header{
+            color: #AAAAAA;
+            text-align: center !important;
+
+        }
+
+        .choose-item{
+            text-align: center !important;
+            border: 1px solid #dddddd;
+            height: 40px;
+            width: 350px;
+            display: block;
+            border-radius:4px;
+            vertical-align: middle;
+            margin: 2px 1px;
+            font: 500 17px/40px consolas;
+        }
+
+        .choose-item:hover{
+            background-color: #dddddd;
+        }
+
+        .confirm-item{
+            text-align: center !important;
+            border: 1px solid #dddddd;
+            height: 40px;
+            width: 350px;
+            display: block;
+            border-radius:4px;
+            vertical-align: middle;
+            margin: 2px 1px;
+            font: 500 17px/40px consolas;
+        }
+
+    </style>
+    <div class="modal fade function-update-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h3 class="modal-title">修改角色</h3>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group form-group-sm">
+                        <label>角色名字</label>
+                        <input type="text" id="roleName" class="form-control" />
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        <label>修改功能权限</label>
+                        <div class="modal-add" style="width: 100%; height: 400px; border: 1px solid #cccccc; border-radius: 4px">
+                            <div class="form-group form-group-sm" style="margin:10px; height: 100% !important;">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="" style="width:100%; height:370px; border: 1px solid #cccccc; border-radius: 4px;overflow-y: scroll">
+                                            <div class="list-group-choose">
+                                                <oo>for(var i = 0; i < data.length; i++){</oo>
+                                                <div class="button choose-item" data-id="<oo>=data[i].id</oo>" data-confirm="false">
+                                                    <oo>=data[i].name</oo>
+                                                </div>
+                                                <oo>}</oo>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="list-group-confirm" style="width:100%; height:370px; border: 1px solid #cccccc; border-radius: 4px; overflow-y: scroll">
+                                            <oo>if(choosing.author.length>0){</oo>
+                                                <oo>for(var i = 0; i < choosing.author.length; i++){</oo>
+                                                    <div class="button confirm-item" data-id="<oo>=choosing.author[i].authorid</oo>" data-confirm="true">
+                                                        <oo>=choosing.author[i].name</oo>
+                                                        <span class='badge' style='font: 400 15px/15px consolas; text-align: right !important; border-radius: 50%'>×</span>
+                                                    </div>
+                                                <oo>}</oo>
+                                            <oo>}</oo>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input type="hidden" class="role" />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                        <button type="submit" class="btn btn-primary confirm-btn">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f('tools.serverURL', 'archive/roleAuthor/findAllAuthor');
+        $f("ajax.get", url, null, "__.list", _page, _data)();
+    });
+
+    $f("df", "__.list", function (_data, _page, _jsonData) {
+        _data.choosing = _jsonData;
+        //加载模态框
+        var content = $f("TPPL", _page, _data);
+        $(".function-update-modal").remove();
+        $("body").append(content);
+        $(".function-update-modal").modal();
+
+        //角色id放到页面hidden中
+        $(".role").val(_jsonData.id);
+        //角色名称放到页面input中
+        $("#roleName").val(_jsonData.name);
+
+        //修改权限时，将加载的权限列表对照已有属性做修改
+        for(var i = 0; i < _data.data.length; i++){
+            for(var j = 0; j < _data.choosing.author.length; j++){
+                if(_data.data[i].id == _data.choosing.author[j].authorid){
+                    $("div[data-id=" + _data.data[i].id  + "]").attr("data-confirm","true");
+                }
+            }
+        }
+
+        //修改权限
+        $(".choose-item").click(function(){
+            if($(this).attr("data-confirm") == "true"){
+                return;
+            }
+            var item = $(this).clone();
+            $(this).attr("data-confirm","true");
+            $(item).removeClass("choose-item");
+            $(item).addClass("confirm-item");
+            $(item).append("<span class='badge' style='font: 400 15px/15px consolas; text-align: right !important; " +
+                    "border-radius: 50%'>×</span>");
+            $(".list-group-confirm").append($(item));
+
+            $(".badge").click(function(){
+                $(this).parent().remove();
+                $("div[data-id="+ $(this).parent().attr("data-id") +"]").attr("data-confirm","false");
+            });
+
+        });
+
+        $(".badge").unbind().click(function(){
+            $(this).parent().remove();
+            $("div[data-id="+ $(this).parent().attr("data-id") +"]").attr("data-confirm","false");
+        });
+
+        $(".confirm-btn").bind("click", function(){
+            var final = [];
+            $(".list-group-confirm").find(".confirm-item").each(function(){
+                final.push($(this).data("id"));
+            });
+
+            var data = {};
+            var url = "";
+            var name = "";
+            var role = $(".role").val();
+            var name = $("#roleName").val();
+            data = {"roleid": role, "name": name, "ids": final};
+
+            url = $f("tools.serverURL", "archive/roleAuthor/updateAuthorForRole");
+            $f("ajax.get", url, data, "__.update")();
+        });
+
+
+    });
+
+
+    $f("df", "__.update", function (_data) {
+        alert(_data.message);
+        $(".function-update-modal").modal("toggle");
+        $f("plugin","role-author",{'page': 1});
+
+    });
+</script>

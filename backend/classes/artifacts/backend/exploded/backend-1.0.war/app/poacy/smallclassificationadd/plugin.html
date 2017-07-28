@@ -1,0 +1,31 @@
+<template>
+<div  style="background: #fff; height: 54px; ">
+
+    <div class="form-inline" style="margin-top:10px; float:right;">
+
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="请输内容" id="context">
+        </div>
+        <button type="button" class="btn btn-default" id="baby">搜索</button>
+        <button type="button" class="btn btn-success" onclick="$f('plugin', 'poacy.smallclassificationaddmodol', 0);">新增模块</button>
+    </div>
+</div>
+
+</template>
+<script>
+    $f("df",__,function (_page) {
+
+        $f('ajax.get',null,null,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#homeSearch').html(html);
+       /* $f('plugin','dynamicsSed',0);*/
+        $('#baby').click(function () {
+
+            var context=$('#context').val();
+            var data={"context":context};
+            $f('plugin','poacy.smallclassification',data);
+        })
+    })
+</script>

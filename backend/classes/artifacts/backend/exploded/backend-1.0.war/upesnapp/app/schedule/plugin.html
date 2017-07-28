@@ -1,0 +1,392 @@
+<template>
+    <div data-page="sc" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div><a style="padding: 10px 20px 10px 0;" class="schedule-back"><h2><</h2></a></div>
+                <div>我的日程</div>
+                <div style="color: #61aafc;font-size: 25px;">
+                    <span id="addcontent"></span>
+                </div>
+                <input type="hidden" id="switch" value="1">
+                <input type="hidden" id="switchTime" value="1">
+                <input type="hidden" id="switchStatus" value="1">
+            </div>
+
+            <div class="div-a" style="font-size: 16px; margin-top:45px; height: 40px; border-bottom: 1px solid #9a9a9e;background-color:white;">
+                <ul class="divul" style="margin: 0; padding: 0;">
+                    <li style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;" id="time">全部<img src="img/on_1.png" style="margin-left:10px;">
+
+                    </li>
+                    <li style="list-style-type:none;float:left;margin: 10px 0;width:33%;text-align: center;" id="state">全部状态<img src="img/on_1.png" style="margin-left:10px;">
+                    </li>
+                    <li style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;" id="responsibility">我负责<img src="img/on_1.png" style="margin-left:10px;">
+                    </li>
+                </ul>
+
+            </div>
+            <ul style="margin:0;padding:0;background-color:white;width:100%;display: none;" id="timeul" >
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">全部</div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">开始</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">截止</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">无日程</div><div style="float:right;padding-right: 8px;"></div></li>
+
+            </ul>
+            <ul style="margin:0;padding:0;background-color: white;width:100%;display: none;" id="stateul" class="findCondition">
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">全部状态</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">未读</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">待办</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">待审</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">完成</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">指派</div><div style="float:right;padding-right: 8px;"></div></li>
+
+            </ul>
+            <ul style="margin:0;padding:0;background-color: white;width:100%;display: none;" id="responsibilityul" class="findCondition">
+
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我派生</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我负责</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我开始</div><div style="float:right;padding-right: 8px;"></div></li>
+            </ul>
+
+
+        </div>
+        <div class="page-content infinite-scroll " data-distance="20">
+
+        <div class="" style="margin: 80px 0 10px 0">
+            <div style="padding:0;width:auto;    margin: 5px;" class="content-block-inner">
+                <div id="calendar-inline-container"></div>
+            </div>
+            <input type="hidden" id="day">
+            <div id="scheduleList" style="height: 60%;margin-bottom: 10px"></div>
+            </div>
+
+        </div>
+
+
+
+        <div class="toolbar">
+            <div class="toolbar-inner" style="width:100%;text-align: center;">
+                <a href=""></a>
+                <a class="create-schedule" style="text-align: center;">创建日程</a>
+                <a href="" ></a>
+            </div>
+        </div>
+    </div>
+        </div>
+
+
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+
+
+        $f("ajax.get", null, null, "__.list", _page)();
+
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        mainView.router.load({content: content});
+        $(".schedule-back").click(function(){
+            yyesn.client.closePage();
+
+        });
+
+        var date = new Date();
+
+        var seperator1 = "-";
+
+        var month = date.getMonth() + 1;
+
+        var strDate = date.getDate();
+
+        if (month >= 1 && month <= 9) {
+
+            month = "0" + month;
+
+        }
+
+        if (strDate >= 0 && strDate <= 9) {
+
+            strDate = "0" + strDate;
+
+        }
+
+        var daytime = date.getFullYear() + seperator1 + month + seperator1 + strDate+" " ;
+        $("#day").val(daytime);
+        $f('plugin','__.scheduleList',{daytime:daytime});
+
+        var myApp = new Framework7();
+
+        // Inline with custom toolbar
+        var $$ = Dom7;
+        var monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月' , '9月' , '10月', '11月', '12月'];
+
+
+        var calendarInline = myApp.calendar({
+            container: '#calendar-inline-container',
+            value: [new Date()],
+            weekHeader: false,
+            toolbarTemplate:
+            '<div class="toolbar calendar-custom-toolbar">' +
+            '<div class="toolbar-inner">' +
+            '<div class="left">' +
+            '<a href="#" class="link icon-only"><i class="icon icon-back"></i></a>' +
+            '</div>' +
+            '<div class="center"></div>' +
+            '<div class="right">' +
+            '<a href="#" class="link icon-only"><i class="icon icon-forward"></i></a>' +
+            '</div>' +
+            '</div>' +
+            '</div>',
+            onOpen: function (p) {
+                $$('.calendar-custom-toolbar .center').text(p.currentYear +'年 , ' + monthNames[p.currentMonth]);
+                $$('.calendar-custom-toolbar .left .link').on('click', function () {
+                    calendarInline.prevMonth();
+                });
+                $$('.calendar-custom-toolbar .right .link').on('click', function () {
+                    calendarInline.nextMonth();
+                });
+            },
+            onMonthYearChangeStart: function (p) {
+                $$('.calendar-custom-toolbar .center').text(p.currentYear +'年 , ' + monthNames[p.currentMonth]);
+            },onDayClick: function(p, dayCOntainer, year, month, day){
+                var _year = parseInt(year);
+                var _month = parseInt(month);
+                var _day = parseInt(day);
+                var date = new Date(_year, _month, _day);
+                var day = date.getDate();
+                var month = date.getMonth()+1;
+                month = month.toString();
+                day = day.toString();
+                if(month.length<2){
+                    month="0"+month;
+                }
+                if(day.length<2){
+                    day="0"+day;
+                }
+                var year = date.getYear()+1900;
+
+                daytime = year+"-"+month+"-"+day;
+                $("#day").val(daytime);
+                $f('plugin','__.scheduleList',{daytime:daytime});
+
+
+            }
+
+        });
+
+
+
+        $('#time').click(function () {
+            var switchValue=$('#switchTime').val();
+
+            var time=$('#time').text().trim();
+
+            $('#timeul li').each(function () {
+                var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                }else{
+                    $(this).find('div').eq(0).css("color","black");
+                }
+            })
+
+
+            if(switchValue==1){
+                $("#timeul").css("display",'');
+                $("#responsibilityul").css("display",'none');
+                $("#stateul").css("display",'none');
+                $('#time').css("color","#49BEF4");
+                $('#responsibility').css("color","black");
+                $('#state').css("color","black");
+                $("#time>img").attr("src",function(){
+                    return "img/on_2.png"
+                });
+                $("#responsibility>img").attr("src",function(){
+                    return "img/on_1.png"
+                });
+                $("#state>img").attr("src",function(){
+                    return "img/on_1.png"
+                });
+                $('.page-content').css("opacity","0.4");
+                $('#switchTime').val(2);
+                $('#switch').val(1);
+                $('#switchStatus').val(1);
+
+            }else{
+                $("#timeul").css("display",'none');
+                $('.page-content').css("opacity","1");
+                $("#time>img").attr("src",function(){
+                    return "img/on_1.png"
+                });
+                $('#switchTime').val(1);
+                $('#time').css("color","black");
+            }
+
+        });
+
+        $('#responsibility').click(function () {
+            var switchValue=$('#switch').val();
+
+            var time=$('#responsibility').text().trim();
+
+            $('#responsibilityul li').each(function () {
+                var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                }else{
+                    $(this).find('div').eq(0).css("color","black");
+                }
+            })
+
+
+
+            if(switchValue==1) {
+                $('#time').css("color","black");
+                $('#responsibility').css("color","#49BEF4");
+                $('#state').css("color","black");
+
+
+                $("#timeul").css("display", 'none');
+                $("#responsibilityul").css("display", '');
+                $("#stateul").css("display", 'none');
+                $("#time>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $("#responsibility>img").attr("src", function () {
+                    return "img/on_2.png"
+                });
+                $("#state>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $('.page-content').css("opacity", "0.4");
+                $('#switchTime').val(1);
+                $('#switch').val(2);
+                $('#switchStatus').val(1);
+            }else{
+                $("#responsibility>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $('.page-content').css("opacity", "1");
+                $("#responsibilityul").css("display", 'none');
+                $('#switch').val(1);
+                $('#responsibility').css("color","black");
+            }
+        });
+
+        $('#state').click(function () {
+            var switchValue=$('#switchStatus').val();
+            var time=$('#state').text().trim();
+
+            $('#stateul li').each(function () {
+                var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                }else{
+                    $(this).find('div').eq(0).css("color","black");
+                }
+            })
+            if(switchValue==1) {
+
+                $('#time').css("color","black");
+                $('#responsibility').css("color","black");
+                $('#state').css("color","#49BEF4");
+
+
+                $("#timeul").css("display", 'none');
+                $("#responsibilityul").css("display", 'none');
+                $("#stateul").css("display",'');
+                $("#time>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $("#responsibility>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $("#state>img").attr("src", function () {
+                    return "img/on_2.png"
+                });
+                $('.page-content').css("opacity", "0.4");
+                $('#switchTime').val(1);
+                $('#switch').val(1);
+                $('#switchStatus').val(2);
+            }else{
+                $('.page-content').css("opacity", "1");
+                $("#state>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $("#stateul").css("display", 'none');
+                $('#switchStatus').val(1);
+                $('#state').css("color","black");
+            }
+        });
+
+        $('#timeul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#time').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#timeul').css("display","none");
+            $("#time>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#time').css("color","black");
+            $('#switchTime').val(1)
+            $f('plugin','__.scheduleList',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+
+        $('#responsibilityul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#responsibility').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#responsibilityul').css("display","none");
+            $("#responsibility>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#responsibility').css("color","black");
+            $('#switch').val(1);
+            $f('plugin','__.scheduleList',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+
+        $('#stateul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#state').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#stateul').css("display","none");
+            $("#state>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#state').css("color","black");
+            $('#switchStatus').val(1);
+            $f('plugin','__.scheduleList',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+
+
+
+
+
+        //创建日程
+        $(".create-schedule").click(function (){
+
+            $f('plugin', '__.addWork',0);
+        });
+
+    });
+
+</script>

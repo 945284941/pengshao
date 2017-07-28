@@ -1,0 +1,171 @@
+<template>
+    <div class="foot-tool-bar-area" style="text-align: right;">
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+            <a class="btn btn-success" id="qd" onclick="$f('plugin','agency.addTodayTask',0)">创建日程</a>
+        </div>
+    </div>
+
+    <div class="form-inline" style="float:right;margin-bottom:20px">
+
+
+
+        <div id="Sone" class="form-group" style="vertical-align: bottom;">
+            <select class="editor form-control">
+                <option>全部</option>
+                <option>开始</option>
+                <option>截止</option>
+            </select>
+        </div>
+        <div id="Stwo" class="form-group" style="vertical-align: bottom;">
+
+            <select class="editor form-control">
+                <option>全部状态</option>
+                <option>未读</option>
+                <option>待办</option>
+                <option>待审</option>
+                <option>完成</option>
+                <option>指派</option>
+            </select>
+        </div>
+        <div id="Sthree" class="form-group" style="vertical-align: bottom;">
+            <select class="editor form-control">
+                <option>我负责</option>
+                <option>我派生</option>
+                <option>我开始</option>
+            </select>
+        </div>
+        <div class="form-group" style="vertical-align: bottom;position: absolute;right: 15px;top: 182px;">
+            <div id="J_calendar"></div>
+
+            <input id="time"  type="hidden" value="" >
+            <!--<div class="input-append date form_datetime" >
+                <input id="time" size="16" type="text" value="" placeholder="请选择日期" readonly>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>-->
+
+        </div>
+    </div>
+    <div id="functionbodybody">
+
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+
+        $(".form_datetime").datetimepicker({
+            minView: "month", //选择日期后，不会再跳转去选择时分秒
+            format: "yyyy-mm-dd",
+            autoclose: true,
+            todayBtn: true,
+            pickerPosition:"bottom-left"
+        });
+        var time = "";
+        var state = "";
+        var brff = "";
+        var daytime =  (new Date()).Format("yyyy-MM-dd");
+//        $("#time").change(function(){
+//            daytime = $("#time").val();
+//            $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime});
+//        });
+
+
+        time = $("#Sone option:selected").text();
+        state = $("#Stwo option:selected").text();
+        brff = $("#Sthree option:selected").text();
+        $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime});
+
+        $("#Sone").change(function(){
+            time = $("#Sone option:selected").text();
+            state = $("#Stwo option:selected").text();
+            brff = $("#Sthree option:selected").text();
+            $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+        $("#Stwo").change(function(){
+            time = $("#Sone option:selected").text();
+            state = $("#Stwo option:selected").text();
+            brff = $("#Sthree option:selected").text();
+            $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+        $("#Sthree").change(function(){
+            time = $("#Sone option:selected").text();
+            state = $("#Stwo option:selected").text();
+            brff = $("#Sthree option:selected").text();
+            $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime});
+        });
+
+
+
+        //日历
+
+        var c = {};
+
+        YUI({
+            combine:true,
+            comboBase:'http://a.tbcdn.cn/??',
+            root:'s/yui/3.3.0/build/',
+            filter:{
+                'searchExp': "&",
+                'replaceStr': ","
+            },
+            modules:{
+                'calendar-skin':{//默认皮肤
+                    fullpath:'plugin/css/time.css',
+                    type:'css'
+                },
+                'calendar':{
+                    fullpath:'plugin/js/calendar.js',
+                    requires:['calendar-skin','node']
+                }
+            }
+        }).use('calendar','console','dump',function(Y){
+
+
+            //静态日历,单击回调
+            c = new Y.Calendar('J_calendar').on('select',function(d){
+                var daytime1=Y.dump(d).Format("yyyy-MM-dd");
+
+                $("#time").val(daytime1);
+                daytime = daytime1;
+                $f('plugin','schedule',{time:time,state:state,brff:brff,daytime:daytime1});
+
+
+
+            });
+
+
+
+
+        });
+        //转换时间格式
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+
+    });
+
+
+
+</script>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title>首页</title>
+
+    <script src="plugin/js/jquery-3.0.0.min.js"></script>
+    <!-- BOOTSTRAP STYLES-->
+    <link href="plugin/css/bs/bootstrap.min.css" rel="stylesheet"/>
+    <!-- alert框组件 -->
+    <link href="plugin/css/bs/messenger.css" rel="stylesheet"/>
+    <link href="plugin/css/bs/messenger-theme-future.css" rel="stylesheet"/>
+    <link href="plugin/css/bs/messenger-theme-air.css" rel="stylesheet"/>
+    <link href="plugin/css/bs/messenger-theme-block.css" rel="stylesheet"/>
+    <link href="plugin/css/bs/messenger-theme-ice.css" rel="stylesheet"/>
+    <link href="plugin/css/bs/messenger-theme-flat.css" rel="stylesheet"/>
+
+    <!-- 自定义样式 -->
+    <link href="plugin/css/basic.css" rel="stylesheet"/>
+    <!-- 时间插件 -->
+    <link rel="stylesheet" href="plugin/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="plugin/css/bootstrap-datetimepicker.min.css">
+
+
+
+
+</head>
+<body>
+<div id="wrapper">
+    <div class="container-fluid">
+        <div class="row" style="height:30px;">
+            <nav class="navbar navbar-default navbar-cls-top " style="height: 40px; background-color:#ffffff"
+                 role="navigation" style="margin-bottom:0;background-color:#fff;">
+                <a class="navbar-brand" href="#" style="background-color:#7D7DFF;">家校互联</a>
+                <div class="col-lg-10 col-sm-10">
+                    <div style="float:right;margin-rigth:30px;margin-top: 10px;">
+                        <span style="color:#000;font-size: 10px;" id="dateTime"></span>
+                        <span style="color:#000;font-size: 10px;"> 欢迎，</span>
+                        <span style="color:#000;font-size: 10px;">
+                            <a href="#" style="text-decoration:none;">#(name)</a>
+                            <input type="hidden" id="userId" value="#(userid)"><!-- userid-->
+                            <input type="hidden" value="#(userid)" id="userBaby">
+                        </span>
+
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- /. NAV TOP  -->
+    <div id="menu">
+
+
+    </div>
+    <div id="page-wrapper">
+        <div id="page-inner" style="background-color:#d0d0d0">
+
+        </div><!-- /. PAGE INNER  -->
+    </div><!-- /. PAGE WRAPPER  -->
+
+</div>
+<!-- /. WRAPPER  -->
+<input type="hidden" id="baby" value="1">
+<div id="footer-sec">
+    <div style="margin: 0 auto; width:500px; height:100%">
+        版权所有：奥维信息科技有限公司 © Copyright 2017
+    </div>
+</div>
+<script src="plugin/js/time/bootstrap-datetimepicker.js"></script>
+<script src="plugin/js/time/bootstrap-datetimepicker.min.js"></script>
+<!-- hrframe -->
+<script src="plugin/js/hrframe.js"></script>
+<!-- BOOTSTRAP SCRIPTS -->
+<script src="plugin/js/bootstrap.min.js"></script>
+<!-- echart插件 -->
+<script src="plugin/js/echarts.min.js"></script>
+<!-- alert框组件 -->
+<script src="plugin/js/dialog.js"></script>
+<script src="plugin/js/messenger.min.js"></script>
+<!-- 工具类 -->
+<script src="plugin/js/common-tool.js"></script>
+<!-- ztree组件 -->
+<script src="plugin/js/jquery.ztree.core.min.js"></script>
+<script src="plugin/js/jquery.ztree.excheck.js"></script>
+<!--时间-->
+<script src="plugin/js/yui-min.js"></script>
+<!-- serverURL -->
+<script src="plugin/js/serverURL.js"></script>
+
+<!-- 初始化文件 -->
+<script src="plugin/js/init.js"></script>
+<!-- Path to Framework7 Library JS-->
+
+
+
+
+</body>
+
+<script>
+
+    var myDate = new Date();
+    var a = myDate.getFullYear();
+    var b = myDate.getMonth();
+    var c = myDate.getDate();
+    var d = a + "年" + b + "月" + c + "日";
+
+    $('#dateTime').text(d);
+
+
+    $(function () {
+        $f('plugin', 'eighborhood.web.menu', 0);
+
+        var jsapi = '#(JSAPI)';
+        var ticket = '#(ticket)';
+
+
+        var userid = '#(userid)';
+        localStorage.setItem("userId", 8);
+        var code = '#(code)';
+        localStorage.setItem("code", code);
+
+    });
+
+</script>
+</html>

@@ -1,0 +1,45 @@
+<template>
+    <oo> for(var i = 0;i < list.length; i++){</oo>
+        <div class="noteList" style="width: 100%; margin-bottom: 50px;">
+            <img src="<oo>=list[i].image</oo>" class="img-circle">
+            <div class="noteCreater" >
+                <div style="margin-top: 5px; border-bottom:1px solid #E0E0E0">
+                    <span style="margin-right: 20px"><oo>=list[i].nick_name</oo></span>
+                    <span><oo>=list[i].create_time</oo></span>
+                </div>
+            </div>
+            <div style="margin-left:30px;overflow: hidden">
+                <div style="margin-top: 10px;">
+                    <oo>=list[i].reply_context</oo>
+                </div>
+            </div>
+        </div>
+    <oo>}</oo>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+
+        var data = {page:_data.page,noteId:_data.noteId};
+
+        var url = $f("tools.serverURL","archive/note/findReply");
+
+        $f("ajax.get", url, data, "__.list", _page)();
+
+    });
+
+    $f("df","__.list",function (_data,_page) {
+
+        var html = $f('TPPL',_page,_data.data);
+
+        $(".reply-container").append(html);
+
+        if(_data.data.list.length<5){
+
+            $('#moreOtherReply').hide();
+        }
+
+//        for(var i=0;i<_data.data.list.length;i++){
+//            $('#manyReply').append("    <div class='noteListText col-md-11' style='margin-top:20px;margin-left:5px; '> <div class='col-sm-1' >"+_data.data.list[i].nick_name+": </div> <div class='col-sm-11' > "+_data.data.list[i].reply_context+" </div> </div>")
+//        }
+    })
+</script>

@@ -1,0 +1,59 @@
+<template>
+
+    <oo>for(var i=0;i< data.length;i++){</oo>
+
+    <div class="card step-card">
+        <div class="card-header" style="font-size: 14px">
+            <div class="title">步骤<oo>=i+1</oo></div>
+        </div>
+        <div class="card-content">
+            <div class="card-content-inner">
+                <div class="list-block">
+                    <ul>
+                        <li class="align-top">
+                            <div class="item-content">
+                                <textarea class="content" ><oo>=data[i].context</oo></textarea>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="padding: 10px 10px 12px 12px" class=""><div style="font: 300 12px/15px consolas; color: #aaaaaa; margin-bottom: 10px; ">指派人:</div>
+                <oo>for(var j=0 ; j< data[i].peopleName.length ;j++){</oo>
+
+                <a class="button meeting-list-btn" style="margin-right: 8px; width:83px; display: inline-block"> <oo>=data[i].peopleName[j]</oo> </a>
+
+                <oo>}</oo>
+            </div>
+        </div>
+        <div class="card-footer" style="display: none;">
+            <div style="text-align: right !important">
+                <a class="assigned-btn button" style="border:1px solid #ff2d55; font:300 13px/28px consolas; color: #ff2d55;width: 80px; height: 28px; display: inline-block">指派 +</a>
+                <a class="complete-step button" style="border:1px solid #ff2d55; font:300 13px/28px consolas; color: #ff2d55;width: 80px; height: 28px; display: inline-block">保存</a>
+            </div>
+        </div>
+    </div>
+    <oo>}</oo>
+
+</template>
+<script>
+    $f("df", __, function (_page,_data) {
+        var url="/schoolcms/archive/note/findReplyDetails";
+        var data={"noteId":_data,'pageSize':100}
+        $f("ajax.get", url, data, "__.list",_page)();
+    });
+
+    $f("df","__.list",function(_data,_page) {
+
+        var html=$f("TPPL",_page,_data);
+ /*        for(var i=0 ;i<_data.data.length;i++){
+
+             for(var j=0;j<_data.data[i].peopleName.length;j++){
+                 alert(_data.data[i].peopleName[j]);
+             }
+         }*/
+        $(".step-container").html(html);
+
+    });
+
+</script>

@@ -1,0 +1,67 @@
+<template>
+    <style>
+
+    </style>
+
+    <div class="col-sm-12"  id="selectDiv" style="padding-top:1px;padding-bottom: 1px;margin-top: 10px;">
+        <div class="content-block" style=" margin: 0px 0;">
+            <oo>for(var i = 0; i < data.length; i++){</oo>
+            <div class="chip fenlei" style="display: inline-block" typeId="<oo>=data[i].name</oo>" data="<oo>=data[i].id</oo>" >
+<!--                <div class="chip-media"><img src="img/icon2.png"></div>
+                <div class="chip-label"><oo>=data[i].notice</oo></div>-->
+              <span class="label label-primary"><oo>=data[i].name</oo></span>
+             <!--   <input type="button" value="<oo>=data[i].notice</oo>">-->
+                <input type="hidden" value="<oo>=data[i].id</oo>" id="interestId">
+            </div>
+            <oo>}</oo>
+        </div>
+
+        <div class="content-block" style=" margin: 10px 0;" id="childtype">
+
+        </div>
+
+    </div>
+
+
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+        var url=window.serverURL.classfuList;
+        $f("ajax.get", url, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+
+        var content = $f("TPPL",_page,{"data":_data.data});
+        $("#fenlei").html(content);
+        $(".fenlei").click(function(){
+            var id =$(this).attr("data");
+            var url=window.serverURL.classsmallList;
+            var data={"id":id}
+           $f("ajax.get", url, data, "__.list1", _page)();
+       });
+
+    });
+    $f("df", "__.list1", function(_data, _page) {
+        var content = $f("TPPL",_page,_data);
+        $("#childtype").html(content);
+
+
+        $(".fenlei").click(function(){
+
+            $("#typeid").val($(this).attr("typeId"));
+            $('#babyId').val($(this).attr("data"));
+
+        });
+
+
+    });
+
+
+
+
+
+</script>

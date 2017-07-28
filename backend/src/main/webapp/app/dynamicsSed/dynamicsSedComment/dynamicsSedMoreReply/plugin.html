@@ -1,0 +1,51 @@
+<template>
+    <oo> for(var i=0;i< data.list.length;i++){</oo>
+
+    <div class="noteList col-md-12" style="padding-top: 10px;padding-left:10px;margin-top:5px;height:100%;">
+        <img src="<oo>=data.list[i].img</oo>"  class="img-circle col-md-1">
+        <div class="noteCreater col-md-3" style="margin-left: 10px;">
+            <div style="margin-top: 5px;">
+                <oo>=data.list[i].nick_name</oo>
+            </div>
+            <div class="noteTime">
+                <oo>=data.list[i].createtime</oo>
+            </div>
+        </div>
+        <div class="col-md-10" style="margin-left:73px;overflow: hidden">
+            <oo>=data.list[i].context</oo>
+        </div>
+        <div class="col-md-1 noteTime" style="float:right;cursor: pointer">
+            评论
+        </div>
+    </div>
+
+
+    <oo>}</oo>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+        var data={}
+        var url="";
+        var page="";
+        var userId=""
+            var noteId=_data.noteId;
+            page=_data.page;
+        if(localStorage.getItem("userId")==null||localStorage.getItem("userId")==""){
+            userId=2;
+        }else {
+        userId=localStorage.getItem("userId");
+        }
+            data={'page':page,'noteId':noteId,"userId":userId}
+            url="/schoolcms/archive/note/findReply";
+        $f("ajax.get", url, data, "__.list", _page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        if(_data.data.list.length<5){
+            $('#moreOtherReply').hide();
+        }
+        for(var i=0;i<_data.data.list.length;i++){
+            $('#manyReply').append("    <div class='noteListText col-md-11' style='margin-top:20px;margin-left:5px; '> <div class='col-sm-1' >"+_data.data.list[i].nick_name+": </div> <div class='col-sm-11' > "+_data.data.list[i].reply_context+" </div> </div>")
+        }
+    })
+</script>

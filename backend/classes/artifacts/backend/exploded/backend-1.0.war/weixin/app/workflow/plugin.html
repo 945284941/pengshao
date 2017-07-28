@@ -1,0 +1,189 @@
+<template>
+    <style>
+        .button {
+            padding: 2px 10px;
+            margin-top: -10px;
+            height: 35px;
+            font-size: 17px;
+        }
+
+    </style>
+    <div data-page="weixinworkflow" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>办事流程</span>
+                </div>
+            </div>
+        </div>
+        <div class="page-content infinite-scroll" data-distance="20">
+           <!-- <div class="workflow-container" style="margin-top: 55px">
+                <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                <div class="card note-card demo-card-header-pic dynamic-card"
+                     onclick="$f('plugin','__.details',<oo>=data.list[i].id</oo>);"
+                     noteid="<oo>=data.list[i].id</oo>" typeid="<oo>=data.list[i].type_id</oo>">
+                    <div style="margin-left:15px" class="list-block media-list for-container">
+                        <div class="item-inner">
+                            <div class="item-subtitle" style="margin-bottom: 12px;font-size: 18px;"><oo>=data.list[i].title</oo></div>
+                            <div class="item-text" style="height: 32px;">
+                                <span><oo>=data.list[i].createtime</oo></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <oo>}</oo>
+            </div>-->
+
+            <div style="margin-top: 55px" class="workflow-container">
+               <!-- <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                <div class="card note-card demo-card-header-pic dynamic-card" onclick="$f('plugin','__.details',<oo>=data.list[i].id</oo>);"
+                     noteid="<oo>=data.list[i].id</oo>" typeid="<oo>=data.list[i].type_id</oo>">
+                    &lt;!&ndash;<div style="background-image:url(<oo>=data.list[i].img</oo>)" valign="bottom"
+                         class="card-header color-white no-border">
+                        <oo>=data.list[i].title</oo>
+                    </div>&ndash;&gt;
+                    <div style="background-image:url(img/pd.jpg)" valign="bottom"
+                         class="card-header color-white no-border">
+                        <oo>=data.list[i].title</oo>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-content-inner">
+                            <p class="color-gray">
+                                <oo>=data.list[i].createtime</oo>
+                            </p>
+                            <p>
+                                <oo>=data.list[i].context</oo>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <oo>}</oo>-->
+
+                <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                <div class="card note-card demo-card-header-pic dynamic-card">
+                    <div style="margin-left:15px" class="list-block media-list for-container">
+                        <div class="item-inner">
+                            <div class="item-subtitle" onclick="$f('plugin','__.details',<oo>=data.list[i].id</oo>);" style="margin-bottom: 12px;font-size: 18px;">
+                                <oo>=data.list[i].title</oo>
+                            </div>
+                            <div class="item-text" style="height: 32px;">
+                                <span><oo>=data.list[i].createtime</oo></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <oo>}</oo>
+
+            </div>
+
+
+            <oo>if(data.list.length==0){</oo>
+            <div style="text-align: center;font-size: 20px;">暂无数据</div>
+            <oo> }</oo>
+            <!-- 加载提示符 -->
+            <div class="infinite-scroll-preloader">
+                <div class="preloader"></div>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findNoteList";
+        if (_data != 0) {
+            var data = {
+                "classId": 144,
+                "pageSize": 7,
+                "page": _data.page,
+                "name": _data.name,
+                "title": _data.title,
+            }
+        }
+        else {
+            var data = {
+                "classId": 144,
+                "pageSize": 7,
+                "page": 1,
+            }
+        }
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+
+        homeView.router.load({content: content});
+
+        if (_data.data.list.length < 7) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        // 加载flag
+        var loading = false;
+
+        // 拉取次数
+        var current_page = 1;
+
+        var pageSize = 7;
+
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+                var url = "/schoolcms/archive/note/findNoteList";
+                var data = {"classId": 144, "pageSize": pageSize, "page": current_page};
+                $f("ajax.get", url, data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function(_data,_page) {
+
+                    $f("tools.dateListFormat", _data.data.list.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".workflow-container").append($(html).find(".note-card"));
+
+                    if (_data.data.list.length < pageSize) {
+
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+
+    });
+
+</script>

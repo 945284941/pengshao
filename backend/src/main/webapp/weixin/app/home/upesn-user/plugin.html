@@ -1,0 +1,45 @@
+<template>
+  <div class="card">
+      <div class="card-header">老师</div>
+      <div class="card-content">
+          <oo>for(var i = 0; i < data.list.length; i++){</oo>
+          <div class="list-block media-list">
+              <ul>
+                  <a href="#" onclick="$f('plugin','home.teacher',this);" tid="<oo>=data.list[i].userid</oo>">
+                      <li class="item-content" >
+                          <div class="item-media">
+                              <img src="<oo>=data.list[i].img</oo>" width="44" />
+                          </div>
+                          <div class="item-inner">
+                              <div class="item-title-row">
+                                  <div class="item-title"><oo>=data.list[i].nick_name</oo></div>
+                              </div>
+                              <input type="hidden" value="<oo>=data.list[i].nick_name</oo>" id="nickName" />
+                          </div>
+                      </li>
+                  </a>
+              </ul>
+          </div>
+          <oo>}</oo>
+      </div>
+      <div class="card-footer" onclick="$f('plugin','__.more-contact',0);">
+          <span>查看更多...</span>
+      </div>
+  </div>
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+    var pid=$(_data).attr("tid");
+    var url = $f("tools.serverURL","archive/upesnUser/findUpesnUserListForHome");
+    var data = {'pageSize':_data.pageSize};
+
+    $f("ajax.get", url, data, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    $f("tools.dateListFormat",_data.data.list);
+    var content = $f("TPPL",_page,_data);
+    $("#recent-contact").html(content);
+  });
+
+</script>

@@ -1,0 +1,176 @@
+<template>
+    <div data-page="work-user-list" class="page navbar-fixed">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left"><a style="padding: 10px 20px 10px 0;" class="back"><h2><</h2></a></div>
+                <div class="center">通知人</div>
+            </div>
+        </div>
+        <div class="">
+            <div class="searchbar">
+                <div class="searchbar-input">
+                    <input type="search" placeholder="请输入姓名" class="searchuser">
+                    <a href="#" class="searchbar-clear">确定</a>
+                </div>
+                <a href="#" class="searchbar-cancel">Cancel</a>
+            </div>
+            <div class="div-a"
+                 style="font-size: 16px; margin-top:5px; height: 40px; border-bottom: 1px solid #9a9a9e;background-color:white;">
+                <ul class="divul" style="margin: 0; padding: 0;">
+                    <li class="divli" data="1"
+                        style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;border-right: 1px solid #000;"
+                        id="time">常用
+
+                    </li>
+                    <li class="divli" data="2"
+                        style="list-style-type:none;float:left;margin: 10px 0;width:33%;text-align: center;border-right: 1px solid #000;"
+                        id="state">组织
+                    </li>
+                    <li class="divli" data="3"
+                        style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;"
+                        id="responsibility">全部
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div id="userall" style="height: 100%;">
+
+
+        </div>
+        <div class="toolbar tabbar tabbar-labels" style="background: #FFFFFF">
+
+            <div class="toolbar-inner">
+                <div id="divuser" style="width: calc(100% - 110px);overflow-x: scroll;"></div>
+                <a class="confirm-choose button"
+                   style="border:1px solid #ff2d55; font:bold 15px/39px consolas; background-color: #ff2d55; color: #FFF;width: 110px; height: 40px;">
+                    确定
+                </a>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, prev, _fn) {
+        var url = $f("tools.serverURL", "archive/upesnUser/findMeetingUser");
+        var data = {page: 1, pageSize: 10};
+        $f("ajax.get", url, data, "__.list", _page, prev, _fn)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page, prev, _fn) {
+
+        var content = $f("TPPL", _page, _data.data);
+        mainView.router.load({content: content});
+
+        //非首次加载时，实现上次选中的checkbox样式
+
+       var userinfoe="";
+        $.each(prev, function (i, n) {
+            userinfoe += n.id+":"+ n.name+","
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val() == n.id) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        });
+        localStorage.setItem("userinfoe",userinfoe);
+
+
+
+        //确定选中的开会人员，执行回调函数，并返回上一页
+        var arr = [];
+
+        $(".confirm-choose").click(function () {
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"){
+                    arr.push({
+                        id: strs[i].split(":")[0],
+                        name: strs[i].split(":")[1],
+                    });
+
+
+                }
+
+
+            }
+
+
+            //执行回调
+            _fn(arr);
+
+            $("#hideInput").val(arr);
+
+            mainView.router.back();
+        });
+
+
+        //搜索
+        $(".searchuser").keydown(function () {
+
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                var data = $(this).val();
+                var _data = {
+                    prev: prev,
+                    data: data
+                };
+                $f('plugin', 'agency.get-user-list.get-user-search', _data);
+            }
+        });
+
+        //导航点击变颜色，加载下面的内容
+        $(".divli").click(function () {
+            $(".divli").css("color", "#000");
+            $(this).css("color", "red");
+            var type = $(this).attr("data");
+            if (type == "3") {
+                $f('plugin', 'agency.get-user-list.get-user-all', prev);
+            } else if (type == "2") {
+                $f('plugin', 'agency.get-user-list.get-user-org', prev);
+            } else if (type == "1") {
+                $.ajax({
+                    type: 'get',
+                    url: $f("tools.serverURL", "archive/department/findDepartmentByUser"),
+                    data: {userid:localStorage.getItem("userId")},
+                    dataType: 'json',
+                    success: function (data) {
+                        var id;
+                        if(data.data==null){
+                            id=-1;
+                        }else{
+                            id=data.data.departid
+                        }
+                        $f('plugin', 'agency.get-user-list.get-user-often', {id:id });
+                    }
+
+                });
+
+            }
+
+
+        });
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+</script>

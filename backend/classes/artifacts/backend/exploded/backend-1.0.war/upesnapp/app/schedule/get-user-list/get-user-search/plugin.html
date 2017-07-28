@@ -1,0 +1,101 @@
+<template>
+
+
+            <div class="list-block" style="margin: 5px 0;">
+                <ul>
+                    <oo>for(var i = 0; i < data.length; i++){</oo>
+                    <li style="height: 56px; min-height: 56px">
+                        <label class="label-checkbox item-content">
+                            <input type="checkbox" name="meetingcheck" value="<oo>=data[i].userid</oo>" data-name="<oo>=data[i].nick_name</oo>">
+                            <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">
+                                    <img src="<oo>=data[i].img</oo>" style="width: 34px; height: 34px;border-radius: 50%"/>
+                                </div>
+                                <div class="item-content">
+                                    <oo>=data[i].nick_name</oo>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                    <oo>}</oo>
+                </ul>
+                <oo>if(data.length==0){</oo>
+                <div>暂无数据</div>
+
+                <oo>}</oo>
+            </div>
+
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var data1=_data.data;//参数
+        var data2=_data.prev;//带过来的用户
+        var url = $f("tools.serverURL", "archive/upesnUser/findUserByName");
+        //var url = $f("tools.serverURL", "archive/upesnUser/findMeetingUser");
+        var data = {name:data1 , page: 1, pageSize: 10};
+        $f("ajax.get", url, data, "__.list", _page,data2)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page,data) {
+
+        var content = $f("TPPL", _page, _data);
+
+        $("#userall").html(content);
+
+        //非首次加载时，实现上次选中的checkbox样式
+        var info=localStorage.getItem("userinfoe");
+        var strs= new Array(); //定义一数组
+        strs=info.split(","); //字符分割
+        for (var i=0;i<strs.length ;i++ )
+        {
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val()+":"+$(this).attr("data-name") == strs[i]) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        }
+
+        $("input[name='meetingcheck']").change(function(){
+
+            var info=localStorage.getItem("userinfoe");
+            var val=$(this).val();
+            var valu=$(this).attr("data-name");
+            if($(this).is(':checked')){
+                info+=val+":"+valu+",";
+                localStorage.setItem("userinfoe",info);
+            }else{
+                var info=localStorage.getItem("userinfoe");
+                var strs= new Array(); //定义一数组
+                strs=info.split(","); //字符分割
+                var html="";
+                for (var i=0;i<strs.length ;i++ )
+                {
+                    if(strs[i]!=val+":"+valu){
+                        html=+strs[i]+",";
+                    }
+                }
+                localStorage.setItem("userinfoe",html);
+
+
+            }
+
+        });
+
+
+
+
+
+    });
+
+</script>

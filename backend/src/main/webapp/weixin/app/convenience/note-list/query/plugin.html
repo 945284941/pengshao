@@ -1,0 +1,106 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="convenience-note-list-query" class="page">
+
+
+
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                    </div>
+                    <div style="width: 100%;text-align: center;padding-right: 40px;">
+                        <span>详情</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="speed-dial speed-dial-closed"><a href="#" class="floating-button">
+                <i class="icon f7-icons">add</i>
+                <i class="icon f7-icons">close</i></a>
+                <div class="speed-dial-buttons">
+                    <!--<a href="#" id="volume"><i style="font-size: 20px" class="icon f7-icons">volume</i></a>-->
+                    <a href="#" onclick="$f('plugin','__.replyAdd',0)"><i style="font-size: 20px" class="icon f7-icons">dcompose</i></a>
+                    <!--<a href="#" id="camera"><i style="font-size: 20px" class="icon f7-icons">camera</i></a>-->
+                </div>
+            </div>
+
+
+        <div class="page-content infinite-scroll" data-distance="44">
+            <div class="card ks-card-header-pic" style="margin-top:50px;">
+
+
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <div style="font-family:黑体;font-size:20px;">
+                            <span style="font-size: 20px"> <oo>=data.title</oo></span>
+                        </div>
+
+                    </div>
+
+                    <hr style="height:1px;border:none;border-top:1px solid #F0F0F0;"/>
+                    <div class="card-content-inner">
+                        <div style="font-family:黑体;font-size:20px;">
+                            <span style="font-size: 16px"><oo>=data.context</oo></span>
+                        </div>
+
+                    </div>
+         <!--           <div class="card-content-inner">
+
+                            类别:<oo>if(data.type==1){</oo>
+                            <span style="font-size: 16px">工作流程</span>
+                            <oo>}if(data.type==2){</oo>
+                            <span style="font-size: 16px">政策宣传</span>
+                            <oo>}if(data.type==null||data.type==""){</oo>
+                            <span style="font-size: 16px"></span>
+                            <oo>}</oo>
+
+
+                    </div>-->
+                    <input type="hidden" value="<oo>=data.id</oo>" id="noteId">
+                </div>
+
+
+            </div>
+            <div class="comments"  id="note-reply-list">
+
+            </div>
+        </div>
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var n = $(_data).attr("noteid");
+        var c = _data.noteid;
+        if (n == null || n == "") {
+            n = c;
+        }
+        var t = $(_data).attr("typeid");
+        var url = $f("tools.serverURL", "archive/note/findOneById");
+        var data = {"id": n};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        _data.data.create_user_time = $f("tools.dateFormat", _data.data.create_user_time);
+        var p = $f("TPPL", _page, {"data": _data.data});
+        homeView.router.load({content: p});
+        $f('plugin', '__.reply', _data.data.id);
+
+    });
+
+</script>

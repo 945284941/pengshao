@@ -1,0 +1,144 @@
+<template>
+    <div id="task-detail-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改活动</h4>
+                </div>
+                <div class="modal-body" style="height: 350px;">
+
+
+                        <div class="col-md-12" style="margin-top:10px;">
+                            <div class="title detail-table-label col-md-2" >标题<span class="require-mark">*</span></div>
+                            <div class=" col-md-10">
+                                <input class="editor form-control col-md-10" type="text" id="notrtitle" placeholder="请输入标题" value="<oo>=data.title</oo>">
+                                <input type="hidden" id="id" value="<oo>=data.id</oo>">
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="margin-top:10px;">
+                            <div class="title col-md-2" >内容<span class="require-mark">*</span></div>
+                            <div class=" col-md-10" style="height: 100px;">
+                                <textarea class=" form-control" id="content" placeholder="请输入内容" style="height:100%"><oo>=data.context</oo></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2">创建人<span class="require-mark">*</span></div>
+                        <div class="text col-md-10">
+                            <input class="editor form-control" type="text"  disabled placeholder="" value="<oo>=data.nick_name</oo>">
+
+                        </div>
+                        </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2">开始时间<span class="require-mark"></span></div>
+                        <div class="text col-md-10">
+                        <input class="editor datatime form-control" type="text" placeholder="修改开始时间" id="startTime" value="<oo>=data.startTime</oo>">
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <div class="title col-md-2">结束时间<span class="require-mark"></span></div>
+                        <div class="text col-md-10">
+                            <input class="editor datatime form-control" type="text" placeholder="修改结束时间" id="endTime" value="<oo>=data.endTime</oo>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="updataTask" style="margin-left:70%">确定</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url="/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var classid=_data.data.classid;
+        if(_data.data.expand==null||_data.data.expand==""){
+
+        }else{
+            var obj=JSON.parse(_data.data.expand);
+            _data.data.startTime=obj.startTime;
+            _data.data.endTime=obj.endTime;
+        }
+        var html = $f("TPPL", _page, _data);
+
+        $("#task-detail-form").remove();
+        $("#page-inner").append(html);
+        $("#task-detail-form").modal();
+
+        $('.datatime').datetimepicker({
+            format: "yyyy-mm-dd",
+        });
+        $("#updataTask").click(function(){
+            var id=$("#id").val();
+            var title=$("#notrtitle").val();
+            var content=$("#content").val();
+            var imgurl=$("#imgurl").val();
+            var startTime=$('#startTime').val();
+            var endTime=$('#endTime').val();
+            var a=new Date(startTime);
+            var b=new Date(endTime);
+            if(title==null||title==""){
+                alert("标题不能为空!!!");
+                return;
+            }
+            if(content==null||content==""){
+                alert("内容不能为空!!!");
+                return;
+            }
+            if(a==b){
+                alert("开始与结束时间不能相同");
+                return;
+            }
+            if(a>b){
+                alert("开始与结束时间不准确");
+                return 
+            }
+
+
+            var myDate=new Date();
+            var c=new Date(myDate.toLocaleString());
+            if(a<c){
+                alert("开始时间不能早于当前时间");
+                return ;
+            }
+            $.ajax({
+                url:"/schoolcms/archive/note/updateNote",
+                type:"POST",
+                data:{
+                    "title":title,
+                    "content":content,
+                    "imgurl":imgurl,
+                    "id":id,
+                    "startTime":startTime,
+                    "endTime":endTime
+                },
+                success:function(resp){
+                    alert(resp.message);
+                    //刷新页面
+                    $("#task-detail-form").modal("toggle");
+                    $f('plugin','notification',{"classid":classid});
+                }
+            });
+
+        });
+
+
+    });
+
+
+</script>
+

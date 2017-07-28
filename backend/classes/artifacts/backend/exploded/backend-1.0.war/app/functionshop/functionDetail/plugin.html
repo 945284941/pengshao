@@ -1,0 +1,63 @@
+<template>
+    <div id="note-detail-form" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">功能详情</h4>
+                </div>
+                <div class="modal-body" style="margin-left: 60px;">
+                    <div class="div-b-a">
+                        <img src="img/logo.png" style="width: 80px;height: 80px">
+                    </div>
+                    <div class="div-b-b" >
+                        <span class="div-b-b-a"><oo>=data.name</oo></span>
+                        <span><oo>=data.company</oo></span>
+                    </div>
+                    <div class="div-b-c">
+                        <button type="button" id="myButton" data-loading-text="Loading..." class="btn btn-primary"
+                                autocomplete="off">
+                            联系使用
+                        </button>
+                    </div>
+                    <div class="div-b-b-b" style="padding-left: 0px"><oo>=data.introduction</oo></div>
+                </div>
+
+
+                <hr/>
+                <img src="<oo>=data.bimg</oo>" style="width:90%;padding-left: 10%;">
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url=window.serverURL.functionShopDatil;
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#note-detail-form").remove();
+        $("#page-inner").append(html);
+        $("#note-detail-form").modal();
+
+
+    });
+
+
+</script>
+

@@ -1,0 +1,104 @@
+<template>
+    <div class="note-container">
+    <oo>for(var i = 0; i < data.list.length; i++){</oo>
+    <div class="card ks-card-header-pic note-card" onclick="$f('plugin','__.query',this)"
+         noteid="<oo>=data.list[i].id</oo>"  typeid="<oo>=data.list[i].type_id</oo>" classname="<oo>=data.list[i].classname</oo>">
+
+        <input type="hidden" id="typeId" value="<oo>=data.list[i].type_id</oo>">
+        <div class="card-header" style="font-size:12px">
+            <div class="avatar">
+                <img src="img/head3.jpg" style="width:34px;height:34px;">
+                <div class="user"
+                     style="color: grey;display: inline-block;line-height: 18px; margin-left:13px;vertical-align:top">
+                    <div class="name">
+                        <oo>=data.list[i].name</oo>
+                    </div>
+                    <div class="time">
+                        <oo>=data.list[i].createtime</oo>
+                    </div>
+                </div>
+                <div class="type" style="display: inline;margin-left: 80px;color:#007aff">
+                    <oo>=data.list[i].classname</oo>
+                </div>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="card-content-inner" style="overflow: hidden;">
+                <p class="">
+                    <oo>=data.list[i].title</oo>
+                </p>
+            </div>
+        </div>
+    </div>
+    <oo>}</oo>
+    </div>
+    <div class="infinite-scroll-preloader">
+        <div class="preloader"></div>
+    </div>
+</template>
+
+<script>
+    $f("df", __, function (_page, _data,data) {
+        var userId = _data;
+        var upesnid = data;
+        $f("ajax.get", $f("server","archive/note/findNotesByUserId"), {
+            'userId': userId,
+            'juweihui_id':localStorage.getItem("departid"),
+            'page':1,
+            'pageSize':5
+        }, "__.list", _page,userId,upesnid)();
+    });
+
+    $f("df", "__.list", function (_data,_page,userId,upesnid) {
+        var content = $f("TPPL", _page, _data);
+        $("#noteList").html(content);
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 5;
+
+        if (_data.data.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        $$('.infinite-scroll').on('infinite', function () {
+
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+                var data = {
+                    "pageSize": pageSize,
+                    "page": current_page,
+                    'juweihui_id':localStorage.getItem("departid"),
+                    'userId':userId
+                };
+                $f("ajax.get",$f("server","archive/note/findNotesByUserId"),data,"__.infiScr", _page,userId,upesnid)();
+                $f("df", "__.infiScr", function (_data, _page,userId,upesnid) {
+                    var html = $f("TPPL", _page, _data);
+                    $(".note-container").append($(html).find(".card"));
+                    if (_data.data.list.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        $$('.infinite-scroll-preloader').remove();
+                    }
+                });
+            }, 800);
+
+        });
+
+
+
+
+    });
+
+
+</script>

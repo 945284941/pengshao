@@ -1,0 +1,108 @@
+<template>
+
+	<style>
+		.item-content{
+			margin-right:15px
+		}
+
+		.list-divider{
+			max-width: 100%;
+			min-width: 100%;
+			height: 1px;
+			background-color: #c8c7cc
+
+		}
+	</style>
+
+	<div data-page="chats-gg" class="page">
+
+		<div id="chats-content" class="page-content">
+
+				<!-- Search bar -->
+				<form class="searchbar" data-search-list=".contacts-list" data-search-in=".item-title">
+					<div class="searchbar-input">
+						<input type="search" placeholder="Search">
+						<a href="#" class="searchbar-clear"></a>
+					</div>
+					<a href="#" class="searchbar-cancel" style="margin-right: -52.9219px;">Cancel</a>
+				</form>
+				<!-- Search bar overlay-->
+				<div class="searchbar-overlay"></div>
+
+					<div class="list-block media-list contacts-list searchbar-found" style="margin:0; display: block;">
+						<div class="list-group">
+							<ul>
+								<oo>
+									for(var i = 0; i < data.length;i ++){</oo>
+								<li class="contact-item">
+									<a href="#" data="<oo>=data[i].id</oo>" datatype="<oo>=data[i].creater</oo>" pid="<oo>=data[i].pid</oo>" classId="<oo>=data[i].classificationid</oo>" class="item-link dl">
+										<div class="item-content">
+											<div class="item-media"><img src="<oo>=data[i].img</oo>" width="44"></div>
+											<div  style="width:80%; margin-left:15px;text-align:left">
+
+												<div class="item-title"><oo>=data[i].classname</oo></div>
+
+											</div>
+											<div style="display:inline">
+												<div class="item-media">
+
+												</div>
+											</div>
+										</div>
+										<div class="list-divider"></div>
+									</a>
+								</li>
+								<oo>}</oo>
+                                 <input type="hidden" id="contact-other-baby" value="baby">
+							</ul>
+						</div>
+					</div>
+					<div class="content-block searchbar-not-found" style="display: none;">
+						Nothing found
+					</div>
+
+
+        </div>
+	</div>
+</template>
+<script>
+    $f("df",__,function(_page){
+        var url = $f("tools.serverURL","archive/classification/findConactByUserId");
+		AppFramework.hideIndicator();
+		/*'userId':#(userid)*/
+        var data = {};
+
+        $f("ajax.get", url, data, "__.list", _page)();
+
+    });
+    $f("df","__.list",function(_data,_page){
+
+		var content = $f("TPPL",_page,_data);
+		chatView.router.load({
+			content:content
+		})
+		$('.dl').click(function(){
+			var pis=$(this).attr("pid");
+			var classid=$(this).attr("classId");
+			if(classid==163){
+
+				$f("plugin","__.notification",classid);
+return false;
+			}
+			if(pis==108){
+				$f("plugin","__.groupChat",classid);
+				return
+			}if(pis==129) {
+				$f("plugin","__.singleChat",classid)
+			}
+			else{
+
+				$f("plugin","note",{"typeId":classid});
+			}
+		});
+    });
+
+
+
+</script>
+

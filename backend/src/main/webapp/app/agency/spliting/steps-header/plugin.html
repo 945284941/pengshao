@@ -1,0 +1,59 @@
+<template>
+    <style>
+
+
+    </style>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <oo>for(var i = 0; i < data.length; i ++){</oo>
+            <li role="presentation"  name="claaification" id="<oo>=data[i].id</oo>">
+                <a id="dd<oo>=data[i].id</oo>" data-id="<oo>=data[i].id</oo>"
+                   href="#content-<oo>=data[i].id</oo>" aria-controls="content-<oo>=data[i].id</oo>"
+                   role="tab" data-toggle="tab">步骤<oo>=i+1</oo></a>
+            </li>
+        <oo>}</oo>
+        <input type="hidden" class="stepNumber" value="<oo>=data.length</oo>">
+    </ul>
+
+    <div class="foot-tool-bar-area" style="text-align: right;">
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+
+        </div>
+    </div>
+   <input type="hidden" id="hv">
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = "/schoolcms/archive/note/findReplyByNoteIdASC";
+        var data = {
+            "noteId": _data,
+        };
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+
+        var html = $f("TPPL", _page, _data);
+        $(".steps-header").html(html);
+
+        //分类查询
+        $("li[name='claaification']").click(function(){
+
+            $(".step-detail").show();
+            $(".addwork").hide();
+            var id=$(this).attr("id");
+            $f('plugin','agency.spliting.step-detail', id);
+        });
+
+
+    });
+
+
+
+</script>
+

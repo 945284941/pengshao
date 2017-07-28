@@ -1,0 +1,49 @@
+<template>
+    <div data-page="weixinhome-contactPeople-all" class="page">
+        <div class="card">
+            <div class="card-header">联系人</div>
+            <div class="card-content">
+                <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                <div class="list-block media-list">
+                    <ul>
+                        <li class="item-content" >
+                            <div class="item-media">
+                                <img src="img/app1" width="44">
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title"><oo>=data.list[i].weixin_name</oo></div>
+                                </div>
+                                <input type="hidden" value="<oo>=data.list[i].nick_name</oo>" id="nickName">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <oo>}</oo>
+            </div>
+        </div>
+</div>
+</template>
+
+<script>
+    $f("df", __, function (_page) {
+        $f("ajax.get",$f("server","archive/weixinUser/findWeiXinPeopleList"),null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+       $('.tabs').click(function () {
+        AppFramework.closePanel();
+       });
+        $('.navbar').click(function () {
+            AppFramework.closePanel();
+        });
+
+        var content = $f("TPPL",_page,_data);
+
+        homeView.router.load({content:content})
+
+
+    });
+
+
+</script>

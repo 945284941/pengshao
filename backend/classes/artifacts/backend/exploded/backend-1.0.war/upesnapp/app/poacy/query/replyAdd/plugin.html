@@ -1,0 +1,70 @@
+<template>
+    <div data-page="poacy-query-replyAdd" class="page">
+  <div class="page-content">
+      <div class="navbar">
+          <div class="navbar-inner">
+              <div class="left ">
+                  <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+              </div>
+          </div>
+      </div>
+      <form class="list-block">
+          <ul>
+              <input type="hidden" value="<oo>=noteIdThere</oo>" id="wowo">
+              <input type="hidden" value="<oo>=noteId</oo>" id="xixi">
+              <li class="align-top">
+                  <div class="item-content">
+                      <div class="item-media"><i class="icon f7-icons">chat</i></div>
+                      <div class="item-inner "><textarea id="contact" style="padding:0;"></textarea></div>
+                  </div>
+              </li>
+          </ul>
+      </form>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-50"><a href="#"  id="babyy" class="button button-big button-fill color-green">发表</a></div>
+          <div class="col-50"><a href="#"  onclick="$f('plugin','poacy.query',this)" noteid="<oo>=noteId</oo>" class="button button-big button-fill color-red">取消</a></div>
+        </div>
+      </div>
+<input type="hidden" id="goBackQuery">
+  </div>
+        </div>
+
+</template>
+<script>
+  $f("df", __, function(_page) {
+
+    $f("ajax.get", null, null, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+var noteId=$('#noteId').val();
+    var content = $f("TPPL",_page,{"noteId":noteId});
+      mainView.router.load({content:content})
+      $('#babyy').click(function () {
+
+          var context=$('#contact').val();
+          $.ajax({
+              url:$f("tools.serverURL","archive/note/addReply"),
+              type:"GET",
+              data:{
+                  "noteId":noteId,
+                  "context":context,
+                  "userId":1
+              },
+              success:function(resp){
+                  alert(resp.message);
+                  //刷新页面
+                  $('goBackQuery').val("1");
+                  $f('plugin','poacy.query',{"noteid":noteId})
+              }
+          });
+
+      });
+
+
+
+
+  });
+
+</script>

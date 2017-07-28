@@ -1,0 +1,58 @@
+<style>
+.item-content{
+	margin-right:15px
+}
+
+.list-divider{
+	max-width: 100%;
+	min-width: 100%;
+	height: 1px;
+	background-color: #c8c7cc
+
+}
+</style>
+<div class="pages" id="contact-page">
+	<div data-page="list" class="page">
+					<!-- Search bar -->
+		<form class="searchbar" data-search-list=".contacts-list" data-search-in=".item-title">
+			<div class="searchbar-input">
+	  		<input type="search" placeholder="Search">
+	  		<a href="#" class="searchbar-clear"></a>
+			</div>
+			<a href="#" class="searchbar-cancel" style="margin-right: -52.9219px;">Cancel</a>
+		</form>
+	  <!-- Search bar overlay-->
+		<div class="searchbar-overlay"></div>
+	  <div class="page-content">
+	    <div class="list-block media-list contacts-list searchbar-found" style="margin:0; display: block;">
+				<div class="list-group">
+			    <ul>
+					<oo>
+						for(var i = 0; i < data.length;i ++){</oo>
+			      <li class="contact-item">
+			  			<a href="#"  onclick="$f('list','contact.note',<oo>=data[i].id</oo>)" class="item-link">
+			  				<div class="item-content">
+			  					<div class="item-media"><img src="<oo>=data[i].img</oo>" width="44"></div>
+			  					<div  style="width:80%; margin-left:15px;text-align:left">
+									<input type="hidden" value="<oo>=data[i].id</oo>" id="qq">
+			  						<div class="item-title"><oo>=data[i].name</oo></div>
+			  						<div class="item-subtitle">放假通知</div>
+			  					</div>
+									<div style="display:inline">
+										<div class="item-media"><img src="img/head1.jpg" width="38" height="38"></div>
+									</div>
+			  				</div>
+								<div class="list-divider"></div>
+			  			</a>
+			  		</li>
+					<oo>}</oo>
+
+			    </ul>
+			  </div>
+			</div>
+      <div class="content-block searchbar-not-found" style="display: none;">
+            Nothing found
+      </div>
+    </div>
+  </div>
+</div>

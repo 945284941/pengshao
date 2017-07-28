@@ -1,0 +1,50 @@
+<template>
+    <style>
+        .title {
+            width: 100px;
+            font-weight: 900;
+        }
+
+    </style>
+
+    <div class="modal-body">
+        <table>
+            <tbody>
+            <tr>
+                <td class="title ">步骤内容<span class="require-mark">*</span></td>
+                <td class="text">
+                    <textarea class="editor form-control"><oo>=data.reply_context</oo></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">可见范围<span class="require-mark">*</span></td>
+                <td class="text detail-table-text">
+                    <textarea class="editor form-control" type="text"><oo>=data.peopleName</oo></textarea>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findReplyByReplyId";
+        var id = _data;
+        var data = {
+            "replyId": id
+        }
+        $f("ajax.get", url, data, "__.list", _page, id)();
+    });
+
+    $f("df", "__.list", function (_data, _page, id) {
+
+        var html = $f("TPPL", _page, _data);
+        $(".step-detail").html(html);
+
+    });
+
+
+</script>
+

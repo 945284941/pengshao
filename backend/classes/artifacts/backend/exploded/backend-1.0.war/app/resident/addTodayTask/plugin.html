@@ -1,0 +1,118 @@
+<template>
+    <div id="role-add-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">发布帖子</h4>
+                </div>
+                <div class="modal-body">
+
+
+
+
+                               <table >
+                                    <tbody>
+                                    <tr>
+                                        <td class="title detail-table-label" style="width:100px">标题<span class="require-mark">*</span></td>
+
+                                        <td class="text detail-table-text">
+                                            <input class="editor form-control" type="text" id="notrtitlee" placeholder="请输入标题">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="title">内容<span class="require-mark">*</span></td>
+                                        <td class="text">
+                                            <textarea class="editor form-control" id="contentt" placeholder="请输入内容"></textarea>
+
+                                        </td>
+                                    </tr>
+
+
+                                    </tbody>
+                                </table>
+
+
+
+
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="addTask" style="margin-left:70%">添加</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = null;
+        var data = null;
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#role-add-form").remove();
+        $("#wrapper").append(html);
+        $("#role-add-form").modal();
+        $("#role-add-form").show();
+
+        $('#addTask').click(function () {
+
+            var title = $('#notrtitlee').val().trim();
+            var content = $('#contentt').val().trim();
+
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+
+                $.ajax({
+                    url:window.serverURL.addNoteTake,
+                    type:"POST",
+                    data:{
+                        "title":title,
+                        "content":content,
+
+                        "userId":localStorage.getItem("userId"),
+                       // "userId":1,
+                        "type":146,//发帖类型/今日任务
+
+                    },
+                    success:function(resp){
+                        alert(resp.message);
+                        //刷新页面
+                        $("#role-add-form").modal("toggle");
+                         $('#notrtitle').val("");
+                        $('#content').val("");
+
+                        $f('plugin','resident',0);
+                    }
+                });
+
+        });
+    });
+
+
+</script>
+

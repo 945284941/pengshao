@@ -1,0 +1,101 @@
+<template>
+    <div id="role-update-form" class="modal fade function-add-modal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">角色管理</h4>
+                </div>
+                <div class="modal-body" style="text-align: center; margin: 0 auto">
+                    <div class="modal-add" style="width: 830px; height: 400px; border: 1px solid #cccccc; border-radius: 4px">
+                        <div class="form-group form-group-sm" style="margin:10px; height: 100% !important;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="" style="width:100%; height:370px; border: 1px solid #cccccc; border-radius: 4px;overflow-y: scroll">
+                                        <div class="list-group-choose">
+                                            <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                                            <a href="#" class="list-group-item choose-item " data-roleid="<oo>=data.list[i].id</oo>" data-list="one"><oo>=data.list[i].name</oo></a>
+                                            <oo>}</oo>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="list-group-confirm" style="width:100%; height:370px; border: 1px solid #cccccc; border-radius: 4px; overflow-y: scroll">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" value="<oo>=userId</oo>" id="userIdOne">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary" onclick="$f('__.confirm',0)">确认</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __,function (_page,_data) {
+        var url= "/schoolcms/archive/upesnUser/findRole";
+       var data={"userId":_data};
+        $f("ajax.get",url, data, "__.addPage", _page)();
+    });
+
+    $f("df", "__.addPage",function (_data, _page) {
+        var html = $f("TPPL", _page,{"data":_data.data,"userId":_data.data.userId});
+        $(".function-add-modal").remove();
+        $("body").append(html);
+        $(".function-add-modal").modal();
+
+        $(".choose-item").click(function(){
+            if($(this).data("confirm")){
+                return;
+            }
+            var item = $(this).clone();
+            $(this).attr("data-confirm","true");
+            $(item).removeClass("choose-item");
+            $(item).addClass("confirm-item");
+            $(item).append("<span class='badge'>×</span>");
+            $(".list-group-confirm").append($(item));
+
+            $(".badge").click(function(){
+                $(this).parent().remove();
+                $("a[data-list="+ $(this).parent().data("list") +"]").attr("data-confirm","false");
+            });
+
+        });
+
+
+    });
+
+    $f("df", "__.confirm", function (_data) {
+        var ids = [];
+        $(".list-group-confirm").find(".confirm-item").each(function () {
+            ids.push($(this).data("roleid"));
+
+        });
+        var userId=$('#userIdOne').val();
+        $.ajax({
+
+            url:"/schoolcms/archive/upesnUser/updateRole",
+            type:"GET",
+            data:{
+                "ids[]":ids,
+                "userId":userId
+            },
+            success:function(resp){
+                alert(resp.message);
+
+                //刷新页面
+                $("#role-update-form").modal("toggle");
+                $f('plugin','upuser-role',0);
+            }
+        });
+    });
+
+</script>
+

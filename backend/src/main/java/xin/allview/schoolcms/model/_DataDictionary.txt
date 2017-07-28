@@ -1,0 +1,182 @@
+Table: l_classificationnote
+------------+-------------+------+-----+---------+---------
+ Field      | Type        | Null | Key | Default | Remarks 
+------------+-------------+------+-----+---------+---------
+ id         | INT(10)     | NO   | PRI |         | 主键id    
+ creater    | VARCHAR(10) | YES  |     |         | 创建者     
+ createtime | VARCHAR(30) | YES  |     |         | 创建时间    
+ version    | INT(10)     | YES  |     |         | 版本号     
+ classid    | INT(10)     | YES  |     |         | 分类id    
+ noteid     | INT(10)     | YES  |     |         | 帖子id    
+ expand     | JSON        | YES  |     |         | 拓展      
+------------+-------------+------+-----+---------+---------
+
+Table: l_roleauthor
+------------+-------------+------+-----+---------+---------
+ Field      | Type        | Null | Key | Default | Remarks 
+------------+-------------+------+-----+---------+---------
+ id         | INT(10)     | NO   | PRI |         |         
+ createtime | VARCHAR(30) | YES  |     |         |         
+ roleid     | INT(10)     | NO   |     |         |         
+ authorid   | INT(10)     | NO   |     |         |         
+------------+-------------+------+-----+---------+---------
+
+Table: l_upesnuserrole
+-------------+---------+------+-----+---------+---------
+ Field       | Type    | Null | Key | Default | Remarks 
+-------------+---------+------+-----+---------+---------
+ id          | INT(10) | NO   | PRI |         |         
+ roleid      | INT(10) | YES  |     |         |         
+ upesnuserid | INT(10) | YES  |     |         |         
+-------------+---------+------+-----+---------+---------
+
+Table: l_user
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ id          | INT(10)      | NO   | PRI |         | 主键id    
+ creater     | VARCHAR(10)  | YES  |     |         | 创建者     
+ create_time | VARCHAR(30)  | YES  |     |         | 创建时间    
+ version     | INT(10)      | YES  |     |         | 版本号     
+ expand      | JSON         | YES  |     |         | 拓展      
+ account     | VARCHAR(30)  | YES  |     |         | 账号      
+ nick_name   | VARCHAR(50)  | YES  |     |         | 用户名/昵称  
+ img         | VARCHAR(255) | YES  |     |         |         
+-------------+--------------+------+-----+---------+---------
+
+Table: l_userclassification
+------------------+--------------+------+-----+---------+---------
+ Field            | Type         | Null | Key | Default | Remarks 
+------------------+--------------+------+-----+---------+---------
+ id               | INT(10)      | NO   | PRI |         |         
+ creater          | INT(10)      | YES  |     | 0       |         
+ createtime       | DATETIME(19) | YES  |     |         |         
+ version          | INT(10)      | NO   |     | 0       |         
+ classificationid | INT(10)      | YES  |     | 0       |         
+------------------+--------------+------+-----+---------+---------
+
+Table: t_author
+-------+--------------+------+-----+---------+---------
+ Field | Type         | Null | Key | Default | Remarks 
+-------+--------------+------+-----+---------+---------
+ id    | INT(10)      | NO   | PRI |         |         
+ name  | VARCHAR(50)  | YES  |     |         |         
+ desc  | VARCHAR(200) | YES  |     |         |         
+-------+--------------+------+-----+---------+---------
+
+Table: t_classification
+------------+--------------+------+-----+---------+---------
+ Field      | Type         | Null | Key | Default | Remarks 
+------------+--------------+------+-----+---------+---------
+ id         | INT(10)      | NO   | PRI |         | 主键id    
+ creater    | VARCHAR(10)  | YES  |     |         | 创建者     
+ createtime | VARCHAR(30)  | YES  |     |         | 创建时间    
+ version    | INT(10)      | YES  |     |         | 版本号     
+ pid        | INT(10)      | YES  |     |         | 父级ID    
+ classname  | VARCHAR(50)  | YES  |     |         | 名称      
+ expand     | JSON         | YES  |     |         | 拓展      
+ img        | VARCHAR(255) | YES  |     |         |         
+ introduce  | VARCHAR(500) | YES  |     |         | 分类的简介   
+------------+--------------+------+-----+---------+---------
+
+Table: t_functionshop
+--------------+--------------+------+-----+---------+---------
+ Field        | Type         | Null | Key | Default | Remarks 
+--------------+--------------+------+-----+---------+---------
+ id           | INT(10)      | NO   | PRI |         |         
+ name         | VARCHAR(255) | YES  |     |         | 功能名称    
+ company      | VARCHAR(100) | YES  |     |         | 功能由哪家公司研发
+ introduction | VARCHAR(500) | YES  |     |         | 功能介绍    
+ simg         | VARCHAR(255) | YES  |     |         | 小图标url  
+ bimg         | VARCHAR(255) | YES  |     |         | 大图片     
+ type         | VARCHAR(100) | YES  |     |         | 种类      
+--------------+--------------+------+-----+---------+---------
+
+Table: t_note
+------------+--------------+------+-----+---------+---------
+ Field      | Type         | Null | Key | Default | Remarks 
+------------+--------------+------+-----+---------+---------
+ id         | INT(10)      | NO   | PRI |         | 主键id    
+ creater    | VARCHAR(10)  | YES  |     |         | 创建者     
+ createtime | VARCHAR(30)  | YES  |     |         | 创建时间    
+ version    | INT(10)      | YES  |     |         | 版本号     
+ expand     | JSON         | YES  |     |         | 拓展      
+ title      | VARCHAR(100) | YES  |     |         | 帖子标题    
+ context    | TEXT(65535)  | YES  |     |         | 帖子内容    
+ img        | VARCHAR(255) | YES  |     |         |         
+ hobby      | JSON         | YES  |     |         |         
+ type       | INT(10)      | YES  |     |         | 帖子的分类1语音2文字3图片
+------------+--------------+------+-----+---------+---------
+
+Table: t_reply
+---------------+-------------+------+-----+---------+---------
+ Field         | Type        | Null | Key | Default | Remarks 
+---------------+-------------+------+-----+---------+---------
+ id            | INT(10)     | NO   | PRI |         | 主键id    
+ creater       | VARCHAR(10) | YES  |     |         | 创建者     
+ create_time   | VARCHAR(30) | YES  |     |         | 创建时间    
+ version       | INT(10)     | YES  |     |         | 版本号     
+ expand        | JSON        | YES  |     |         | 拓展      
+ reply_context | TEXT(65535) | YES  |     |         | 回复内容    
+ reply_note    | INT(10)     | YES  |     |         | 回复帖子id  
+ type          | INT(10)     | YES  |     |         | 回复帖子的类型语音、文字、图片
+---------------+-------------+------+-----+---------+---------
+
+Table: t_role
+-------+-------------+------+-----+---------+---------
+ Field | Type        | Null | Key | Default | Remarks 
+-------+-------------+------+-----+---------+---------
+ id    | INT(10)     | NO   | PRI |         |         
+ name  | VARCHAR(20) | YES  |     |         |         
+-------+-------------+------+-----+---------+---------
+
+Table: t_student
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ id          | INT(10)      | NO   | PRI |         |         
+ name        | VARCHAR(20)  | YES  |     |         |         
+ no          | VARCHAR(20)  | YES  |     |         | 学号      
+ section_id  | INT(10)      | YES  |     |         | 校区ID    
+ sex         | VARCHAR(20)  | YES  |     |         | 性别      
+ age         | VARCHAR(20)  | YES  |     |         | 年龄      
+ level_id    | VARCHAR(100) | YES  |     |         | 级部ID    
+ class_id    | INT(10)      | YES  |     |         | 班级ID    
+ father_tel  | VARCHAR(50)  | YES  |     |         | 父亲电话    
+ mother_tel  | VARCHAR(50)  | YES  |     |         |         
+ father_name | VARCHAR(50)  | YES  |     |         |         
+ mother_name | VARCHAR(50)  | YES  |     |         |         
+ level_name  | VARCHAR(100) | YES  |     |         |         
+-------------+--------------+------+-----+---------+---------
+
+Table: t_upesnuser
+------------+---------------+------+-----+---------+---------
+ Field      | Type          | Null | Key | Default | Remarks 
+------------+---------------+------+-----+---------+---------
+ userid     | INT(10)       | NO   | PRI |         |         
+ upesnid    | VARCHAR(20)   | YES  |     |         |         
+ nick_name  | VARCHAR(10)   | YES  |     |         |         
+ createtime | VARCHAR(50)   | YES  |     |         |         
+ phone      | VARCHAR(22)   | YES  |     |         |         
+ email      | VARCHAR(40)   | YES  |     |         |         
+ img        | VARCHAR(300)  | YES  |     |         |         
+ expand     | JSON          | YES  |     |         |         
+ role       | VARCHAR(1000) | YES  |     |         |         
+------------+---------------+------+-----+---------+---------
+
+Table: t_weixinuser
+-------------+--------------+------+-----+---------+---------
+ Field       | Type         | Null | Key | Default | Remarks 
+-------------+--------------+------+-----+---------+---------
+ name        | VARCHAR(10)  | YES  |     |         |         
+ phone       | VARCHAR(20)  | YES  |     |         |         
+ openid      | VARCHAR(500) | YES  |     |         |         
+ weixin_name | VARCHAR(10)  | YES  |     |         |         
+ identity    | INT(10)      | YES  |     |         |         
+ status      | VARCHAR(10)  | YES  |     |         |         
+ userid      | INT(10)      | NO   | PRI |         |         
+ stuid       | INT(10)      | YES  |     |         |         
+ img         | VARCHAR(300) | YES  |     |         |         
+ expand      | JSON         | YES  |     |         |         
+-------------+--------------+------+-----+---------+---------
+

@@ -1,0 +1,196 @@
+<template>
+    <style>
+        /*1.table必须加宽度值*/
+        /*2.table必须加table-layour: fixed;属性*/
+        /*3.给每个<td>加四个属性。*/
+        table > tbody > tr > td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        table {
+            table-layout: fixed;
+        }
+
+        .tool-bar-right {
+            margin: 10px 0;
+            text-align: right
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > td {
+            vertical-align: middle;
+            text-align: center !important
+        }
+
+        button {
+            vertical-align: middle
+        }
+    </style>
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <oo>for(var i = 0; i < list.length; i ++){ if(i==0){</oo>
+            <li role="presentation" class="active" name="claaification" id="<oo>=list[i].id</oo>"><a data-id="<oo>=list[i].id</oo>" href="#content-<oo>=list[i].id</oo>" aria-controls="content-<oo>=list[i].id</oo>" role="tab" data-toggle="tab"><oo>=list[i].classname</oo></a></li>
+            <oo>}else{</oo>
+            <li role="presentation"  name="claaification" id="<oo>=list[i].id</oo>"><a data-id="<oo>=list[i].id</oo>" href="#content-<oo>=list[i].id</oo>" aria-controls="content-<oo>=list[i].id</oo>" role="tab" data-toggle="tab"><oo>=list[i].classname</oo></a></li>
+            <oo>}}</oo>
+            <li role="presentation"><a href="#neighbour-option" aria-controls="neighbour-option" role="tab" data-toggle="tab">版块设置</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in" id="neighbour-option">
+                <div class='table-style-home'>
+                    <div class="tool-bar-right">
+                        <button type="button" class="btn btn-success" onclick="$f('plugin', '__.add', 0);">新增板块</button>
+                    </div>
+
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive"
+                           style="width:100%;">
+                        <thead>
+                        <tr>
+                            <th>板块名称</th>
+                            <th>板块介绍</th>
+                            <th style="width: 140px">创建者</th>
+                            <th style="width: 140px">创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <oo>for(var i = 0; i < list.length; i ++){</oo>
+                        <tr>
+                            <td class="name">
+                                <oo>=list[i].classname</oo>
+                            </td>
+                            <td class="intro">
+                                <span class="menu-details" data-id="<oo>=list[i].id</oo>"><oo>=list[i].introduce</oo></span>
+                            </td>
+                            <td>
+                                <oo>=list[i].nick_name</oo>
+                            </td>
+                            <td>
+                                <oo>=list[i].createtime</oo>
+                            </td>
+                            <td class="center">
+                                <button class="btn btn-warning btn-sm update-btn" data-id="<oo>=list[i].id</oo>">
+                                    <i class="glyphicon glyphicon-pencil"></i>
+                                    修改
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="<oo>=list[i].id</oo>">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                    删除
+                                </button>
+                            </td>
+                        </tr>
+                        <oo> }</oo>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <oo>for(var i = 0; i < list.length; i ++){ if(i==0){</oo>
+            <div role="tabpanel" class="active tab-pane fade in" id="content-<oo>=list[i].id</oo>"></div>
+            <oo>}else{</oo>
+            <div role="tabpanel" class="tab-pane fade in" id="content-<oo>=list[i].id</oo>"></div>
+            <oo>}}</oo>
+
+        </div>
+    </div>
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/classification/findListByPid");
+        var data = {"page": _data.page, "pid": 147};
+        $f("ajax.get", url, data, "__.list", _page, _data)();
+    });
+
+    $f("df", "__.list", function (_data, _page, status) {
+        $f("tools.dateListFormat", _data.data.list);
+        var content = $f("TPPL", _page, _data.data);
+        $("#page-inner").html(content);
+
+        if(status === 0){
+            //初始加载第一个模块的列表
+            var _pid = _data.data.list[0].id;
+            $f('plugin', '__.section', {page: 1, id: _pid});
+
+        } else if(status === 1) {
+            //操作版块设置的时候 刷新到版块设置下面去
+            $("a[href='#neighbour-option']").tab('show');
+        }
+
+        $("ul li a").click(function () {
+            var id = $(this).data("id");
+
+            //清空DOM中的其他版块
+            $("#content-" + id).siblings().find(".table-style").remove();
+
+            $f('plugin', '__.section', {page: 1, id: id});
+        });
+
+        //板块介绍详情
+        $(".menu-details").click(function () {
+            var text = $(this).text();
+            $f('plugin', '__.details', {text: text});
+        });
+
+        //修改板块
+        $(".update-btn").click(function () {
+            var data = {};
+            data.name = $(this).parents("tr").find(".name").text().trim();
+            data.intro = $(this).parents("tr").find(".intro").text().trim();
+            data.id = $(".details").data("id");
+            $f('plugin', '__.update', data);
+        });
+
+        //删除板块
+        $(".delete-btn").click(function () {
+            var id = $(this).attr("data-id");
+            Samous.confirm({message: "确定要删除该板块吗？"}).on(function (e) {
+                if (!e)return;
+
+                $.ajax({
+                    url: $f('tools.serverURL', 'archive/classification/delete'),
+                    type: 'GET',
+                    data: {
+                        "id": id
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+                        $f('plugin', 'neighbor-help', 1);
+
+                    }
+                });
+            });
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

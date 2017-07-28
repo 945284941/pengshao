@@ -1,0 +1,160 @@
+<template>
+
+    <div data-page="propertyadd" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                </div>
+                <div class="center">
+                    <span>投诉与建议</span>
+                </div>
+            </div>
+        </div>
+        <div class="content-block-title" style="font-size: 17px;color: #131313;margin: 60px 10px 25px 15px;">
+            请选择：建议还是投诉？
+        </div>
+        <div id="bt" style="margin: 15px 10px 10px 10px;">
+            <p class="buttons-row">
+                <a href="#" class="title button button-round "  data="<oo>=data[1].id</oo>">
+                    <oo>=data[1].classname</oo>
+                    </oo></a>
+                <a href="#" class="title button button-round " data="<oo>=data[0].id</oo>">
+                    <oo>=data[0].classname</oo>
+                </a>
+            </p>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="title" placeholder="请输入标题">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <textarea id="content" placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+            </ul>
+        </div>
+
+       <!-- <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="img" placeholder="请输入图片url">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>-->
+
+        <a href="#" id="qd" class="button active confirm" style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+
+    </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+
+        var url = "/schoolcms/archive/classification/findClassificationByParent";
+        var data = {
+            "pid": "145"
+        }
+
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+
+
+        var content = $f("TPPL",_page,_data);
+        $("div[data-page='propertyadd']").remove();
+        homeView.router.load({content: content});
+
+        var id = null;
+        $(".title").click(function(){
+            $(this).addClass("active");
+            $(this).siblings().removeClass("active");
+           id =$(this).attr("data");
+        });
+
+        //添加建议或者投诉
+        $('#qd').click(function () {
+
+            var title = $('#title').val();
+            var content = $('#content').val();
+            /*var imgurl = $('#img').val();*/
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+           /* if (imgurl == "" || imgurl == null) {
+                alert("图片地址不能为空");
+                return;
+            }*/
+            if(id == "" || id == null){
+                alert("请选择建议还是投诉？");
+                return;
+            }
+
+           //alert("添加帖子页面======"+localStorage.getItem("userId"));
+            $.ajax({
+                url: "/schoolcms/archive/note/addNote",
+                type: "POST",
+                data: {
+                    "title": title,
+                    "content": content,
+                    "userId":localStorage.getItem("userId"),
+                    //"userId": 1925,
+                    "type": id,
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $f('plugin', 'property.search', 0);
+                }
+            });
+
+        });
+
+
+
+    });
+</script>
+
+

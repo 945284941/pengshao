@@ -1,0 +1,32 @@
+<template>
+    <div class="speed-dial">
+        <!-- FAB inside will open Speed Dial actions -->
+        <a href="#" class="floating-button">
+            <!-- First icon is visible when Speed Dial actions are closed -->
+            <i class="icon icon-plus"></i>
+            <!-- Second icon is visible when Speed Dial actions are opened -->
+            <i class="icon icon-close"></i>
+        </a>
+        <!-- Speed Dial Actions -->
+        <div class="speed-dial-buttons">
+            <!-- First Speed Dial button -->
+            <a href="#">
+                <i class="icon demo-icon-email"></i>
+            </a>
+            <!-- Second Speed Dial  button -->
+            <a href="#">
+                <i class="icon demo-icon-calendar"></i>
+            </a>
+            <!-- Third Speed Dial  button -->
+            <a href="#">
+                <i class="icon demo-icon-upload"></i>
+            </a>
+        </div>
+    </div>
+</template>
+<script>
+ $f("df", __, function(_page) {
+     var pages = AppFramework.getCurrentView().activePage;
+     $$(pages.container).append(_page);
+ });
+</script>

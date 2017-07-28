@@ -1,0 +1,372 @@
+<template>
+    <style>
+        .fenlei{
+            height: 30px;
+            display: inline-block;
+            border-radius:3px;
+            line-height: 30px;
+            vertical-align: middle;
+            margin: 2px 1px;
+        }
+        .class-block{
+            margin: 5px 0px;
+            border-top: 1px solid #AAAAAA;
+            display: inline-block;
+            padding-top: 8px;
+            width: 100%;
+
+        }
+        .class-list{
+            margin: 5px 0px;
+            border-bottom: 1px solid #AAAAAA;
+
+        }
+        .list-block{
+            margin: 20px 0;
+        }
+        textarea{
+            font-size: 15px !important;
+            height: 150px !important;
+        }
+        input{
+            font-size: 15px !important;
+        }
+
+    </style>
+    <div data-page="chats-info-baby" class="page">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back"><h2><</h2></a>
+                    </div>
+
+                </div>
+            </div>
+
+        <div id="person-info-content" class="page-content">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                    </div>
+                    <div style="width: 100%;text-align: center;">
+                        <span>实名认证</span>
+                    </div>
+                </div>
+            </div>
+            <div class="content-block-title" style="margin-top:20px;font-size: 16px;color: black;overflow: visible;">活动的标题</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="title" id="title" placeholder="请输入活动标题">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;margin-top:-16px;">开始时间</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="startTime" id="startTime" placeholder="活动开始时间">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;margin-top:-16px;">结束时间</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="endTime" id="endTime" placeholder="活动结束时间">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="margin-top:20px;font-size: 16px;color: black;overflow: visible;">活动的图片</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="title" id="imgurl" placeholder="" value="img/head3.jpg">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible; margin-top:-16px;">活动的内容</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <textarea id="context" placeholder="请输入活动内容"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <a href="#" id="on" style="height: 45px;font-size: 17px;padding-top: 9px"class="button active">确定</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+        var content = $f("TPPL",_page,_data);
+        chatView.router.load({
+            content:content
+        });
+            var endTime = AppFramework.calendar({
+                input: '#endTime',
+            });
+
+            var startTime = AppFramework.calendar({
+                input: '#startTime',
+            });
+        $('#on').click(function () {
+            var title=$('#title').val();
+            var context=$('#context').val();
+
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+
+            if (context == "" || context == null) {
+                alert("内容不能为空");
+                return;
+            }
+
+            var startTime=$('#startTime').val();
+            var endTime=$('#endTime').val();
+            var imgurl=$('#imgurl').val();
+            $.ajax({
+                url:"/schoolcms/archive/note/addNote",
+                type:"GET",
+                data:{
+                    "title":title,
+                    "content":context,
+                    "imgurl":imgurl,
+                    "startTime":startTime,
+                    "endTime":endTime,
+                    "userId":1,
+                    "type":163,//发帖类型/今日任务
+
+                },
+                success:function(resp){
+                    alert(resp.message);
+
+                    $f('plugin','contact.notification',163);
+                }
+            });
+        })
+
+
+        //花式单选框
+        $(".fenlei").click(function(){
+            fenleiclick(this);
+        });
+
+        var fenleiclick = function(flag){
+
+            //还原其它层级下的点击激活状态
+            //$(flag).parent(".class-block").siblings().find(".fenlei").attr("activeStatus",false);
+            //$(flag).parent(".class-block").siblings().find(".fenlei").removeClass("active");
+
+            //定义同级分类下的激活状态
+            var activeStatus = $(flag).attr('activeStatus');
+
+            if(activeStatus == "false"){
+                $(flag).addClass("active");
+                $(flag).attr("activeStatus",true);
+
+                $(flag).siblings().attr("activeStatus",false);
+                $(flag).siblings().removeClass("active");
+
+            }else {
+                $(flag).removeClass("active");
+                $(flag).attr("activeStatus",false);
+            }
+
+            //拿取你点的图标属性
+            var typeId=$(flag).attr("typeId");
+
+            //将选好的分类放入html的hidden标签中
+            $("#typeid").val(typeId);
+        }
+
+        //变换+ -样式 区分当前状态
+        $(".mark").click(function(){
+            markclick(this);
+        });
+
+        var markclick = function(flag){
+
+            $(flag).parents(".class-block").nextAll().remove();
+            $(flag).parent(".fenlei").siblings().find(".mark").html("<span >&nbsp;&nbsp;+</span>");
+            $(flag).parent(".fenlei").siblings().find(".mark").attr('openstatus',false);
+
+            var openStatus = $(flag).attr('openstatus');
+            if(openStatus == 'false'){
+                var html1 = "<span >&nbsp;&nbsp;-</span>";
+                $(flag).attr('openstatus',true);
+                $(flag).html(html1);
+                loadChildrenClass(flag);
+
+
+            }
+            if(openStatus=="true"){
+                $(flag).attr('openstatus',false);
+                $(flag).html("<span >&nbsp;&nbsp;+</span>");
+
+            }
+        }
+
+        var loadChildrenClass = function (_span){
+
+            var typeId = $(_span).attr("typeId");
+
+            var param = {"pid":typeId};
+            var url = $f("tools.serverURL","archive/classification/getList");
+            $f("ajax.get", url, param, "__.list", _span)();
+            $f("df", "__.list", function(_data, _div) {
+
+                var name = $(_div).attr("data");
+                var class_html = "";
+                class_html += '<div class="class-block">';
+                class_html += '<div class="class-name" style="display:inline-block; color: #aaaaaa">' + name + '：</div>'
+                for(var i = 0; i < _data.data.length; i++) {
+                    class_html += '<div class="button fenlei" typeId="' + _data.data[i].id + '" data="' + _data.data[i].name + '" activeStatus="false" >';
+                    class_html += _data.data[i].name;
+                    if (_data.data[i].isParent == "true") {
+                        class_html += '<lable class="mark child-mark" typeId="' + _data.data[i].id + '" data="' + _data.data[i].name + '" openStatus="false"><span>&nbsp;&nbsp;+</span></lable>';
+                    }
+                    class_html += '</div>';
+
+                }
+                class_html += '</div>';
+
+                $(_div).parents(".class-block").after($(class_html));
+
+                $(".fenlei").unbind('click').click(function () {
+                    fenleiclick(this);
+                });
+
+                $(".mark").unbind('click').click(function () {
+                    markclick(this);
+                });
+
+            });
+
+        }
+
+
+        //确认生成帖子
+        $(".confirm").click(function () {
+            var type = [];
+            type.push($("#typeid").val());
+            var content = $("#content").val();
+            var title = $("#title").val();
+            if($f("tools.checkEmp",type) == true){
+                alert("请选择分类！");
+                return;
+            }else if($f("tools.checkEmp",title) == true || $f("tools.checkEmp",content) == true){
+                alert("请输入标题或内容！");
+                return;
+            }
+
+
+            var url = $f("tools.serverURL","archive/note/add");
+            $f("ajax.get", url, {"title":title, "classificationIds":type, "context":content}, "__.list")();
+        });
+
+        $f("df", "__.list", function(_data) {
+            alert(_data.message);
+        });
+
+
+
+
+
+    });
+
+
+
+    //          一次性加载全部数据 js拼装方式
+
+    //            var typeId = $(_span).attr("typeId");
+    //            var class_html = "";
+    //            class_html += '<div class="class-block">';
+    //            for(var i = 0; i < _data.data.length; i++) {
+    //
+    //                if(_data.data[i].id == typeId){
+    //                    for(var j = 0; j < _data.data[i].children.length; j++){
+    //
+    //                        class_html += '<div class="button fenlei" typeId="' + _data.data[i].children[j].id + '" data="' + _data.data[i].children[j].name + '">';
+    //                        class_html += _data.data[i].children[j].name;
+    //                        if (_data.data[i].children[j].children != undefined) {
+    //                            class_html += '<lable class="mark child-mark" typeId="' + _data.data[i].children[j].id + '" data="' + _data.data[i].children[j].name + '"><span>&nbsp;&nbsp;+</span></lable>';
+    //                        }
+    //                        class_html += '</div>';
+    //
+    //                        _data.data[i].children = _data.data;
+    //
+    //                    }
+    //                    class_html += '</div>';
+    //
+    //                }
+    //
+    //            }
+    //
+    //            $(_span).parents(".class-block").after($(class_html));
+    //
+    //            $(".fenlei").unbind('click').click(function () {
+    //                fenleiclick(this);
+    //            });
+    //            $(".mark").unbind('click').click(function () {
+    //                loadChildrenClass(this);
+    //            })
+    //
+    //
+    //
+
+</script>
+
+

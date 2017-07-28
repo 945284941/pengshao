@@ -1,0 +1,79 @@
+<template>
+    <div data-page="convenience-note-list-query-replyAdd" class="page">
+  <div class="page-content">
+      <div class="navbar">
+          <div class="navbar-inner">
+              <div class="left">
+                  <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+              </div>
+              <div style="width: 100%;text-align: center;padding-right: 40px;">
+                  <span>评论</span>
+              </div>
+          </div>
+      </div>
+      <form class="list-block">
+          <ul>
+              <input type="hidden" value="<oo>=noteIdThere</oo>" id="wowo">
+              <input type="hidden" value="<oo>=noteId</oo>" id="xixi">
+              <li class="align-top">
+                  <div class="item-content">
+                      <div class="item-media"><i class="icon f7-icons">chat</i></div>
+                      <div class="item-inner "><textarea id="contact" style="padding:0;"></textarea></div>
+                  </div>
+              </li>
+          </ul>
+      </form>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-50"><a href="#"  id="babyy" class="button button-big button-fill color-green">发表</a></div>
+          <div class="col-50"><a href="#"  onclick="$f('plugin','convenience.note-list.query',this)" noteid="<oo>=noteId</oo>" class="button button-big button-fill color-red">取消</a></div>
+        </div>
+      </div>
+
+  </div>
+        </div>
+
+</template>
+<script>
+  $f("df", __, function(_page) {
+
+    $f("ajax.get", null, null, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+var noteId=$('#noteId').val();
+    var content = $f("TPPL",_page,{"noteId":noteId});
+    homeView.router.load({content:content})
+      $('#babyy').click(function () {
+
+          var context=$('#contact').val();
+          if(context==""){
+              alert("请输入内容");
+              return;
+
+          }
+          $.ajax({
+              url:$f("tools.serverURL","archive/note/addReply"),
+              type:"GET",
+              data:{
+                  "noteId":noteId,
+                  "context":context,
+                  "userId":localStorage.getItem("userId"),
+              },
+              success:function(resp){
+                  alert(resp.message);
+                  //刷新页面
+
+                  $f('plugin','convenience.note-list.query',{"noteid":noteId});
+                  homeView.router.back();
+              }
+          });
+
+      });
+
+
+
+
+  });
+
+</script>

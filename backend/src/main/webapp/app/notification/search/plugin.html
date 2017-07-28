@@ -1,0 +1,73 @@
+<template>
+    <div class="foot-tool-bar-area" style="text-align: right;">
+        <div style="font-family: 华文细黑; font-size:10px; float:left;">
+            当前位置><a href="#" class="thisClick" style="text-decoration: none;color:blue; " >活动通知</a></div>
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+            <a class="btn btn-success" id="qd" onclick="$f('plugin','notification.addTodayTask',<oo>=data.classid</oo>)">发帖子</a>
+        </div>
+    </div>
+
+    <div class="form-inline" style="float:right;margin-bottom:20px">
+
+        <div class="form-group">
+            <label >发起活动人：</label>
+            <input type="text" class="form-control"  placeholder="发帖人姓名" id="name">
+        </div>
+        <div class="form-group">
+            <label >活动标题：</label>
+            <input type="text" class="form-control"  placeholder="帖子标题" id="title">
+        </div>
+        <button type="button" class="btn btn-default" id="search" >搜索</button>
+
+    </div>
+    <div id="functionbody">
+
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url="/schoolcms/archive/note/sendClassid";
+
+        data = {
+            "classid":86
+        };
+
+        $f("ajax.get",url,data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var classid = _data.data.classid;
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+        $f('plugin','notification',{'classid':classid});
+        $('.thisClick').click(function () {
+            var classIdOn=classid;
+            $f('plugin','notification.search',classIdOn)
+        })
+        //查询
+        $("#search").click(function(){
+            var name=$("#name").val();
+            var title=$("#title").val();
+            var data={
+                "name":name,
+                "title":title,
+                "page":1,
+                "pageSize":5,
+                "classid":classid
+            }
+            $f('plugin','notification', data);
+
+        });
+
+
+
+    });
+
+
+
+</script>
+

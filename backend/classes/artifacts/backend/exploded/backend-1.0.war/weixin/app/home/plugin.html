@@ -1,0 +1,57 @@
+<template>
+    <style>
+
+
+    </style>
+
+    <div data-page="pageHome" class="page" data-name="pageHome">
+        <form class="searchbar">
+            <div class="searchbar-input">
+                <input type="search" placeholder="">
+                <a href="#" class="searchbar-clear"></a>
+            </div>
+            <a href="#" class="searchbar-cancel">Cancel</a>
+        </form>
+        <!-- Search Bar overlay-->
+        <div class="searchbar-overlay"></div>
+        <div class="page-content infinite-scroll" data-distance="20">
+            <!--每日金句-->
+            <div class="daily-quotes"></div>
+
+            <!-- 应用汇总 -->
+            <div class="home-app-list"></div>
+
+            <!--社会动态-->
+            <div class="dynamic"></div>
+
+        </div>
+
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page,data) {
+        AppFramework.hideIndicator();
+
+        if(data == 0){
+            homeView.router.load({
+                pageName: 'pageHome'
+            });
+        }else{
+            homeView.router.loadContent(_page);
+
+        }
+
+
+        //加载每日金句
+        $f("plugin", "__.daily-quotes", {"type": 73});
+
+        /*社区动态*/
+        $f("plugin", "__.dynamic", {"type": 76});
+
+
+        $f("plugin", "__.app-list", 0);
+
+    });
+
+</script>

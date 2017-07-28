@@ -1,0 +1,66 @@
+<template>
+<template>
+    <style>
+        .header-msg{
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left:13px;
+            vertical-align:top
+        }
+    </style>
+
+    <div data-page="work-details" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left"><a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a></div>
+                <div class="center" style="font-weight: bold"><oo>=classname</oo></div>
+            </div>
+        </div>
+
+        <div class="page-content content-container" style="padding: 50px 0">
+
+        </div>
+
+        <div class="toolbar tabbar tabbar-labels" style="background: #FFFFFF">
+            <div class="toolbar-inner row">
+                <a class="spliting button col-33"  style="border:1px solid #ff2d55; font:300 15px/39px consolas; color: #ff2d55;width: 120px; height: 40px;">
+                    拆解<div class="icon"><i class="f7-icons">arrow_right_fill</i></div>
+                </a>
+
+                <a class="assigned button col-33" style="border:1px solid #ff2d55; font:300 15px/39px consolas; color: #ff2d55;width: 120px; height: 40px;">
+                    指派
+                </a>
+                <a class="meeting-complete button col-33" style="border:1px solid #ff2d55; font:300 15px/39px consolas; color: #ff2d55;width: 120px; height: 40px;">
+                    完成任务
+                </a>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+        $f("ajax.get", null, null, "__.list", _page, _data)();
+
+    });
+
+    $f("df", "__.list", function (_data, _page, data) {
+
+        var page = $f("TPPL",_page, data);
+        mainView.router.load({content:page});
+        var name = data.classname;
+
+        if(name == "活动"){
+
+        } else if(name == "会议"){
+
+            $f('plugin', '__.meeting', data);
+
+        } else if(name == "一般通知"){
+
+        }
+
+    });
+</script>

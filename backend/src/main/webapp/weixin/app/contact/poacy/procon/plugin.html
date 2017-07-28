@@ -1,0 +1,110 @@
+<template>
+    <style>
+        .div-a {
+
+            overflow-x: auto;
+            font-size: 16px;
+            margin-top: 50px;
+            height: 30px;
+            margin-left: -23px;
+
+        }
+
+        .divul {
+            display: inline;
+            white-space: nowrap;
+
+        }
+
+        .divli {
+            display: inline-block;
+            margin: 0px 10px;
+
+        }
+
+
+        #tab1 {
+            overflow-y: auto;
+        }
+
+        #functionbody {
+            background: #ececec;
+            overflow-y: auto;
+
+        }
+    </style>
+    <div data-page="contact-poacy-procon" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="back"><h3><</h3></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>政务宣传</span>
+                </div>
+            </div>
+            <div class="subnavbar" style="overflow-x: auto;font-size: 16px;background-color:#F0F0F0; ">
+                    <ul class="divul" style=" display: inline;white-space: nowrap;margin-left:-40px;">
+                    <oo>for(var i = 0; i < data.length; i ++){ if(i==0){</oo>
+
+                    <li class="div-span divli active" id="<oo>=data[i].id</oo>" style="color: #62abfc;display: inline-block;  ">
+                       <oo>=data[i].classname</oo>
+                    </li>
+                    <oo>}else{</oo>
+                    <li class="div-span divli" id="<oo>=data[i].id</oo>" style="display: inline-block; margin-left:20px; "  >
+                        <oo>=data[i].classname</oo>
+                    </li>
+                    <oo>}}</oo>
+
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="page-content infinite-scroll" data-distance="100">
+            <div id="poacyContext" style="margin-top:90px; ">
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/classification/findClassificationByParent");
+        var data = {
+            "pid": "1"//查询的是便民服务的子类
+
+        }
+        var data1 = _data;
+        $f("ajax.get", url, data, "__.list", _page, data1)();
+    });
+
+    $f("df", "__.list", function (_data, _page, data) {
+        var html = $f("TPPL", _page, _data);
+        homeView.router.load({content:html});
+        $f('plugin', '.contact.poacy.poacyContext', 7);
+
+
+//分类查询
+        $(".div-span").click(function () {
+
+            var id = $(this).attr("id");
+
+
+            $('.div-span').css('color', '#000')
+            $(this).css('color', '#62abfc');
+            $(" a:first-child").removeClass("active");
+            $(this).find('a').addClass("active");
+
+            $f('plugin','contact.poacy.poacyContext',id);
+
+
+
+
+        });
+
+
+    });
+
+
+</script>
+

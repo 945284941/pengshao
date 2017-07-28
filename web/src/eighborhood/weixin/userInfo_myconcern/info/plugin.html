@@ -1,0 +1,63 @@
+<template>
+    <style>
+    </style>
+    <div class="info-container">
+        <div class="card" style="height:15%;margin:50px 10px 20px 10px; ">
+            <div class="card-content">
+                <div class="list-block media-list">
+                    <ul>
+                        <li class="item-content" style="">
+                            <div class="item-media" style="margin: 5px 0 0 10px">
+                                <img src="img/head3.jpg" width="60px" style="border-radius: 50%;">
+                                <div class="item-title-row" >
+                                    <div class="item-title" style="margin-left:10px;position:absolute;left:85px;top:25px">
+                                        <oo>if(data.user.upesnid==null){</oo>
+                                        <oo>=data.user.name</oo>
+                                        <oo>}else{</oo>
+                                        <oo>=data.user.nick_name</oo>
+                                        <oo>}</oo>
+                                    </div>
+                                </div>
+                                </br>
+                                <div class="item-subtitle" id="shenfen" style="margin-left: 12px; font-size: 14px;position:absolute;left:85px;top:50px">
+                                    <oo>if(data.user.upesnid==null){</oo>
+                                    业主
+                                    <oo>}else{</oo>
+                                    工作人员
+                                    <oo>}</oo>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page,_data,upesnid) {
+        var userId = _data;
+        var upesnid = upesnid;
+        var juweihui_id = localStorage.getItem("departid");
+        if(upesnid==""){
+            url = $f("server","archive/weixinUser/findOneUser");
+        }else{
+            url = $f("server","archive/upesnUser/findOneUser");
+        }
+
+       var data = {
+            'userid': userId,
+            'juweihui_id':juweihui_id
+        };
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var content = $f("TPPL", _page, _data);
+        $("#info").html(content);
+
+
+
+    });
+
+</script>

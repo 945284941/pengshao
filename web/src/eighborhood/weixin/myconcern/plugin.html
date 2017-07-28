@@ -1,0 +1,57 @@
+<template>
+
+<style>
+    .demo-card-header-pic .card-header {
+        height: 40vw;
+        background-size: cover;
+        background-position: center;
+    }
+
+
+    img{
+        border-radius: 50%;
+        width:60px;
+    }
+
+    .app-item{
+        text-align: center;
+        display: inline-block;
+        height:90px;
+        margin-top: 20px;
+        background: #efeff4;
+        box-shadow: aliceblue
+    }
+
+</style>
+<!--    style="background:  url(img/bg.png) no-repeat"-->
+<div data-page="myconcern-weixin" class="page" name="myconcern" >
+
+    <div class="page-content infinite-scroll" data-distance="20">
+
+        <div id="yezhujiaoliu"></div>
+    </div>
+
+</div>
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+        var url = null;
+
+        $f("ajax.get", url, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+
+        peopleView.router.load({content: content});
+
+/*
+        $f('plugin','__.juweihuijiaoliu',0);*/
+        $f('plugin','__.yezhujiaoliu',0);
+
+    });
+
+</script>

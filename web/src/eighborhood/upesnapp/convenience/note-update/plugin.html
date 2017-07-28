@@ -1,0 +1,201 @@
+<template>
+
+    <div data-page="convenience-note-updata" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;padding-right: 40px;">
+                    <span>修改</span>
+                </div>
+            </div>
+        </div>
+        <div class="list-block"  style="margin-top:60px;">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="departidupdate" class="btn" placeholder="发布单位">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div >
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-name"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="title" placeholder="请输入标题" value="<oo>=data.title</oo>">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-block">
+                <ul>
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <textarea id="content" placeholder="请输入内容"><oo>=data.context</oo></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                </ul>
+            </div>
+
+            <!--<div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-img"></i></div>
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="img" placeholder="请输入图片url">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+-->
+            <a href="#" id="qd" class="button active confirm" style="height: 35px; font-size: 16px; line-height: 35px">修改</a>
+
+        </div>
+
+    </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+        var url = $f("server","archive/note/findOneById");
+        //var url="/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page,_data)();
+    });
+
+    $f("df", "__.list", function(_data, _page,classid) {
+        var content = $f("TPPL",_page,_data);
+        mainView.router.load({content: content});
+
+        //获取发布单位
+        var arc=[];
+        var arcid=[];
+        $.ajax({
+
+            url:$f("server","archive/department/findDepartByPid"),
+            type:"GET",
+            data:{
+                "pid":9
+            },
+            success:function(resp){
+
+                var dename=""
+                for(var i=0;i<resp.data.length;i++){
+                    if(_data.data.expand!=null&&JSON.parse(_data.data.expand).departid==resp.data[i].id){
+
+                        dename=resp.data[i].name;
+                        $("#departidupdate").val(dename);
+
+                    }
+                    arc.push(resp.data[i].name);
+                    arcid.push(resp.data[i].id);
+
+
+                }
+                var pickerDevice = AppFramework.picker({
+                    input: '#departidupdate',
+                    cols: [
+                        {
+                            textAlign: 'center',
+                            values: arc,
+                        }
+                    ],
+                    //myPickerEnd.cols[0].setValue(year);
+                });
+                $('#departidupdate').click(function () {
+                    pickerDevice.cols[0].setValue(dename);
+
+                })
+
+
+
+
+            }
+        });
+
+
+        $('#qd').click(function () {
+
+
+            var title = $('#title').val().trim();
+            var content = $('#content').val().trim();
+            //获取单位的id
+            var departid;
+            var depart = $('#departidupdate').val().trim();
+            for (var i = 0; i < arc.length; i++) {
+                if (arc[i] == depart)
+
+                    departid= arcid[i]
+            }
+
+
+            /*var imgurl = $('#img').val().trim();*/
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+            if (depart == "" || depart == null) {
+                alert("单位不能为空");
+                return;
+            }
+            $.ajax({
+               url: $f("server","archive/note/updateNote"),
+                //url:"/schoolcms/archive/note/updateNote",
+                type:"POST",
+                data:{
+                    "title":title,
+                    "content":content,
+                    "id":classid,
+                    "departId":departid,
+
+                },
+                success:function(resp){
+                    alert(resp.message);
+                    //刷新页面
+                    $f('plugin', 'eighborhood.upesnapp.convenience', 148);
+                }
+            });
+
+
+        });
+
+
+
+    });
+</script>
+
+

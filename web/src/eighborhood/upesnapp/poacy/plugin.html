@@ -1,0 +1,85 @@
+<template>
+    <div data-page="poacy" class="page">
+        <div id="home-content" class="page-content infinite-scroll" >
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a style="padding: 10px 20px 10px 0px;" class="babyOne" ><h2><</h2></a>
+                    </div>
+                    <div class="center ">
+
+                    </div>
+                    <div class="right "></div>
+                </div>
+            </div>
+
+            <div class="page-content infinite-scroll" data-distance="44">
+                <div id="poacyContext" style="margin-top:50px;">
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+</template>
+
+<script>
+    $f("df", __, function (_page, _data) {
+        var id = _data;
+
+        var user_id = 1;
+
+
+        var bid = "";
+        if (id == 0) {
+            bid = 1;
+        } else {
+            bid = id
+        }
+        $f("ajax.get", $f("server","archive/note/findNotesByClassId"), {
+            'id': bid,
+            'user_id': user_id
+        }, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+        var baby=$('#contact-other-baby').val();
+       $('.tabs').click(function () {
+        AppFramework.closePanel();
+       });
+        $('.navbar').click(function () {
+            AppFramework.closePanel();
+        })
+        //$f("tools.dateListFormat", _data.data.list);
+        for(var i=0;i<_data.data.list.list.length;i++){
+            if(_data.data.list.list[i].expand==null||_data.data.list.list[i].expand==""){
+
+            }else{
+                var obj=JSON.parse(_data.data.list.list[i].expand);
+                _data.data.list.list[i].startTime=obj.startTime;
+                _data.data.list.list[i].endTime=obj.endTime;
+            }
+        }
+
+        var content = $f("TPPL", _page, {"data": _data.data, "pname": _data.data.pname,"baby":baby});
+
+
+            mainView.router.load({content:content});
+             $f('plugin','eighborhood.upesnapp.poacy.poacyContext',1);
+
+
+        $('.babyOne').click(function () {
+            yyesn.client.closePage();
+        });
+
+
+
+
+    });
+
+
+</script>

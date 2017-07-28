@@ -1,0 +1,64 @@
+<template>
+    <style>
+        .card {
+            height: 100%;
+        }
+    </style>
+
+     <div data-page="resident.details" class="page">
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;padding-right: 40px;">
+                    <span>居委会职责</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ks-card-header-pic" style="margin-top:50px;">
+           <!-- <div style="background-image:url(<oo>=data.img</oo>);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">-->
+            <div style="padding-left: 20px; height:100px;color: #000;border-bottom: 1px solid #ccc;" valign="bottom;" class="card-header color-white no-border">
+                <oo>=data.title</oo>
+            </div>
+            <div class="card-content">
+                <div class="card-content-inner">
+                    <p class="color-gray">
+                        <oo>=data.createtime</oo>
+                    </p>
+                    <p class="">
+                        <oo>=data.context</oo>
+                    </p>
+                </div>
+            </div>
+            <div id="fenlei1" style="text-align:right">
+
+            </div>
+        </div>
+        <input type="hidden" id="contact-other-numberOne" value="<oo>=baby</oo>">
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        //$("#tab1").html(content);
+        homeView.router.loadContent(content);
+
+    });
+
+
+</script>
+

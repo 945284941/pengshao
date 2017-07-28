@@ -1,0 +1,203 @@
+<template>
+    <style>
+        .huiyuan {
+
+            font-size: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .row-a{
+            background: #fff;
+            padding-bottom: 10px;
+        }
+        .rowz{
+            background-color: #F0F0F0;
+            margin:10px;
+            padding: 10px
+        }
+
+
+    </style>
+    <div class="row rowz" >
+        <div class="col-md-4" style="padding-right: 6px; ">
+            <div class="row-a" >
+                <div class="huiyuan" style="">
+                    <span class="glyphicon glyphicon-user tb"></span> <span>微信用户</span>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col-md-6">
+                        已绑定
+                    </div>
+                    <div class="col-md-6">
+                        未绑定
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;font-size: 20px;margin-top: 20px;">
+                    <div class="col-md-6">
+                        1200
+                    </div>
+                    <div class="col-md-6">
+                        1000
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" style="padding-right: 6px;padding-bottom: 10px;">
+            <div class="row-a">
+                <div class="huiyuan" style="">
+                    <span class="glyphicon glyphicon-user tb"></span> <span>消息</span>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col-md-6">
+                        总数量
+                    </div>
+                    <div class="col-md-6">
+                        归档数量
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;font-size: 20px;margin-top: 20px;">
+                    <div class="col-md-6">
+                        15200
+                    </div>
+                    <div class="col-md-6">
+                        5000
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="row-a">
+                <div class="huiyuan" style="">
+                    <span class="glyphicon glyphicon-user tb"></span> <span>任务</span>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col-md-6">
+                        总数量
+                    </div>
+                    <div class="col-md-6">
+                        完成数量
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;font-size: 20px;margin-top: 20px;">
+                    <div class="col-md-6">
+                        15200
+                    </div>
+                    <div class="col-md-6">
+                        5000
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row rowz">
+
+     <div class="col-md-12" >
+       <div style="background: #FFF">
+           <div class="row">
+               <div class="col-md-4">
+                   <div id="main" style="width: 300px;height:400px;margin: 0 auto;margin-top: 20px;"></div>
+
+               </div>
+               <div class="col-md-4">
+                   <div id="main1" style="width: 300px;height:400px;margin: 0 auto;margin-top: 20px;"></div>
+
+               </div>
+               <div class="col-md-4">
+
+                   <div id="main2" style="width: 300px;height:400px;margin: 0 auto;margin-top: 20px;"></div>
+
+               </div>
+
+           </div>
+
+
+       </div>
+     </div>
+    </div>
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        $f('ajax.get', null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("#page-inner").html(content);
+        var docmian=document.getElementById('main')
+        var myChart = echarts.init(docmian);
+        var docmian1=document.getElementById('main1')
+        var myChart1 = echarts.init(docmian1);
+        var docmian2=document.getElementById('main2')
+        var myChart2 = echarts.init(docmian2);
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '会员增长'
+            },
+            tooltip: {},
+
+            xAxis: {
+                data: ["2017.1","2017.2","2017.3","2017.4","2017.5","2017.6"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+        var option1 = {
+            title: {
+                text: '消息增长'
+            },
+            tooltip: {},
+
+            xAxis: {
+                data: ["2017.1","2017.2","2017.3","2017.4","2017.5","2017.6"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [15, 20, 36, 20, 25, 20]
+            }]
+        };
+        var option2 = {
+            title: {
+                text: '任务增长'
+            },
+            tooltip: {},
+
+            xAxis: {
+                data: ["2017.1","2017.2","2017.3","2017.4","2017.5","2017.6"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 13, 13, 10, 20]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+        myChart1.setOption(option1);
+        myChart2.setOption(option2);
+
+
+
+
+    });
+
+
+
+
+
+</script>

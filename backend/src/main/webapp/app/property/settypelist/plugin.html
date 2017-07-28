@@ -1,0 +1,104 @@
+<template>
+
+
+
+    <style>
+        table tr td{
+            text-align:center;"
+        }
+        table tr th{
+            text-align:center;"
+        }
+    </style>
+
+
+    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width: 100%;">
+        <thead>
+        <tr style="background: #f7f9fc;">
+            <td style="width:15%">标题</td>
+            <td style="width:40%">内容</td>
+            <td>发布时间</td>
+            <td style="width:10%">发布人</td>
+            <td style="width:15%">操作</td>
+        </tr>
+        </thead>
+        <tbody>
+        <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+        <tr>
+
+
+            <td data="<oo>=data.list[i].name</oo>"><oo>=data.list[i].classname</oo></td>
+            <td data="<oo>=data.list[i].nickname</oo>"><oo>=data.list[i].introduce</oo></td>
+            <td><oo>=data.list[i].createtime</oo></td>
+            <td data="<oo>=data.list[i].name</oo>"><oo>=data.list[i].creater</oo></td>
+            <td>
+                <a class="btn btn-warning notedetails"   data="<oo>=data.list[i].id</oo>">详情</a>
+                <a class="btn btn-info deletetype"   data="<oo>=data.list[i].id</oo>">删除 </a>
+                <a class="btn btn-danger noteupdata"  data="<oo>=data.list[i].id</oo>">修改</a>
+            </td>
+        </tr>
+        <oo> } </oo>
+        </tbody>
+    </table>
+
+
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+
+        var url = $f("tools.serverURL", "archive/classification/findListByPid");
+        var data = {"page": _data.page, "pageSize": 10, "pid": 145};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+
+        var content = $f("TPPL",_page,_data);
+
+        $("#functionbody").html(content);
+
+        //删除
+        $(".deletetype").click(function () {
+            var id = $(this).attr("data");
+            Samous.confirm({message: "确定要删除该板块吗？"}).on(function(e){
+                if(!e)return;
+
+                $.ajax({
+                    url: $f('tools.serverURL', 'archive/classification/delete'),
+                    type: 'GET',
+                    data: {
+                        "id":id
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+
+                        //刷新页面
+                        $f('plugin','property.search', "crud");
+                    }
+                });
+            });
+        });
+
+        //修改板块
+
+        $(".noteupdata").click(function(){
+            var id = $(this).attr("data");
+            $f('plugin','property.update',id);
+        });
+
+
+        //查看详情
+        $(".notedetails").click(function(){
+            var id=$(this).attr("data");
+            $f('plugin','property.typedetails',id);
+
+        });
+
+    });
+
+
+
+</script>

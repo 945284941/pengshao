@@ -1,0 +1,327 @@
+<template>
+    <div data-page="weixinworkflow" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a class="baby" style="color:black;">< 返回 </a>
+                </div>
+                <div style="width:100%;text-align: center;">
+                    <div style="margin-right:20px;"> <span>工作中心</span></div>
+                </div>
+                <div style="text-align: left;color: black;font-size: 25px;">
+                    <span class="addcontent" ><div class="icon"><i class="f7-icons">gear</i></div></span>
+                </div>
+
+                <input type="hidden" id="switch" value="1">
+                <input type="hidden" id="switchTime" value="1">
+                <input type="hidden" id="switchStatus" value="1">
+
+            </div>
+            <div class="div-a" style="font-size: 16px; margin-top:45px; height: 40px; border-bottom: 1px solid #9a9a9e;background-color:white;">
+                <ul class="divul" style="margin: 0; padding: 0;">
+                    <li style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;" id="time">全部<img src="img/on_1.png" style="margin-left:10px;"></li>
+                    <li style="list-style-type:none;float:left;margin: 10px 0;width:33%;text-align: center;" id="state">全部状态<img src="img/on_1.png" style="margin-left:10px;"></li>
+                    <li style="list-style-type:none;float: left;margin: 10px 0;width:33%;text-align: center;" id="responsibility">我负责<img src="img/on_1.png" style="margin-left:10px;"></li>
+                </ul>
+
+            </div>
+            <ul style="margin:0;padding:0;background-color:white;width:100%;display: none;" id="timeul" >
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">全部<div style="float:right;padding-right: 8px;color:#49BEF4;"><div class="icon"><!--<i class="f7-icons">check</i>--></div></div></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">今日待办<div style="float:right;padding-right: 8px;color:#49BEF4;"></div></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">今日截止<div style="float:right;padding-right: 8px;"></div></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">本周待办<div style="float:right;padding-right: 8px;"></div></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">本周截止</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">无日程</div><div style="float:right;padding-right: 8px;"></div></li>
+            </ul>
+            <ul style="margin:0;padding:0;background-color: white;width:100%;display: none;" id="stateul" class="findCondition">
+
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">全部状态</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">未读</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">待办</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">待审</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">完成</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">指派</div><div style="float:right;padding-right: 8px;"></div></li>
+
+            </ul>
+            <ul style="margin:0;padding:0;background-color: white;width:100%;display: none;" id="responsibilityul" class="findCondition">
+
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我派生</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我负责</div><div style="float:right;padding-right: 8px;"></div></li>
+                <li style="list-style-type: none;height: 40px;line-height: 40px;border-top:1px solid 	#F0F0F0;font-size: 16px;"><div style="margin-left:20px">我开始</div><div style="float:right;padding-right: 8px;"></div></li>
+            </ul>
+
+        </div>
+
+
+        <div class="page-content infinite-scroll"  data-distance="20" style="margin-top:84px;height:80%">
+             <div id="agencyList"></div>
+        </div>
+       <div class="toolbar">
+            <div class="toolbar-inner" style="width:100%;text-align: center;">
+                <a href=""></a>
+                <a class="create-work" style="text-align: center;color:black;">创建工作</a>
+                <a href=""></a>
+            </div>
+        </div>
+    </div>
+
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+        var id = 327;
+        var user_id = 1;
+        var bid = "";
+        if (id == null) {
+            bid = pid
+        } else {
+            bid = id
+        }
+        $f("ajax.get",null,null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+/*        $f("tools.dateListFormat", _data.data);
+        for (var i = 0; i < _data.data.list.list.length; i++) {
+            if (_data.data.list.list[i].expand == null || _data.data.list.list[i].expand == "") {
+
+            } else {
+                var obj = JSON.parse(_data.data.list.list[i].expand);
+                _data.data.list.list[i].startTime = obj.startTime;
+                _data.data.list.list[i].endTime = obj.endTime;
+            }
+        }*/
+
+        var content = $f("TPPL", _page, _data);
+
+        mainView.router.load({content: content});
+         $('.baby').click(function () {
+             yyesn.client.closePage();
+         });
+
+         $f('plugin','__.agencyList',0);
+   $('.addcontent').click(function () {
+
+
+       $f('plugin','__.agencySetUp',0)
+   });
+
+
+
+
+        $('#time').click(function () {
+            var switchValue=$('#switchTime').val();
+
+            var time=$('#time').text().trim();
+
+             $('#timeul li').each(function () {
+                 var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                 if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                 }else{
+                     $(this).find('div').eq(0).css("color","black");
+                 }
+             })
+
+
+          if(switchValue==1){
+            $("#timeul").css("display",'');
+            $("#responsibilityul").css("display",'none');
+            $("#stateul").css("display",'none');
+              $('#time').css("color","#49BEF4");
+              $('#responsibility').css("color","black");
+              $('#state').css("color","black");
+            $("#time>img").attr("src",function(){
+                return "img/on_2.png"
+            });
+            $("#responsibility>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $("#state>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","0.4");
+              $('#switchTime').val(2);
+              $('#switch').val(1);
+              $('#switchStatus').val(1);
+
+          }else{
+              $("#timeul").css("display",'none');
+              $('.page-content').css("opacity","1");
+              $("#time>img").attr("src",function(){
+                  return "img/on_1.png"
+              });
+              $('#switchTime').val(1);
+              $('#time').css("color","black");
+          }
+
+        });
+
+        $('#responsibility').click(function () {
+            var switchValue=$('#switch').val();
+
+            var time=$('#responsibility').text().trim();
+
+            $('#responsibilityul li').each(function () {
+                var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                }else{
+                    $(this).find('div').eq(0).css("color","black");
+                }
+            })
+
+
+
+            if(switchValue==1) {
+                $('#time').css("color","black");
+                $('#responsibility').css("color","#49BEF4");
+                $('#state').css("color","black");
+
+
+                $("#timeul").css("display", 'none');
+                $("#responsibilityul").css("display", '');
+                $("#stateul").css("display", 'none');
+                $("#time>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $("#responsibility>img").attr("src", function () {
+                    return "img/on_2.png"
+                });
+                $("#state>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $('.page-content').css("opacity", "0.4");
+                $('#switchTime').val(1);
+                $('#switch').val(2);
+                $('#switchStatus').val(1);
+            }else{
+                $("#responsibility>img").attr("src", function () {
+                    return "img/on_1.png"
+                });
+                $('.page-content').css("opacity", "1");
+                $("#responsibilityul").css("display", 'none');
+                $('#switch').val(1);
+                $('#responsibility').css("color","black");
+            }
+        });
+
+        $('#state').click(function () {
+            var switchValue=$('#switchStatus').val();
+            var time=$('#state').text().trim();
+
+            $('#stateul li').each(function () {
+                var timeulValue=$(this).find('div').eq(0).text().trim();
+
+
+                if(timeulValue==time){
+                    $(this).find('div').eq(0).css("color","#49BEF4");
+                }else{
+                    $(this).find('div').eq(0).css("color","black");
+                }
+            })
+                if(switchValue==1) {
+
+                    $('#time').css("color","black");
+                    $('#responsibility').css("color","black");
+                    $('#state').css("color","#49BEF4");
+
+
+                    $("#timeul").css("display", 'none');
+                    $("#responsibilityul").css("display", 'none');
+                    $("#stateul").css("display",'');
+                    $("#time>img").attr("src", function () {
+                        return "img/on_1.png"
+                    });
+                    $("#responsibility>img").attr("src", function () {
+                        return "img/on_1.png"
+                    });
+                    $("#state>img").attr("src", function () {
+                        return "img/on_2.png"
+                    });
+                    $('.page-content').css("opacity", "0.4");
+                    $('#switchTime').val(1);
+                    $('#switch').val(1);
+                    $('#switchStatus').val(2);
+                }else{
+                    $('.page-content').css("opacity", "1");
+                    $("#state>img").attr("src", function () {
+                        return "img/on_1.png"
+                    });
+                    $("#stateul").css("display", 'none');
+                    $('#switchStatus').val(1);
+                    $('#state').css("color","black");
+                }
+        });
+
+        $('#timeul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#time').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#timeul').css("display","none");
+            $("#time>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#time').css("color","black");
+            $('#switchTime').val(1)
+            $f('plugin','__.agencyList',{time:time,state:state,brff:brff});
+        });
+
+        $('#responsibilityul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#responsibility').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#responsibilityul').css("display","none");
+            $("#responsibility>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#responsibility').css("color","black");
+            $('#switch').val(1);
+            $f('plugin','__.agencyList',{time:time,state:state,brff:brff});
+        });
+
+        $('#stateul li').click(function () {
+            var findConditionValue =  $(this).find("div").eq(0).text();
+            $('#state').html(findConditionValue+"<img src='img/on_2.png' style='margin-left:10px;'>");
+            $('#stateul').css("display","none");
+            $("#state>img").attr("src",function(){
+                return "img/on_1.png"
+            });
+            $('.page-content').css("opacity","1");
+            var time=$('#time').text();
+            var state=$('#state').text();
+            var brff=$('#responsibility').text();
+            $('#state').css("color","black");
+            $('#switchStatus').val(1);
+            $f('plugin','__.agencyList',{time:time,state:state,brff:brff});
+        });
+
+
+
+
+        //创建会议
+        $(".create-work").click(function (){
+            $f('plugin', '__.addWork',0);
+        });
+
+
+
+
+
+
+
+
+    });
+
+</script>

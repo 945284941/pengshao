@@ -1,0 +1,113 @@
+<template>
+    <style>
+        .title{
+            width:100px;
+            font-weight:900;
+        }
+    </style>
+    <div id="task-detail-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">审核</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table style="width: 100%">
+                        <tbody>
+                        <tr>
+                            <td class="title">姓名<span class="require-mark">*</span></td>
+
+                            <td class="text detail-table-text">
+                               <oo>=data.name</oo>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title detail-table-label" style="width:100px">电话<span class="require-mark">*</span></td>
+
+                            <td class="text detail-table-text">
+
+                                <oo>=data.phone</oo>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="title">身份证号<span class="require-mark">*</span></td>
+                            <td class="text">
+                                <oo>=data.card_id</oo>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">所在居委区<span class="require-mark">*</span></td>
+                            <td class="text">
+                                <oo>=data.departname</oo>
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary updataTask" data="1">通过</button>
+                    <button type="button" class="btn btn-danger updataTask" data="2">不通过</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url=$f("server","archive/weixinUser/findAuthenInfo");
+        var data = {
+            "userid":_data
+        };
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#task-detail-form").remove();
+        $("#page-inner").append(html);
+        $("#task-detail-form").modal();
+
+
+
+        $(".updataTask").click(function(){
+            var status=$(this).attr("data");
+            var userid=_data.data.userid;
+
+            $.ajax({
+                url:$f("server","archive/weixinUser/changStatus"),
+                type:"POST",
+                data:{
+                    "status":status,
+                    "userid":userid,
+                },
+                success:function(resp){
+                    alert(resp.message);
+                    //刷新页面
+                    $("#task-detail-form").modal("toggle");
+                    $f('plugin','eighborhood.web.shenhe',0);
+                }
+            });
+
+        });
+
+
+    });
+
+
+</script>
+

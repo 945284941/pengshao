@@ -1,0 +1,63 @@
+<template>
+    <nav class="navbar-default navbar-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="main-menu">
+                <oo>for(var i = 0; i < data.length; i++) {</oo>
+                <li href="#" class="parent-manage menu" onclick="<oo>=data[i].action</oo>" style="background-color: #000000; color: #ffffff;">
+                    <div style="margin:0 auto;text-align:center; ">
+                        <img src="<oo>=data[i].img</oo>" data="<oo>=data[i].img</oo>"
+                             style="height:30px;width:30px;margin:10px 0 0 0;text-align:center">
+                        <br>
+                    </div>
+                    <div style="margin:0 auto;text-align:center">
+                        <oo>=data[i].name</oo>
+                    </div>
+                </li>
+                <oo>}</oo>
+            </ul>
+        </div>
+    </nav>
+    <!-- /. NAV SIDE  -->
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = "/schoolcms/archive/menu/findMenu";
+        data = {};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $f('plugin', 'dynamicsSed', 0);
+        $("#menu").html(content);
+        $(".menu").click(function () {
+            $(".menu").css({
+                "color": "#fff",
+                "background-color": "#000",
+            });
+
+            $(this).css({
+                "color": "#000",
+                "background-color": "#fff"
+            });
+            $(".menu>div>img").attr("src", function () {
+                return $(this).attr("data");
+
+            });
+
+            $(this).children("div").children("img").attr("src", function () {
+                var srvurl = $(this).attr("data");
+                srvurl = srvurl.substring(0, srvurl.length - 4) + "1" + srvurl.substring(srvurl.length - 4, srvurl.length);
+                return srvurl;
+
+            });
+
+        })
+    });
+
+
+</script>

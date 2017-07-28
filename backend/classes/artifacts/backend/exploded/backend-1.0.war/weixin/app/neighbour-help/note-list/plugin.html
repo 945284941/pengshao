@@ -1,0 +1,138 @@
+<template>
+
+    <style>
+        .list-block {
+            margin: 6px 0;
+            font-size: 17px;
+        }
+        .tip-style{
+            color: #AAAAAA;
+            text-align: center;
+        }
+
+    </style>
+    <div class="page-content infinite-scroll" data-distance="20">
+        <div class="con-container">
+            <oo>if(data.list.length == 0){</oo>
+            <div class="tip-style"><h3 >暂无数据</h3></div>
+            <oo>} else{</oo>
+
+            <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+            <div class="list-block media-list for-container">
+                <ul>
+                    <li>
+                        <div class="item-link item-content" data="<oo>=data.list[i].id</oo>">
+                            <div class="item-inner">
+                                <div class="item-subtitle" style="margin-bottom: 12px; width: 100%;">
+                                    <oo>=data.list[i].title</oo>
+                                </div>
+                                <div class="item-text" style="height: 21px; padding-top: 20px">
+                                    <span style="margin-right: 15px;font-size: 13px"><oo>=data.list[i].nick_name</oo></span>
+                                    <span style="font-size: 13px"><oo>=data.list[i].createtime</oo></span>
+                                    <a style="float: right;"><oo>=data.list[i].classname</oo></a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <oo>}}</oo>
+        </div>
+        <div class="infinite-scroll-preloader">
+            <div class="preloader"></div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/note/findNoteList");
+        var data = {
+            "classId": _data.classId,
+            "pageSize": _data.pageSize,
+            "page": _data.page
+
+        };
+
+        $f("ajax.get", url, data, "__.list", _page, _data.classId)();
+    });
+
+
+    $f("df", "__.list", function (_data, _page, classId) {
+
+        //抓取当前所在分类 改变其分类名称的css样式
+        $("li[data-id='" + classId + "']").css('color', '#62abfc');
+        $("li[data-id='" + classId + "']").siblings().css('color', '#000');
+
+        $f("tools.dateListFormat",_data.data.list);
+        var content = $f("TPPL", _page, _data);
+        $(".every-note-list").html(content);
+
+
+        $(".item-link").click(function (e) {
+            var id = $(this).attr("data");
+            $f('plugin', '__.query', {"noteid": id});
+        });
+
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 10;
+        if (_data.data.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"classId": classId, "pageSize": pageSize, "page": current_page};
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findNoteList"), data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function (_data, _page) {
+
+                    $f("tools.dateListFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".con-container").append($(html).find(".for-container"));
+
+                    if (_data.data.list.length < pageSize) {
+
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+    });
+
+
+</script>

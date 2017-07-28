@@ -1,0 +1,93 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="neighbour-query" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left "><a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a></div>
+                <div class="center">详情</div>
+                <div class="right"><a class="publish-note" onclick="$f('plugin','__.replyAdd',0)"><h2>+</h2></a></div>
+
+            </div>
+        </div>
+
+        <div class="page-content infinite-scroll" data-distance="44">
+            <div class="card ks-card-header-pic" style="margin-top:50px;">
+
+                <div class="card-header" style="font-size:12px">
+                    <div class="avatar">
+                        <img src="img/head1.jpg" style="width:34px;height:34px;">
+                        <div class="user"
+                             style="color: grey;display: inline-block;line-height: 18px; margin-left:13px;vertical-align:top">
+                            <div class="name">
+                                <oo>=data.nick_name</oo>
+                            </div>
+                            <div class="time">
+                                <oo>=data.createtime</oo>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <div><label><oo>=data.title</oo></label></div>
+                    </div>
+
+                    <hr style="height:1px;border:none;border-top:1px solid #E8E8E8; margin: 0"/>
+                    <div class="card-content-inner">
+                        <div><oo>=data.context</oo></div>
+                    </div>
+                    <input type="hidden" value="<oo>=data.id</oo>" id="noteId">
+                </div>
+            </div>
+            <div class="comments">
+
+            </div>
+        </div>
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/note/findOneById");
+        var data = {"id": _data.noteid};
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        _data.data.createtime = $f("tools.dateFormat", _data.data.createtime);
+        var content = $f("TPPL", _page, _data);
+        mainView.router.load({content:content});
+
+        //删除dom中回复页面，使返回时不再回到回复界面
+        var replyPage = $("div[data-page='neighbour-reply-add']");
+        if(replyPage.length != 0) {
+            replyPage.remove();
+
+        }
+        //删除dom中的修改页面，使返回时不再回到该页面
+        var updatePage = $("div[data-page='neighbour-note-update']");
+        if(updatePage.length != 0) {
+            updatePage.remove();
+        }
+
+        //删除dom中重复的详情界面（本页）
+        var thisPage = $("div[data-page='neighbour-query']");
+        if(thisPage.length != 0) {
+            thisPage.filter(".cached").remove();
+            $("div[data-page='neighbour-home']").removeClass("cached");
+        }
+
+        $f('plugin', '__.reply', _data.data.id);
+
+    });
+
+</script>

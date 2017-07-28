@@ -1,0 +1,163 @@
+<template>
+
+
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td class="title detail-table-label" style="width:100px">会议名称<span class="require-mark">*</span></td>
+
+            <td class="text detail-table-text">
+                <input class="editor form-control" type="text" id="notrtitlee" placeholder="请输入会议标题">
+            </td>
+        </tr>
+        <tr>
+            <td class="title detail-table-label" style="width:100px">会议时间<span class="require-mark">*</span></td>
+
+            <td class="text detail-table-text">
+                <input class="editor form-control datatimeSed" type="text" id="startTimee" placeholder="创建时间" >
+            </td>
+        </tr>
+
+        <tr>
+            <td class="title detail-table-label" style="width:100px">会议地点<span class="require-mark">*</span></td>
+
+            <td class="text detail-table-text">
+                <input class="editor form-control" type="text" id="didian" placeholder="请输入会议地点">
+            </td>
+        </tr>
+
+        <tr>
+            <td class="title">会议内容<span class="require-mark">*</span></td>
+            <td class="text">
+                <textarea class="editor form-control" id="contentt" placeholder="请输入内容"></textarea>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="title">参会人<span class="require-mark">*</span></td>
+            <td class="text">
+                <textarea class="editor form-control" id="people" placeholder="请输入内容"></textarea>
+
+
+            </td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addTask" style="margin-left:70%">添加</button>
+        <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = null;
+        var data = null;
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+
+        $(".addwork").html(html);
+        $('.datatimeSed').datetimepicker({
+
+        });
+
+        $('#addTask').click(function () {
+           //h获取人的数组这里代表参会人
+            var arr = [];
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"&&strs[i].split(":")[0]!=0){
+                    arr.push(
+                       strs[i].split(":")[0]
+                    );
+
+                }
+
+            }
+            var title = $('#notrtitlee').val().trim();
+            var startTime=$('#startTimee').val().trim();
+            var didian=$('#didian').val().trim();
+            var content = $('#contentt').val().trim();
+
+
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+
+            if (title.length > 50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+            if (didian == "" || didian == null) {
+                alert("会议地点不能为空");
+                return;
+            }
+            if( startTime==""||startTime==null){
+                alert('活动开始时间不能为空')
+                return false
+            }
+            startTime=startTime.replace(/-/g,"/");
+            var nowtime=new Date(startTime);
+            if(nowtime<myDate){
+                alert("开始时间不能早于当前时间");
+                return ;
+            }
+
+            if (arr == "" || arr == null) {
+                alert("请选择通知人员!");
+                return;
+            }
+            arr.unshift(0);
+            arr.push(0);
+
+
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/addMeetingNote"),
+                type: "POST",
+                data: {
+                    title: title,
+                    didian: didian,
+                    startTime: startTime,
+                    ids: arr,
+                    content: content,
+                    userId: localStorage.getItem("userId"),
+                    //"userId": 1,
+                    type: 325
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $("#role-add-form").remove();
+                    $f('plugin','agency.search',0);
+                }
+            });
+
+        });
+
+        //鼠标放入添加人的input里面出事件
+        $("#people").focus(function(){
+            $f('plugin','schedule.get-user-list', null);
+            $(".addwork").hide();
+            $(".typec").hide();
+
+        })
+    });
+
+
+</script>
+

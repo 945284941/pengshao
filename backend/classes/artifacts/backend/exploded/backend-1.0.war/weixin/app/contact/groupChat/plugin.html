@@ -1,0 +1,169 @@
+
+<template>
+    <div >
+    <div data-page="chats-info" class="page">
+        <style>
+            .demo-card-header-pic .card-header {
+                height: 40vw;
+                background-size: cover;
+                background-position: center;
+            }
+
+            .pages {
+                background-color: #CCCCCC;
+            }
+        </style>
+        <div id="chats-info-content" class="page-content infinite-scroll" data-distance="20">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                    </div>
+                    <div class="center">
+                        <oo>=data.className</oo>
+                    </div>
+                </div>
+            </div>
+            <div class="dynamic-container">
+                <oo>for(var i = 0; i < data.list.list.length; i++){</oo>
+
+                <oo>if(data.list.list[i].creater!=1){</oo>
+
+                <div class="note-card">
+                    <div class="card-header" style="font-size:14px;width:55%">
+                        <div class="avatar">
+                            <img src="img/head5.jpg" style="width: 50px;height: 50px;border-radius: 25%;">
+                        </div>
+                        <div class="user flex-column" style="color:grey;margin-left:20px;">
+
+                            <div class="time" style="font-size: 16px;">
+                                <oo>=data.list.list[i].nick_name</oo>
+                            </div>
+                            <div class="name" style="width: 200px">
+                                <oo>=data.list.list[i].createtime</oo>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card ks-facebook-card "  style="border-radius: 12px;  box-shadow: none;  width: 80%;">
+                        <div class="card-content-inner">
+                            <p>
+                                <oo>=data.list.list[i].context</oo>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <oo>}else{</oo>
+
+                <div class="note-card">
+                    <div class="card-header" style="font-size:14px; max-width:55%;margin-left:130px;">
+                        <div class="avatar">
+                            <img src="<oo>=data.list.list[i].img</oo>" style="width: 50px;height: 50px;border-radius: 25%;">
+                        </div>
+                        <div class="user flex-column" style="color: grey;margin-right:20px;">
+                            <div class="time" style="text-align:right">
+                                <oo>=data.list.list[i].nick_name</oo>
+                            </div>
+                            <div class="name" style="width: 165px">
+                                <oo>=data.list.list[i].createtime</oo>
+                            </div>
+                        </div>
+                        <div class="avatar">
+                            <img src="<oo>=data.list.list[i].img</oo>"  style="width: 50px;height: 50px;border-radius: 25%;">
+                        </div>
+                    </div>
+                    <div class="card ks-facebook-card">
+                        <div class="card-content-inner">
+                            <p>
+                                <oo>=data.list.list[i].context</oo>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <oo>}}</oo>
+            </div>
+            <div class="infinite-scroll-preloader">
+                <div class="preloader"></div>
+            </div>
+            .
+
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/note/findMessage");
+        var data = {"classId": _data,"page":1,"pageSize":5};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data.data.list.list);
+        var content = $f("TPPL", _page, _data);
+
+        chatView.router.load({
+            content:content
+        });
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        // 加载flag
+        var loading = false;
+
+        // 拉取次数
+        var current_page = 1;
+
+        var pageSize = 7;
+
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"noteId": _data.data.list.list[0].id, "pageSize": pageSize, "page": current_page};
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findMessage"), data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function(_data,_page) {
+
+                    $f("tools.dateListFormat", _data.data.list.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".dynamic-container").append($(html).find(".note-card"));
+
+                    if (_data.data.list.list.length < pageSize) {
+
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+
+    });
+
+</script>
+

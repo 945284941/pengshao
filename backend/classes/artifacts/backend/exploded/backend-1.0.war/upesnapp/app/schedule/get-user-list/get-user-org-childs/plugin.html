@@ -1,0 +1,247 @@
+
+
+<template>
+
+    <style>
+        .divspan{
+            border: 1px solid red;
+            margin: 5px;
+            padding: 2px;
+        }
+        .div-a{
+            padding-top: 10px;
+
+
+        }
+        #mbx{
+            margin-top: 10px;
+            font-size: 16px;
+            color: red;
+        }
+
+    </style>
+
+    <div id="mbx"></div>
+    <div class="list-block accordion-list" style=" margin: 10px 0;">
+
+            <oo>for(var i = 0; i < data.depart.length; i++){</oo>
+            <ul>
+            <li class="accordion-item">
+                <a href="#" class="item-content item-link lia" data="<oo>=data.depart[i].id</oo>" data-type="<oo>=data.depart[i].name</oo>" data-val="<oo>=data.depart[i].pid</oo>">
+                <div class="item-inner">
+                    <div class="item-title"><oo>=data.depart[i].name</oo></div>
+                </div></a>
+                <div class="accordion-item-content">
+                    <div class="content-block">
+
+                    </div>
+                </div>
+            </li>
+            </ul>
+            <oo>}</oo>
+
+    </div>
+
+     </div>
+
+
+    <div class="page-content infinite-scroll list-block" data-distance="20" style="margin-top: 1px; height:78%; padding: 0">
+        <div class="content-a">
+
+            <oo>for(var j = 0; j < data.userList.list.length; j++){</oo>
+            <div class="inner-container">
+                <ul>
+                    <li style="height: 56px; min-height: 56px">
+                        <label class="label-checkbox item-content">
+                            <input type="checkbox" name="meetingcheck" value="<oo>=data.userList.list[j].id</oo>" data-name="<oo>=data.userList.list[j].nick_name</oo>">
+                            <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title">
+                                    <img src="<oo>=data.userList.list[j].img</oo>" style="width: 34px; height: 34px;border-radius: 50%"/>
+                                </div>
+                                <div class="item-content">
+                                    <oo>=data.userList.list[j].nick_name</oo>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <oo>}</oo>
+
+
+        </div>
+        <div class="infinite-scroll-preloader">
+            <div class="preloader"></div>
+        </div>
+
+    </div>
+
+    <div>
+        <oo>if(data.depart.length==0 && data.userList.list.length==0){</oo>
+        <div style="text-align: center;font-size: 20px;">部门暂时没有人员</div>
+
+        <oo>}</oo>
+
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/department/findDepartmentByPid");
+        var data={
+            pid:_data.id
+        }
+        $f("ajax.get", url, data, "__.list", _page,_data)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page,data) {
+
+        var content = $f("TPPL", _page, _data);
+
+
+
+        $("#userall").html(content);
+        var info=localStorage.getItem("userinfoe");
+        var strs= new Array(); //定义一数组
+        strs=info.split(","); //字符分割
+        for (var i=0;i<strs.length ;i++ )
+        {
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val()+":"+$(this).attr("data-name") == strs[i]) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        }
+
+        $("input[name='meetingcheck']").change(function(){
+
+            var info=localStorage.getItem("userinfoe");
+            var val=$(this).val();
+            var valu=$(this).attr("data-name");
+            if($(this).is(':checked')){
+                info+=val+":"+valu+",";
+                localStorage.setItem("userinfoe",info);
+            }else{
+                var info=localStorage.getItem("userinfoe");
+                var strs= new Array(); //定义一数组
+                strs=info.split(","); //字符分割
+                var html="";
+                for (var i=0;i<strs.length ;i++ )
+                {
+                    if(strs[i]!=val+":"+valu){
+                        html=+strs[i]+",";
+                    }
+                }
+                localStorage.setItem("userinfoe",html);
+
+
+            }
+
+        });
+
+        $("#mbx").html(data.html);
+
+        $(".mmbx").click(function(){
+            var id=$(this).attr("data");
+            //获取当前span的索引
+            var len = $(this).index();
+            var lenall=$("#mbx span").length;
+            var j=(lenall-len-1)*4;
+            //删除其后面的spani
+            for(var i=len+1;i<lenall;i++){
+
+            $("#mbx span").eq(len+1).remove()
+            }
+
+            var html=$("#mbx").html();
+            html=html.substring(0,html.length-j);
+            var data1={
+                id:id,
+                html:html,
+            }
+            $f('plugin','agency.get-user-list.get-user-org-childs',data1);
+        });
+
+
+        var htmlr=data.html;
+        $(".lia").click(function(){
+
+            var id=$(this).attr("data");
+            var name=$(this).attr("data-type");
+            htmlr+="><span class='mmbx' data='"+id+"'>"+name+"</span>";
+            var data={
+                id:id,
+                name:name,
+                html:htmlr,
+
+            }
+            $f('plugin','agency.get-user-list.get-user-org-childs',data);
+
+        });
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 15;
+        if (_data.data.userList.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"id":data.id,"pageSize": pageSize, "page": current_page};
+                $f("ajax.get", $f("tools.serverURL", "archive/upesnUser/findDepartmentByPid"), data, "__.user-list", _page)();
+                $f("df", "__.user-list", function (_data, _page) {
+
+                    $f("tools.replyDateFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".content-a").append($(html).find(".inner-container"));
+
+                    if (_data.data.list.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+                        return;
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+
+    });
+
+
+</script>

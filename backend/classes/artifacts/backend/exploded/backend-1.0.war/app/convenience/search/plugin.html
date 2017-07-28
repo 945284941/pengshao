@@ -1,0 +1,143 @@
+<template>
+    <style>
+
+
+    </style>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <oo>for(var i = 0; i < data.length; i ++){ if(i==0){</oo>
+        <li role="presentation" class="active" name="claaification" id="<oo>=data[i].id</oo>"><a id="dd<oo>=data[i].id</oo>" data-id="<oo>=data[i].id</oo>" href="#content-<oo>=data[i].id</oo>" aria-controls="content-<oo>=data[i].id</oo>" role="tab" data-toggle="tab"><oo>=data[i].classname</oo></a></li>
+        <oo>}else{</oo>
+        <li role="presentation"  name="claaification" id="<oo>=data[i].id</oo>"><a id="dd<oo>=data[i].id</oo>" data-id="<oo>=data[i].id</oo>" href="#content-<oo>=data[i].id</oo>" aria-controls="content-<oo>=data[i].id</oo>" role="tab" data-toggle="tab"><oo>=data[i].classname</oo></a></li>
+        <oo>}}</oo>
+        <li role="presentation"  ><a id="fenlei" href="#home" aria-controls="home" role="tab" data-toggle="tab">版块设置</a></li>
+    </ul>
+
+    <div class="foot-tool-bar-area" style="text-align: right;">
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+
+        </div>
+    </div>
+   <input type="hidden" id="hv">
+  <div id="addxx" class="form-inline" style="float:right;margin-bottom:20px">
+        <div class="form-group">
+            <input type="text" class="form-control"  placeholder="请输入标题" id="title">
+        </div>
+        <button type="button" class="btn btn-default" id="search" >搜索</button>
+        <div class="form-group">
+            <a class="btn btn-success" id="qd" >发消息</a>
+        </div>
+    </div>
+    <div id="addmb" class="form-inline" style="float:right;margin-bottom:20px;display: none">
+
+        <div class="form-group">
+            <a class="btn btn-success" onclick=" $f('plugin','convenience.addsettype',0)" id="ftype">新增模板</a>
+        </div>
+    </div>
+
+
+
+
+        <div id="functionbody">
+
+        </div>
+
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url=window.serverURL.findClassificationByParent;
+        var data={
+            "pid":"148"//查询的是便民服务的子类
+        }
+       var data1=_data;
+        $f("ajax.get", url, data, "__.list", _page,data1)();
+    });
+
+    $f("df", "__.list", function (_data, _page,data) {
+
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+        if(data=="crud"){
+            $("#fenlei").click();
+            $("#addmb").show();
+            $("#addxx").hide();
+            $f('plugin','convenience.settypelist', 0);
+
+
+        }else{
+            $f('plugin','convenience', 0);
+        }
+
+        //查询
+        $("#search").click(function(){
+            var name=$("#name").val();
+            var title=$("#title").val();
+            var typeId=$("#hv").val();
+             if(typeId==""){
+                 typeId=149;
+             }
+            var data={
+                "name":name,
+                "title":title,
+                "typeid":typeId,
+                "page":1,
+                "pageSize":10,
+
+            }
+            $f('plugin','convenience', data);
+
+        });
+        //分类查询
+        $("li[name='claaification']").click(function(){
+      // $(".claaification").click(function(){
+          /*  $('.typebtn').css('background','#fff')
+            $(this).children().css('background','#e6e6e6');*/
+            $("#addxx").show();
+            $("#addmb").hide();
+            var id=$(this).attr("id");
+            $("#hv").val(id);
+            var name=$("#name").val();
+            var title=$("#title").val();
+
+            var data={
+                "name":name,
+                "title":title,
+                "typeid":id,
+                "page":1,
+                "pageSize":10,
+
+            }
+            $f('plugin','convenience', data);
+        });
+
+        //点击模板设置
+        $("#fenlei").click(function(){
+            $("#addmb").show();
+            $("#addxx").hide();
+            $f('plugin','convenience.settypelist', 0);
+        });
+
+     //点击发消息时触发
+        $("#qd").click(function(){
+            var type=$("#hv").val();
+            $f('plugin','convenience.addTodayTask',{"type":type})
+
+        })
+//点击发布模板
+
+
+
+
+    });
+
+
+
+</script>
+

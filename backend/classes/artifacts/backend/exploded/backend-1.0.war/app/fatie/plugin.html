@@ -1,0 +1,119 @@
+<template>
+    <style>
+
+    </style>
+
+    <div id="school-detail-body">
+        <div class="tool-bar col-md-12">
+            <h2>发布帖子</h2>
+        </div>
+        <form id="section-form" role="form" class="col-md-12">
+            <table class="detail-table col-md-12">
+                <tbody>
+                <tr>
+                    <td class="title detail-table-label" style="width:100px">标题<span class="require-mark">*</span></td>
+
+                    <td class="text detail-table-text">
+                        <input class="editor form-control" type="text" id="title" placeholder="请输入标题">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="title">内容</td>
+                    <td class="text">
+                        <textarea class="editor form-control" id="content" placeholder="请输入内容"></textarea>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">类型</td>
+                    <td class="text">
+                        <input class="editor form-control" type="text" id="typeid" placeholder="点击下面的分类选择类型">
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </form>
+
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div id="fenlei"></div>
+    </div>
+    <div class="clear-float"></div>
+    <div class="foot-tool-bar-area">
+        <div class="tool-bar-left editor" style="padding-left:90%;margin-bottom:20px;">
+            <a class="btn btn-success" id="qd">发帖</a>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("#fatie").html(content);
+
+
+        $("#qd").click(function () {
+            var title = $("#title").val();
+            var content = $("#content").val();
+            var typeid = $("#userId").val();
+            var flag=true;
+            if (title == "") {
+                alert("标题不能为空");
+                flag=false;
+            }else if (content == "") {
+                alert("内容不能为空");
+                flag=false;
+            }else if (typeid == "") {
+                alert("类型不能为空");
+                flag=false;
+            }else if (title.length>50) {
+                alert("标题字数不能超过50个");
+                flag=false;
+            }
+
+            if(flag){
+
+                var classificationIds = [];
+                classificationIds.push(typeid);
+                var userId = $('#userId').val();
+                $.ajax({
+                    url: window.serverURL.noteAdd,
+                    type: "GET",
+                    data: {
+                        "title": title,
+                        "context": content,
+                        "classificationIds": classificationIds,
+                        "creater": userId
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+                        //关闭模态框
+
+                        //刷新页面
+                        $f('plugin', 'home.note', 0);
+                    }
+                })
+
+            }
+        })
+
+
+        $f("plugin", "home.fenlei", 0);
+
+
+    });
+
+
+</script>

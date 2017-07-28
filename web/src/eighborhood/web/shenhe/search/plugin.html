@@ -1,0 +1,90 @@
+<template>
+    <style>
+        hr {
+            margin-top: 0px;
+        }
+    </style>
+    <div class="foot-tool-bar-area" style="text-align: left; margin-left:5px;margin-top:10px">
+        <div style="font-family: 华文细黑; font-size:15px;">
+            当前位置>微信审核</div>
+        <hr>
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+
+        </div>
+    </div>
+
+    <div class="form-inline" style="float:right;margin-bottom:20px">
+
+
+        <div class="form-group">
+            <label >状态：</label>
+            <select class=" form-control" id="status">
+                <option value="5">全部</option>
+                <option value="0">待审核</option>
+                <option value="1">通过</option>
+                <option value="2">未通过</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label >姓名：</label>
+            <input type="text" class="form-control"  placeholder="姓名" id="name">
+        </div>
+
+        <button type="button" class="btn btn-default" id="search" >搜索</button>
+
+    </div>
+
+    <div id="functionbody">
+
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+        $f('plugin','eighborhood.web.shenhe', 0);
+        //查询
+        $("#search").click(function(){
+            var name=$("#name").val();
+            var status=$("#status").val();
+
+            var data={
+                "name":name,
+                "status":status,
+                "page":1,
+                "pageSize":10,
+
+            }
+            $f('plugin','eighborhood.web.shenhe', data);
+
+        });
+        $("#status").change(function(){
+            var name=$("#name").val();
+            var status=$("#status").val();
+
+            var data={
+                "name":name,
+                "status":status,
+                "page":1,
+                "pageSize":10,
+
+            }
+            $f('plugin','eighborhood.web.shenhe', data);
+        })
+
+
+
+    });
+
+
+
+</script>
+

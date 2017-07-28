@@ -1,0 +1,31 @@
+<template>
+    <div class="btn-group btn-group-justified" role="group" aria-label="..."
+         style="width:366px;margin:0px auto">
+        <div class="btn-group searchtype" role="group" data="0">
+            <button type="button" class="btn btn-default" id="task">分类</button>
+        </div>
+        <div class="btn-group searchtype" role="group" data="网站">
+            <button type="button" class="btn btn-default" id="myTask">我的分类</button>
+        </div>
+
+    </div>
+    <div  id="intereId" >
+
+    </div>
+
+</template>
+<script>
+    $f("df",__,function (_page) {
+        var pageSize=12;
+        var url="/schoolcms/archive/classification/findListForHome";
+        var data={"pageSize":pageSize};
+        $f('ajax.get',url,data,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+
+        $('#interesting').html(html);
+        $f('plugin','dynamicsSed.dynamicsSedintere',0)
+
+    })
+</script>

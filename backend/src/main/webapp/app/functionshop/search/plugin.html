@@ -1,0 +1,43 @@
+<template>
+    <div class="btn-group btn-group-justified" role="group" aria-label="..." style="width:850px;margin:0 auto">
+        <div class="btn-group searchtype" role="group"  data="0">
+            <button type="button" class="btn btn-default">全部</button>
+        </div>
+        <oo>for(var i = 0; i < data.length; i++){ </oo>
+
+        <div class="btn-group searchtype" role="group"  data="<oo>=data[i].type</oo>">
+            <button type="button" class="btn btn-default"><oo>=data[i].type</oo></button>
+        </div>
+        <oo>}</oo>
+    </div>
+    <div id="functionbody" style="    margin-left: -20px;">
+
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url=window.serverURL.functionShopseach;
+
+        $f("ajax.get", url, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+        $f('plugin','functionshop', 0);
+        $(".searchtype").click(function(){
+
+            var type= $(this).attr("data");
+
+            $f('plugin','functionshop', type);
+
+        });
+
+    });
+
+
+</script>
+

@@ -1,0 +1,38 @@
+<div>
+
+        <div class="col-md-12" style="margin: 6px 0;font-size: 16px;border-bottom: 1px solid #ccc;">
+            <span>快捷导航</span>
+            <img src="img/daohang.png" style="float: right;height: 20px;">
+        </div>
+
+        <oo> for(var j=0;j< 9;j++){</oo>
+
+
+        <div class="col-md-4 classList openNewPage " style="cursor: pointer" pid="<oo>=data.list[j].id</oo>">
+            <oo>=data.list[j].classname</oo>
+        </div>
+
+
+        <oo>}</oo>
+</div>
+</template>
+
+
+<script>
+    $f("df", __, function (_page) {
+        var pageSize = 12;
+        var url = "/schoolcms/archive/classification/findListForHome";
+        var data = {"pageSize": pageSize};
+        $f('ajax.get', url, data, "__.list", _page)();
+    })
+    $f("df", "__.list", function (_data, _page) {
+        var html = $f('TPPL', _page, _data);
+
+        $('#interesting').html(html);
+        $('.openNewPage').click(function () {
+            var id = $(this).attr("pid");
+
+            $f('plugin', 'insert.search', id)
+        })
+    })
+</script>

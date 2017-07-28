@@ -1,0 +1,225 @@
+<template>
+    <style>
+
+         .title {
+             width: 100px;
+             font-weight: 900;
+         }
+
+    </style>
+    <div class="work-center-steps">
+        <!--<div class="row">
+            <label for="work-context" class="col-sm-2 control-label" style="padding:0px;margin-left:26px">步骤<oo>=stepNum</oo>:</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" id="work-context" placeholder="请输入指派内容"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <label for="work-people" class="col-sm-2 control-label" style="padding:0px;margin-left:26px">指派人:</label>
+            <div class="col-sm-5">
+                <textarea class="form-control" id="work-people"  readonly placeholder="请选择指派人"></textarea>
+            </div>
+        </div>
+        <div class="row" style="padding-left:340px">
+            <button class="btn btn-default assign">指派+</button>
+            <button class="btn btn-default finish">保存</button>
+            <button class="btn btn-default reset">取消</button>
+        </div>-->
+
+
+        <table>
+            <tbody>
+            <tr>
+                <td class="title ">步骤<oo>=stepNum</oo><span class="require-mark">*</span></td>
+                <td class="text">
+                    <textarea id="work-context"  placeholder="请输入指派内容" class="editor form-control"></textarea>
+                </td>
+            </tr>
+            <tr style="margin-top: 10px">
+                <td class="title ">指派人<span class="require-mark">*</span></td>
+                <td class="text">
+                    <textarea id="work-people" readonly placeholder="请选择指派人" class="editor form-control"></textarea>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="row" style="padding:10px 0 10px 115px">
+            <button class="btn btn-default assign">指派+</button>
+            <button class="btn btn-default finish">保存</button>
+            <button class="btn btn-default reset">取消</button>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, no, data) {
+        $f("ajax.get", null, null, "__.list", _page, no, data)();
+    });
+
+    $f("df", "__.list", function (_data, _page, no, noteInfo) {
+        var data = {};
+        data.stepNum = no;
+        var page = $f("TPPL", _page, data);
+        $(".step-container").append(page);
+
+        $("#addStep").hide();
+
+        //取消工作步骤
+        $(".reset").click(function(){
+            $(this).parents(".work-center-steps").remove();
+            //$(".work-center-steps:last").remove();
+            document.stepNo -= 1;
+            $("#addStep").show();
+        });
+
+
+
+        //选人
+        $(".assign").click(function(){
+            $f('plugin','userList-chai.get-user-list', null);
+            $(".addwork").hide();
+        });
+
+        var ids = [];
+        //完成
+        $(".finish").click(function(){
+
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"&&strs[i].split(":")[0]!=0){
+                    ids.push(
+                        strs[i].split(":")[0]
+                    );
+
+                }
+
+            }
+            console.log(info);
+            console.log(ids);
+            if (ids.length == 0) {
+                alert("请选择通知人员!");
+                return;
+            }
+
+            var container = $(".work-center-steps:last");
+            var length = $(".work-center-steps").length;
+            for(var i = 0; i < length; i++){
+                var title = "步骤"+ (i + 1);
+            }
+            var content = container.find('#work-context').val();
+
+            if(Checkor.isEmpty(content)){
+                alert("请输入指派的任务内容！");
+                return;
+
+            }
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/addStepNote"),
+                type: "POST",
+                data: {
+                    noteId: noteInfo.id,
+                    title: title,
+                    content: content,
+                    ids: ids,
+                    userId: localStorage.getItem("userId"),
+                    type: noteInfo.classid
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $(".reset").remove();
+                    $("#addStep").show();
+                    $f('plugin','agency.spliting', noteInfo.id);
+
+                }
+            });
+        });
+
+
+        /*/!**
+         * css样式：
+         * 每个步骤按顺序只能删除最后一个
+         *!/
+        $(".close-step").hide();
+        $(".close-step:last").show();
+
+        //
+        $(".close-step").click(function(){
+            $(this).parents(".card").remove();
+            $(".close-step:last").show();
+            document.stepNo -= 1;
+        });
+
+        var data_ = "";
+        var ids = [];
+        $(".assigned-btn").click(function(){
+            $f('plugin','agency.get-user-list',data_, function(names){
+                //记录已选取的人员名单
+                data_ = names;
+
+                //清空html页面中前一次选过的名单
+                var assignedCon = $(".step-card:last").find(".step-assigned");
+                assignedCon.empty();
+                ids = [];
+
+                //回调函数 将选取的与会人放到页面中显示
+                var html = "<div style='font: 300 12px/15px consolas; color: #aaaaaa; margin-bottom: 10px; '>指派人:</div>";
+                $.each(names, function(i, n){
+                    html += "<a class='button meeting-list-btn' " +
+                        "style='margin-right: 10px; width:83px; display: inline-block'>" + n.name + "</a>";
+
+                    //将选中的与会人id取出来，放入数组，创给后台持久化
+                    ids.push(n.id);
+                });
+                assignedCon.append(html);
+
+            });
+
+        });
+
+        $(".complete-step").unbind().click(function(){
+            var container = $(".step-card:last");
+            var length = $(".step-card").length;
+            for(var i = 0; i < length; i++){
+                var title = "步骤"+ (i + 1);
+            }
+            var content = container.find('.content').val();
+
+            if(Checkor.isEmpty(content)){
+                alert("请输入指派的任务内容！");
+                return;
+
+            } else if (ids.length == 0) {
+                alert("请选择指派人!");
+                return;
+            }
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/addStepNote"),
+                type: "POST",
+                data: {
+                    noteId: noteInfo.id,
+                    title: title,
+                    content: content,
+                    ids: ids,
+                    userId: localStorage.getItem("userId"),
+                    type: noteInfo.classid
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    container.find(".step-assigned").removeClass("step-assigned");
+                    container.find(".close-step").hide();
+                    container.find(".card-footer").hide();
+                }
+            });
+        });
+*/
+
+
+    });
+
+</script>

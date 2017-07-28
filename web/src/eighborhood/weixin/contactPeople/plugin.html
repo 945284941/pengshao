@@ -1,0 +1,53 @@
+<template>
+
+        <div class="card">
+            <div class="card-header">联系人</div>
+            <div class="card-content">
+                <oo>for(var i = 0; i < data.list.length; i++){</oo>
+                <div class="list-block media-list">
+                    <ul>
+
+                            <li class="item-content" >
+                                <div class="item-media">
+                                    <img src="img/app1" width="44">
+                                </div>
+                                <div class="item-inner">
+                                    <div class="item-title-row">
+                                        <div class="item-title"><oo>=data.list[i].weixin_name</oo></div>
+                                    </div>
+                                </div>
+                            </li>
+
+                    </ul>
+                </div>
+                <oo>}</oo>
+            </div>
+            <div class="card-footer" onclick="$f('plugin','__.allPeople',0);">
+                <span>查看更多...</span>
+            </div>
+        </div>
+
+
+</template>
+
+<script>
+    $f("df", __, function (_page) {
+        $f("ajax.get",$f("server","archive/weixinUser/findWeiXinPeopleList"),{pageSize:3}, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data,_page) {
+       $('.tabs').click(function () {
+        AppFramework.closePanel();
+       });
+        $('.navbar').click(function () {
+            AppFramework.closePanel();
+        })
+        var content = $f("TPPL",_page,_data);
+
+       $('#contactsPeople').html(content);
+
+
+    });
+
+
+</script>

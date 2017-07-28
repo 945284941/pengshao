@@ -1,0 +1,173 @@
+<template>
+    <style>
+
+        .btn-group > .btn-group:first-child > .btn:last-child, .btn-group > .btn-group:first-child > .dropdown-toggle {
+            border-bottom-left-radius: 0;
+            background: #e6e6e6;
+        }
+
+        .btn-group > .btn-group:last-child > .btn:first-child {
+            border-bottom-right-radius: 0;
+        }
+    </style>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <oo>for(var i = 0; i < data.length; i ++){ if(i==0){</oo>
+        <li role="presentation" class="active" name="claaification" id="<oo>=data[i].id</oo>"><a
+                id="dd<oo>=data[i].id</oo>" data-id="<oo>=data[i].id</oo>" href="#content-<oo>=data[i].id</oo>"
+                aria-controls="content-<oo>=data[i].id</oo>" role="tab" data-toggle="tab">
+            <oo>=data[i].classname</oo>
+        </a></li>
+        <oo>}else{</oo>
+        <li role="presentation" name="claaification" id="<oo>=data[i].id</oo>">
+            <a id="dd<oo>=data[i].id</oo>" data-id="<oo>=data[i].id</oo>" href="#content-<oo>=data[i].id</oo>"
+               aria-controls="content-<oo>=data[i].id</oo>" role="tab" data-toggle="tab">
+            <oo>=data[i].classname</oo>
+        </a></li>
+        <oo>}}</oo>
+
+    </ul>
+
+    <div class="foot-tool-bar-area" style="text-align: right;">
+        <div class="tool-bar-left editor" style="margin:20px 0px 20px 0px">
+
+        </div>
+    </div>
+
+    <input type="hidden" id="hv">
+    <div id="addxx" class="form-inline" style="float:right;margin-bottom:20px">
+        <div class="form-group">
+            <label >发布单位：</label>
+            <select class=" form-control" id="departs">
+                <option value="0">全部</option>
+
+
+
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="请输入标题" id="title">
+        </div>
+        <button type="button" class="btn btn-default" id="search">搜索</button>
+    </div>
+
+
+    <div id="functionbody">
+
+    </div>
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = $f("server","archive/classification/findClassificationByParent");
+        //var url = window.serverURL.findClassificationByParent;
+        var data = {
+            "pid": "145"//小区物业
+        }
+
+        var data1 = _data;
+
+        $f("ajax.get", url, data, "__.list", _page, data1)();
+
+    });
+
+    $f("df", "__.list", function (_data, _page, data) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#page-inner").html(html);
+
+
+        $f('plugin', 'eighborhood.web.property', 0);
+
+        //获取发布单位
+        var htmlr="";
+        $.ajax({
+
+            url:$f("server","archive/department/findDepartByPid"),
+            type:"GET",
+            data:{
+                "pid":9
+            },
+            success:function(resp){
+                for(var i=0;i<resp.data.length;i++){
+
+                    htmlr+="<option value='"+resp.data[i].id+"'>"+resp.data[i].name+"</option>";
+
+
+                }
+                $("#departs").append(htmlr);
+
+            }
+        });
+        //查询
+        $("#search").click(function () {
+            var name = $("#name").val();
+            var title = $("#title").val();
+            var typeId = $("#hv").val();
+            var depart=$("#departs").val();
+            if (typeId == "") {
+                typeId = 156;
+            }
+            var data = {
+                "name": name,
+                "title": title,
+                "typeid": typeId,
+                "page": 1,
+                "pageSize": 10,
+                "departid":depart,
+
+            }
+            $f('plugin', 'eighborhood.web.property', data);
+
+        });
+        //分类查询
+        $("li[name='claaification']").click(function () {
+            $("#addxx").show();
+            var id = $(this).attr("id");
+            $("#hv").val(id);
+            var name = $("#name").val();
+            var title = $("#title").val();
+
+
+            var data = {
+                "name": name,
+                "title": title,
+                "typeid": id,
+                "page": 1,
+                "pageSize": 10,
+
+
+            }
+            $f('plugin', 'eighborhood.web.property', data);
+        });
+
+        $("#departs").change(function(){
+            var name = $("#name").val();
+            var title = $("#title").val();
+            var typeId = $("#hv").val();
+            var depart=$("#departs").val();
+            if (typeId == "") {
+                typeId = 156;
+            }
+            var data = {
+                "name": name,
+                "title": title,
+                "typeid": typeId,
+                "page": 1,
+                "pageSize": 10,
+                "departid":depart,
+
+            }
+            $f('plugin', 'eighborhood.web.property', data);
+        })
+
+
+
+    });
+
+</script>
+

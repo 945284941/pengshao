@@ -1,0 +1,101 @@
+<template>
+    <div id="neighbour-reply-list" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" style="text-align: center">话题讨论</h4>
+                </div>
+                <div class="modal-body" style="padding: 0 40px; height: 100%">
+                    <textarea name="context" id="replyContext" class="form-control " style="resize: vertical ; height:120px;margin-top:10px;" placeholder="针对该话题，说点什么吧..."></textarea>
+                    <div style="text-align: right; margin: 10px 0 20px 0;">
+                        <button class="btn btn-success " id="addReply">确认回复</button>
+                    </div>
+
+                    <div class="reply-container">
+                        <oo>if(list.length!=0 ){</oo>
+                        <oo>for(var i = 0; i < list.length; i++){</oo>
+                        <div class="noteList" style="width: 100%; margin-bottom: 50px;">
+                            <img src="<oo>=list[i].image</oo>" class="img-circle">
+                            <div class="noteCreater" >
+                                <div style="margin-top: 5px; border-bottom:1px solid #E0E0E0">
+                                    <span style="margin-right: 20px"><oo>=list[i].nick_name</oo></span>
+                                    <span><oo>=list[i].create_time</oo></span>
+                                </div>
+                            </div>
+                            <div style="margin-left:30px;overflow: hidden">
+                                <div style="margin-top: 10px;">
+                                    <oo>=list[i].reply_context</oo>
+                                </div>
+                            </div>
+                        </div>
+                        <oo>}}else{</oo>
+                        <div style="color: grey;text-align: center; font-weight: bold">暂无其他讨论</div>
+                        <oo>}</oo>
+                    </div>
+
+                    <oo>if(list.length==5){</oo>
+                        <div class="col-md-12 noteList" style="margin-top:10px;margin-bottom: 10px;" id="moreOtherReply">
+                            <div style="text-align: center;line-height:50px;">
+                                <div href="#" style="cursor: pointer" id="findmoreReply">查看更多...</div>
+                            </div>
+                        </div>
+                    <oo>}</oo>
+                </div>
+
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, noteId) {
+
+        var url = "/schoolcms/archive/note/findReply";
+        var data = {"noteId": noteId};
+        $f('ajax.get', url, data, "__.list", _page, noteId)();
+    });
+
+    $f("df", "__.list", function (_data, _page, noteid) {
+
+        var html = $f('TPPL', _page, _data.data);
+        $("#neighbour-reply-list").remove();
+        $("body").append(html);
+        $("#neighbour-reply-list").modal();
+
+        $('#addReply').click(function () {
+            var context=$('#replyContext').val();
+            context=$.trim(context);
+            if(context==null||context==""){
+                alert("回复不能为空，请重新输入");
+                return;
+            }
+
+            $.ajax({
+                url:"/schoolcms/archive/note/addReply",
+                data:{
+
+                    userId:localStorage.getItem("userId"),
+                    noteId:noteid,
+                    context:context
+
+                },
+                success:function (_data) {
+                    alert(_data.message);
+                    $f('plugin',__, noteid);
+                }
+            })
+
+        });
+
+        window.nb_page = 1;
+        $('#findmoreReply').click(function () {
+            window.nb_page += 1;
+            $f('plugin', '__.more-reply', {"page": window.nb_page, "noteId": noteid});
+
+        });
+
+    })
+</script>

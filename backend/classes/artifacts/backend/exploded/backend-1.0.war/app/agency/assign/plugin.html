@@ -1,0 +1,199 @@
+<template>
+    <style>
+        .title {
+            width: 100px;
+            font-weight: 900;
+        }
+
+    </style>
+    <div id="task-detail-form" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 120%">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">指派</h4>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="addwork">
+                            <div class="modal-body">
+                                <oo>if(data.classid==325){</oo>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td class="title">会议标题<span class="require-mark">*</span></td>
+                                        <td class="text detail-table-text">
+                                            <input class="editor form-control" type="text" id="notetitle"
+                                                   value="<oo>=data.title</oo>">
+                                            <input type="hidden" id="id" value="<oo>=data.id</oo>">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title ">会议内容<span class="require-mark">*</span></td>
+                                        <td class="text">
+                                <textarea class="editor form-control">
+                                    <oo>=data.context</oo>
+                                </textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">会议时间<span class="require-mark">*</span></td>
+                                        <td class="text detail-table-text">
+                                            <input class="editor form-control" type="text" value="<oo>=JSON.parse(data.expand).startTime</oo>">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">会议地点<span class="require-mark">*</span></td>
+                                        <td class="text detail-table-text">
+                                            <input class="editor form-control" type="text" value="<oo>=JSON.parse(data.expand).location</oo>">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">指派人<span class="require-mark">*</span></td>
+                                        <td class="text">
+                                            <textarea class="editor form-control" id="people" placeholder="请选择指派人"></textarea>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <oo>}else if(data.classid==326){</oo>
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td class="title">通知标题<span class="require-mark">*</span></td>
+                                        <td class="text detail-table-text">
+                                            <input class="editor form-control" type="text" id="notetitle"
+                                                   value="<oo>=data.title</oo>">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title ">通知内容<span class="require-mark">*</span></td>
+                                        <td class="text">
+                                <textarea class="editor form-control">
+                                    <oo>=data.context</oo>
+                                </textarea>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">指派人<span class="require-mark">*</span></td>
+                                        <td class="text">
+                                            <textarea class="editor form-control" id="people" placeholder="请选择指派人"></textarea>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <oo>}</oo>
+                                <div class="step-container" style="margin-top: 20px"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary finish"  style="margin-left:10%">完成</button>
+                                <button type="button" class="btn btn-success" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="addpeoplelist" style="margin:22px 20px">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = window.serverURL.findOneById;
+        var id = _data;
+        var data = {
+            "id": id
+        }
+        $f("ajax.get", url, data, "__.list", _page,id)();
+    });
+
+    $f("df", "__.list", function (_data, _page,id) {
+
+        var html = $f("TPPL", _page, _data);
+        $("#task-detail-form").remove();
+        $("#page-inner").append(html);
+        $("#task-detail-form").modal();
+        var classid = _data.data.classid;
+        var data = {
+            id:id,
+            classid:classid
+        }
+        document.stepNo = 1;
+        $("#addStep").click(function(){
+            localStorage.setItem("userinfoe","");
+            $f('plugin','__.step',document.stepNo, data);
+            document.stepNo += 1;
+
+        });
+
+        //鼠标放入添加人的input里面出事件
+       // $("#people").focus(function(){
+            $f('plugin','agency.get-user-list', null);
+            //$(".addwork").hide();
+
+        //});
+
+        //完成
+        var ids = [];
+        $(".finish").click(function(){
+
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"&&strs[i].split(":")[0]!=0){
+                    ids.push(
+                            strs[i].split(":")[0]
+                    );
+
+                }
+
+            }
+
+            var title = _data.data.title;
+            var time = _data.data.startTime;
+            var location = _data.data.location;
+            var content = _data.data.context;
+            var noteId=_data.data.id;
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/addMeetingNote"),
+                type: "POST",
+                data: {
+                    title: title,
+                    location: location,
+                    startTime: time,
+                    ids: ids,
+                    content: content,
+                    noteId:noteId,
+                    userId: localStorage.getItem("userId"),
+                    //"userId": 1,
+                    type: data.classid
+
+                },
+                success: function (resp) {
+                    if(resp.message == "发布成功"){
+                        alert("指派成功！");
+                    }else {
+                        alert("系统异常，请稍后再试！");
+                    }
+                    $("#task-detail-form").modal("toggle");
+                }
+            });
+        });
+
+
+
+    });
+
+
+</script>
+

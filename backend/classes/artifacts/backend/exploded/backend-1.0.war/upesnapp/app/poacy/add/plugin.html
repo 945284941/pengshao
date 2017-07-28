@@ -1,0 +1,158 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="poacy-add" class="page">
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="padding: 10px 20px 10px 0px;" class="back" ><h2><</h2></a>
+
+                </div>
+                <div class="center">
+                    政务宣传
+                </div>
+            </div>
+        </div>
+        <div class="content-block-title" style="font-size: 17px;color: #131313;margin: 50px 10px 15px 15px;height:30px;">
+            <div style="line-height: 30px;">
+            请选择：工作宣传或政策引导
+                </div>
+        </div>
+
+        <div id="bt" style="margin: 15px 10px 10px 10px;">
+            <p class="buttons-row">
+                <a href="#" class="title button button-round  active"  data="2">
+                    工作宣传
+                   </a>
+                <a href="#" class="title button button-round " data="1">
+                    政策引导
+                </a>
+            </p>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="title" placeholder="请输入标题">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <textarea id="content" placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+            </ul>
+        </div>
+
+
+
+        <a href="#" id="qd" class="button active confirm" style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+
+
+
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df","__.list",function(_data, _page) {
+var classId=$('#classId').val();
+        var content = $f("TPPL",_page,_data);
+
+        mainView.router.load({content:content});
+
+        var id = 1;
+        $(".title").click(function(){
+            $(this).addClass("active");
+            $(this).siblings().removeClass("active");
+
+            id =$(this).attr("data");
+
+
+        });
+
+        //添加建议或者投诉
+        $('#qd').click(function () {
+
+            var title = $('#title').val();
+            var content = $('#content').val();
+
+            if (title == "" || title == null) {
+                alert("标题不能为空");
+                return;
+            }
+
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+            if (content == "" || content == null) {
+                alert("内容不能为空");
+                return;
+            }
+           if(id == "" || id == null){
+                alert("请选择工作宣传还是政策引导？");
+                return;
+            }
+
+            $.ajax({
+                url: "/schoolcms/archive/note/addDynamicsByUserId",
+                type: "POST",
+                data: {
+                    "title": title,
+                    "context": content,
+                    "mode":id,
+                    "userId":localStorage.getItem("userId"),
+                    "classId": classId,
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $f('plugin', 'poacy.poacyContext',classId);
+                    mainView.router.back();
+                }
+            });
+
+        });
+
+
+
+    });
+
+
+</script>
+
+
+

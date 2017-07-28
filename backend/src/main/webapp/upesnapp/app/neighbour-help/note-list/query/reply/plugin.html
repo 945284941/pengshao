@@ -1,0 +1,135 @@
+<template>
+    <style>
+        .chat {
+            margin-left: 20px;
+            font-family: 微软雅黑;
+            font-weight: 800;
+            color: grey
+        }
+
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+
+    </style>
+
+    <oo>if(data.list.length == 0){</oo>
+    <div class="title chat">
+        <span>暂无讨论</span>
+    </div>
+    <input type="hidden" value="<oo>=noteId</oo>" id="JustNoteId">
+    <input type="hidden" value="<oo>=sedNoteId</oo>" id="sedNoteId">
+    <oo>}else{</oo>
+    <div class="title chat">
+        <span>讨论(<oo>=data.list.length</oo>)</span>
+    </div>
+
+    <div class="dynamic-container">
+        <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+        <div class="card">
+            <div class="card-header" style="font-size:12px">
+                <div class="avatar">
+                    <img src="img/head1.jpg" style="width: 34px; height: 34px" >
+                    <div class="user header-msg">
+                        <div class="name">
+                            <oo>=data.list[i].nick_name</oo>
+                        </div>
+                        <div class="time">
+                            <oo>=data.list[i].create_time</oo>
+                        </div>
+                        <input type="hidden" value="<oo>=data.list[i].reply_note</oo>" id="JustNoteIdTwo">
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="contact-other-numberOne" value="<oo>=baby</oo>">
+            <div class="card-content-inner">
+                <div class="hidden">
+                    <oo>=data.list[i].reply_context</oo>
+                </div>
+            </div>
+        </div>
+        <oo>}}</oo>
+    </div>
+    <div class="infinite-scroll-preloader">
+        <div class="preloader"></div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/note/findReplyByNoteId");
+        var data = {"noteId": _data};
+        $f("ajax.get", url, data, "__.list", _page)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        $f("tools.replyDateFormat", _data.data.list);
+        var noteId = $('#noteId').val();
+        var sedNoteId = $('#sedNoteId').val();
+        var html = $f("TPPL", _page, _data);
+        $(".comments").html(html);
+        AppFramework.hideIndicator();
+
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 5;
+        if (_data.data.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"noteId": _data.data.list[0].reply_note, "pageSize": pageSize, "page": current_page};
+                $f("ajax.get", $f("tools.serverURL", "archive/note/findReplyByNoteId"), data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function (_data, _page) {
+
+                    $f("tools.replyDateFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".dynamic-container").append($(html).find(".card"));
+
+                    if (_data.data.list.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+                        return;
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+    });
+
+</script>

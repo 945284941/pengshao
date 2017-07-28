@@ -1,0 +1,490 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+
+    </style>
+    <div data-page="poacy-add-add" class="page">
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+
+                </div>
+                <div class="center">
+                    活动通知
+                </div>
+            </div>
+        </div>
+        <div class="list-block"  style="margin-top:60px;">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="departid" class="btn" placeholder="发布单位">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="title" placeholder="请输入标题">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="startTime" class="btn" placeholder="开始时间">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <a class="item-input open-picker" data-picker=".picker-1">
+                                <input type="text" id="endTime" class="btn" placeholder="结束时间">
+                            </a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <textarea id="content" placeholder="请输入内容"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+            </ul>
+        </div>
+
+
+
+        <!--        <a href="#" data-picker=".picker-1" class="open-picker">Open Picke</a>-->
+
+        <a href="#" id="qda" class="button active confirm"
+           style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+
+        var content = $f("TPPL", _page, _data);
+
+        mainView.router.load({content: content});
+
+
+        var  myPicker  =  AppFramework.picker({
+            input :'#endTime',
+            formatValue :function (picker ,values ){
+            return values[0]+"-"+values[1]+"-"+values[2]+"  "+values[3]+":"+values[4];
+        },
+            rotateEffect:true,
+
+
+            cols:[
+                {
+
+                values:['2017','2018','2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034'],
+
+                },
+
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23','24',
+                        '25','26','27','28','29','30','31'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23'],
+                },
+                {
+
+                    values: ('01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 ').split(" "),
+                }
+
+            ],
+
+
+        });
+ /*       myPicker.setValue(['2018','02','02','02','02'])*/
+
+        //获取发布单位
+        var arc=[];
+        var arcid=[];
+        $.ajax({
+
+            url:$f("server","archive/department/findDepartByPid"),
+            type:"GET",
+            data:{
+                "pid":9
+            },
+            success:function(resp){
+                for(var i=0;i<resp.data.length;i++){
+                   arc.push(resp.data[i].name);
+                   arcid.push(resp.data[i].id);
+
+
+                }
+                var pickerDevice = AppFramework.picker({
+                    input: '#departid',
+                    cols: [
+                        {
+                            textAlign: 'center',
+                            values: arc,
+                        }
+                    ]
+                });
+
+            }
+        });
+
+
+
+
+
+
+        var  myPickerStart  =  AppFramework.picker({
+            input :'#startTime',
+            formatValue :function (picker ,values ){
+                return values[0]+"-"+values[1]+"-"+values[2]+"  "+values[3]+":"+values[4];
+            },
+            rotateEffect:true,
+            cols:[
+                {
+
+                    values:['2017','2018','2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034'],
+
+                },
+
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23','24',
+                        '25','26','27','28','29','30','31'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23'],
+                },
+                {
+
+                    values: ('01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 ').split(" "),
+                }
+
+            ],
+
+        })
+
+        $('#startTime').click(function () {
+            myPickerStart.open();
+            var col=myPickerStart.cols[0];
+            var col=myPickerStart.cols[0];
+            var myDate=new Date();
+            var year=myDate.getFullYear();
+            var day=myDate.getDate();
+            col.setValue(year);
+            var month=myDate.getMonth()+1;
+
+            if(month<10){
+                month="0"+month;
+
+            }
+            if(day<10){
+                day="0"+day;
+            }
+            myPickerStart.cols[1].setValue(month);
+            myPickerStart.cols[2].setValue(day);
+            myPickerStart.cols[3].setValue(myDate.getHours());
+            myPickerStart.cols[4].setValue(myDate.getMinutes());
+        });
+
+        $('#endTime').click(function () {
+            myPicker.open();
+            var col=myPicker.cols[0];
+            var myDate=new Date();
+            var year=myDate.getFullYear();
+            var day=myDate.getDate();
+            col.setValue(year);
+            var month=myDate.getMonth()+1;
+
+            if(month<10){
+                month="0"+month;
+
+            }
+            if(day<10){
+                day="0"+day;
+            }
+            myPicker.cols[1].setValue(month);
+            myPicker.cols[2].setValue(day);
+            myPicker.cols[3].setValue(myDate.getHours());
+            myPicker.cols[4].setValue(myDate.getMinutes());
+        })
+
+
+        /*        $$('.endTime').on('click', function () {
+         AppFramework.pickerModal('.picker-info')
+         });*/
+        /*
+         var ss = AppFramework.calendar({
+         input:'#endTime',
+         });*/
+
+        /*       var baby= AppFramework._setDate({
+         input:'#endTime';
+         })*/
+        /*        var ss = AppFramework.ca ({
+         input :'#endTime',
+         })*/
+        /*       $("#endTime").datetimePicker({
+         value: ['1985', '12', '04', '9', '34']
+         });*/
+        /* $('#endTime').click(function () {
+         $('#endTime').mdatetimer({
+         mode : 3, //时间选择器模式：1：年月日，2：年月日时分（24小时），3：年月日时分（12小时），4：年月日时分秒。默认：1
+         format : 2, //时间格式化方式：1：2015年06月10日 17时30分46秒，2：2015-05-10  17:30:46。默认：2
+         years : [2000, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017], //年份数组
+         nowbtn : true, //是否显示现在按钮
+         onOk : function(){
+         //alert('OK');
+         },  //点击确定时添加额外的执行函数 默认null
+         onCancel : function(){
+         /!*    alert('www.sucaijiayuan.com');*!/
+         }, //点击取消时添加额外的执行函数 默认null
+         });
+         })*/
+
+
+        /*
+         $('#endTime').click(function () {
+         var a=$("div[data-type='datetime']");
+         /!*alert(a.length);*!/
+         /!*alert(a.length);*!/
+         /!*alert(a.length);*!/
+         if(a.length==0){
+
+         (function($) {
+         $.init();
+         if(a.length!=0){
+         return false;
+         }else {
+         var btns = $('#endTime');
+         }
+         btns.each(function(i, btn) {
+         btn.addEventListener('tap', function() {
+         var optionsJson='{}';
+         var options = JSON.parse(optionsJson);
+         var picker = new $.DtPicker(options);
+         picker.show(function(rs) {
+         document.getElementById("endTime").value =  rs.text;
+         });
+         }, false);
+         });
+         })(mui);
+
+         return false;
+         }
+
+         if(a.length%2==0){
+         /!*alert("!");*!/
+         /!*     $("div[data-type='datetime']").removeClass('mui-active');*!/
+         /!*      $("div[class='mui-backdrop']").remove();
+         $("div[data-type='datetime']").remove();*!/
+         /!*            for(var i=1;i<a.length;i++){
+         $("div[data-type='datetime']").eq(i).remove();
+         }*!/
+         $("div[data-type='datetime']").addClass('mui-active');
+         $("div[class='mui-backdrop']").remove();
+         for(var i=1;i<a.length;i++){
+         $("div[data-type='datetime']").eq(i).removeClass('mui-active');
+         $("div[data-type='datetime']").eq(i).remove();
+         }
+
+
+
+
+         return false;
+
+         }
+         if(a.length%2!=0){
+
+         $("div[data-type='datetime']").removeClass('mui-active');
+         for(var i=1;i<a.length;i++){
+
+         $("div[data-type='datetime']").eq(i).remove();
+         }
+         $("div[class='mui-backdrop']").remove();
+
+         }
+
+
+
+
+
+         })
+         */
+
+/*
+
+        var aa = AppFramework.calendar({
+            input: '#startTime',
+        });
+        var aa = AppFramework.calendar({
+            input: '#endTime',
+        });
+*/
+
+
+        $('#qda').click(function () {
+            var title = $('#title').val().trim();
+            var context = $('#content').val().trim();
+
+            var startTime = $('#startTime').val().trim();
+            var endTime = $('#endTime').val().trim();
+            //获取单位的id
+            var departid;
+            var depart = $('#departid').val().trim();
+                for (var i = 0; i < arc.length; i++) {
+                    if (arc[i] == depart)
+
+                        departid= arcid[i]
+                }
+
+
+
+
+
+            var a = new Date(startTime);
+            var b = new Date(endTime);
+
+
+
+            if (depart == "" || depart == null) {
+                alert("单位不能为空");
+                return;
+            }
+            if (a > b) {
+                alert("开始与结束时间不准确")
+                return
+            }
+
+            var myDate=new Date();
+            if(a<myDate){
+                alert("开始时间不能早于当前时间");
+                return ;
+            }
+
+            if(startTime == endTime){
+                alert("开始与结束时间不能一致");
+                return
+            }
+
+
+
+            if (title == "" || title == null || title.trim() == "" ) {
+                alert("标题不能为空");
+                return;
+            }
+            if (title.length > 50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+
+            if (context == "" || context == null || context.trim() == "") {
+                alert("内容不能为空");
+                return;
+            }
+
+            if (startTime == "" || startTime == null || startTime.trim() == "") {
+                alert('活动开始时间不能为空');
+                return
+            }
+            if (endTime == "" || endTime == null) {
+                alert('活动结束时间不能为空');
+                return
+            }
+            $.ajax({
+                url : $f("server","archive/note/addNote"),
+               // url: "/schoolcms/archive/note/addNote",
+                type: "post",
+                data: {
+                    "title": title,
+                    "content": context,
+
+                    "startTime": startTime,
+                    "endTime": endTime,
+                    "departId":departid,
+
+                    "userId": localStorage.getItem("userId"),
+                    "type": 86,
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    $f('plugin', 'eighborhood.upesnapp.notification', 0);
+                    /*            mainView.router.back();*/
+
+                }
+            });
+        });
+
+
+    });
+
+
+</script>
+
+
+

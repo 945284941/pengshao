@@ -1,0 +1,47 @@
+<div data-page="floating-button" class="page page-on-center">
+    <div class="speed-dial speed-dial-closed"><a href="#" class="floating-button"><i class="icon f7-icons">add</i><i
+            class="icon f7-icons">close</i></a>
+        <div class="speed-dial-buttons">
+            <a href="#"><i style="font-size: 20px" class="icon f7-icons">volume</i></a>
+            <a href="#" onclick="$f('render','contact.note.add',<oo>=a</oo>)"><i style="font-size: 20px" class="icon f7-icons">dcompose</i></a>
+            <a href="#"><i style="font-size: 20px" class="icon f7-icons">camera</i></a>
+        </div>
+    </div>
+    <div class="page-content">
+        <div class="tabs">
+            <div class="tab active">
+                <div class="home-view">
+                    <div class="card ks-card-header-pic">
+                        <div style="background-image:url(img/back3.jpg)" valign="bottom"
+                             class="card-header color-black no-border">17年4月份公告
+                        </div>
+                        <div class="card-header" style="font-size:12px; width:60%">
+                            <div class="avatar">
+                                <img src="img/head4.jpg" width="34" height="34">
+                            </div>
+                            <div class="user flex-column" style="color: grey">
+                                <input type="hidden" value="<oo>=a</oo>" id="impId">
+                                <div class="name">
+                                    <oo>=data.name</oo>
+                                </div>
+                                <div class="time">
+                                    <oo>=data.create_time</oo>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-content-inner">
+                                <oo>=data.context</oo>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comments" id="note-reply-list">
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<template>
+    <style>
+        .picker-modal {
+            height: 70%;
+        }
+    </style>
+    <div data-page="person-info" class="page">
+        <div id="person-info-content" class="page-content">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                    </div>
+                    <div style="width: 100%;text-align: center;">
+                        <span>设置</span>
+                    </div>
+                </div>
+            </div>
+            <div class="list-block media-list" style="margin:10px 0 20px 0">
+                <ul>
+                    <li>
+                        <a href="#" class="item-link item-content open-picker" data-picker=".picker-1">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>关于论坛</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="item-link item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>帮助与反馈</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Picker -->
+            <div class="picker-modal picker-1" style="height: 70%">
+                <div class="toolbar">
+                    <div class="toolbar-inner">
+                        <div class="left"></div>
+                        <div class="right"><a href="#" class="close-picker">关闭</a></div>
+                    </div>
+                </div>
+                <div class="picker-modal-inner">
+                    <div class="page-content" style="margin:0 10px">
+                        <h4>论坛</h4>
+                        <p>论坛（forum），简单理解为发帖回帖讨论的平台。是Internet上的一种电子信息服务系统。它提供一块公共电子白板，每个用户都可以在上面书写，可发布信息或提出看法。
+                            它是一种交互性强，内容丰富而及时的Internet电子信息服务系统，用户在BBS站点上可以获得各种信息服务、发布信息、进行讨论、聊天等等。论坛一般由站长（创始人）创建。并设立各级管理人员对论坛进行管理，包括论坛管理员（Administrator）、超级版主（Super Moderator，有的称“总版主”）、版主（Moderator，俗称“斑猪”、“斑竹”）。超级版主是低于站长（创始人）的第二权限（不过站长本身也是超级版主，超级管理员，administrator） 一般来说超级版主可以管理所有的论坛版块（普通版主只能管理特定的版块）。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+    $f("df", __, function(_page, _data) {
+        var url = null,
+            data = null;
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+        console.log(_page);
+        var content = $f("TPPL",_page,_data);
+        personView.router.load({
+            content:content
+        });
+
+
+    });
+
+
+
+</script>

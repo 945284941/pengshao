@@ -1,0 +1,12 @@
+web/dist/
+web/node_modules/
+backend/.gradle/
+backend/.idea/
+backend/.meghanada/
+backend/build/
+backend/gradle/
+backend/*.iml/
+
+
+
+.idea/

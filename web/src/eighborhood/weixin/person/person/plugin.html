@@ -1,0 +1,179 @@
+<template>
+    <style>
+        .card {
+            box-shadow: none;
+            margin: 0px;
+            height: 15%;
+        }
+
+    </style>
+
+    <div data-page="person" class="page">
+        <div id="person-content" class="page-content">
+            <div class="card" style="height:15%;margin:10px 0px 15px 0px; ">
+                <div class="card-content">
+                    <div class="list-block media-list">
+                        <ul>
+                            <li class="item-content" style="">
+                                <div class="item-media" style="margin: 5px 0 0 10px">
+                                    <img src="img/head3.jpg" width="60px" style="border-radius: 50%;">
+                                    <div class="item-title-row" >
+                                        <div class="item-title" style="margin-left:10px;position:absolute;left:85px;top:25px">
+                                            <oo>if(data.user.name!=null){</oo>
+                                            <oo>=data.user.name</oo>
+                                            <oo>}else{</oo>
+                                            无
+                                            <oo>}</oo>
+                                        </div>
+                                    </div>
+                                    <div class="item-subtitle" style="margin-left: 12px; font-size: 14px;position:absolute;left:85px;top:50px">
+                                        <oo>if(data.user.identity==0){</oo>
+                                        游客
+                                        <oo>}else{</oo>
+                                        业主
+                                        <oo>}</oo>
+                                    </div>
+                                    <div class="item-subtitle" style="margin-left: 12px; font-size: 14px;color:red;position:absolute;left:200px;top:40px">
+                                        <oo>if(data.user.status==0){</oo>
+                                        待审核
+                                        <oo>}else if(data.user.status==1){</oo>
+                                        审核通过
+                                        <oo>}else{</oo>
+                                        审核未通过
+                                        <oo>}</oo>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="list-block media-list" style="margin:20px 0 20px 0">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/nickname.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>微信昵称</span>
+                                    </div>
+                                    <div>
+                                        <oo>=data.user.weixin_name</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/phone.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>手机号码</span>
+                                    </div>
+
+                                    <div>
+                                        <oo>if(data.user.phone!=null){</oo>
+                                        <oo>=data.user.phone</oo>
+                                        <oo>}else{</oo>
+                                        无
+                                        <oo>}</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block media-list" style="margin:10px 0 20px 0">
+                <ul>
+                    <li>
+                        <div onclick="$f('plugin','eighborhood.weixin.person.authentication',0)" class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/authen.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>实名认证</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/juweihui.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>居委会</span>
+                                    </div>
+
+                                    <div>
+                                        <oo>if(data.dt.name!=null){</oo>
+                                        <oo>=data.dt.name</oo>
+                                        <oo>}else{</oo>
+                                        无
+                                        <oo>}</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="list-block media-list" style="margin:10px 0 20px 0">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/idcard.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>身份证号</span>
+                                    </div>
+
+                                    <div>
+                                        <oo>=data.user.card_id</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page) {
+        AppFramework.hideIndicator();
+        var userId = localStorage.getItem("userId");
+        var juweihui_id = localStorage.getItem("departid")
+        url = $f("server","archive/weixinUser/findOneUser");
+        data = {
+            'userid': userId,
+            'juweihui_id':juweihui_id
+        };
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        AppFramework.hideIndicator();
+        var content = $f("TPPL", _page, _data);
+       // var da = $("div[data-page='person.person']");
+        //if(da.length == 0) {
+            personView.router.loadContent(content);
+        //}
+
+
+
+    });
+
+</script>

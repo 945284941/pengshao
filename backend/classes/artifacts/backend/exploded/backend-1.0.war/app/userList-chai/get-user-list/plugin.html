@@ -1,0 +1,79 @@
+<template>
+
+
+   <div>
+       <input type="text" class="form-control" id="sname"  placeholder="请输入姓名"  style="width: 200px;display: inline-block;">
+       <button type="button" class="btn btn-default" id="searchuserlist" >搜索</button>
+   </div>
+
+
+
+    <div class="xuanren" style="margin-top:20px"></div>
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+
+        var url = null;
+        var data = null;
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f("TPPL", _page, _data);
+
+        $(".addpeoplelist").html(html);
+
+       $(".qxpeople").click(function(){
+           $(".addpeoplelist").html("");
+           $(".addwork").show();
+           $(".typec").show();
+       });
+
+        $f('plugin','userList-chai.get-user-org', null);
+        //搜索
+        $("#searchuserlist").keydown(function () {
+
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                var data = $(this).val();
+                var _data = {
+
+                    data: data
+                };
+                $f('plugin', 'userList-chai.get-user-search', _data);
+            }
+        });
+      $("#searchuserlist").click(function(){
+          var name=$("#sname").val();
+
+          var data = $(this).val();
+          var _data = {
+              data: name
+          };
+          $f('plugin', 'userList-chai.get-user-search', _data);
+      });
+
+        //搜索
+        $("#searchuserlist").keydown(function () {
+
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                var data = $(this).val();
+                var _data = {
+
+                    data: data
+                };
+                $f('plugin', 'userList-chai.get-user-search', _data);
+            }
+        });
+
+
+
+    });
+
+
+</script>
+

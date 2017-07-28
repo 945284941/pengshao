@@ -1,0 +1,173 @@
+<template>
+
+    <style>
+        .demo-card-header-pic .card-header {
+            height: 40vw;
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        img{
+            border-radius: 50%;
+            width:60px;
+        }
+
+        .app-item{
+            text-align: center;
+            display: inline-block;
+            height:90px;
+            margin-top: 20px;
+            background: #efeff4;
+            box-shadow: aliceblue
+        }
+
+    </style>
+
+    <div class="list-block media-list" style="margin:20px 0 20px 0">
+        <ul>
+            <div class="note-container">
+            <oo>for(var i = 0; i < data.length;i ++){</oo>
+                <div class="oyo">
+            <oo>if(data[i].who=="1"){</oo>
+            <li onclick="$f('plugin','__.yezhuchat',{yourId:'<oo>=data[i].addressee_id</oo>',yourName:'<oo>=data[i].weixin_name</oo>',uuId:'<oo>=data[i].classid</oo>'})"  class="item-link dl">
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title-row">
+                            <div>
+                                <img src="img/head1.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                <span><oo>=data[i].weixin_name</oo></span>
+                            </div>
+                            <div>
+                               业主
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <oo>}else{</oo>
+            <li onclick="$f('plugin','__.juweihuichat',{yourId:'<oo>=data[i].addressee_id</oo>',yourName:'<oo>=data[i].nick_name</oo>',uuId:'<oo>=data[i].classid</oo>'})"   class="item-link al">
+                <div class="item-content">
+                    <div class="item-inner">
+                        <div class="item-title-row">
+                            <div>
+                                <img src="img/head1.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                <span><oo>=data[i].nick_name</oo></span>
+                            </div>
+                            <div>
+                                <oo>=data[i].position</oo>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <oo>}</oo>
+                    </div>
+            <oo>}</oo>
+                </div>
+
+        </ul>
+        <div class="infinite-scroll-preloader">
+            <div class="preloader"></div>
+        </div>
+    </div>
+    <div class="content-block searchbar-not-found" style="display: none;">
+        Nothing found
+    </div>
+
+
+</template>
+<script>
+
+    $f("df", __, function (_page,_data) {
+        var url = $f('server','archive/weixinUser/myConcern');
+        var userId=localStorage.getItem("userId");
+        var data={
+            userId:userId,
+            page:_data.page,
+            pageSize:_data.pageSize,
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+
+        $('#yezhujiaoliu').html(content);
+
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 20;
+
+        if (_data.data.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        $$('.infinite-scroll').on('infinite', function () {
+
+            if (loading) return;
+            loading = true;
+            setTimeout(function () {
+                loading = false;
+
+                if (_data.data.length < pageSize) {
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+                var data = {
+                    "pageSize": pageSize,
+                    "page": current_page,
+
+                    'userId':localStorage.getItem("userId")
+                };
+                $f("ajax.get",$f("server","archive/weixinUser/myConcern"),data,"__.infiScr", _page)();
+                $f("df", "__.infiScr", function (_data, _page) {
+                    var html = $f("TPPL", _page, _data);
+                    $(".note-container").append($(html).find(".oyo"));
+                    if (_data.data.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        $$('.infinite-scroll-preloader').remove();
+                    }
+                });
+            }, 800);
+
+        });
+    /*    $('.dl').click(function () {
+
+            $.ajax({
+               url:$f('server','archive/note/concernMessage'),
+                data:{
+                    yourId:$(this).attr("yourId"),
+                    userId:localStorage.getItem("userId")
+                },
+                success:function (_data) {
+                    $f('plugin','__.yezhuchat',{"yourName":$(this).attr("yourName"),"uuId":_data.data})
+                }
+            })
+
+        });
+        $('.al').click(function () {
+
+            $.ajax({
+                url:$f('server','archive/note/concernMessage'),
+                data:{
+                    yourId:$(this).attr("yourId"),
+                    userId:localStorage.getItem("userId")
+                },
+                success:function (_data) {
+                    $f('plugin','__.yezhuchat',{"yourName":$(this).attr("yourName"),"uuId":_data.data})
+                }
+            })
+
+        })*/
+
+    });
+
+</script>
+

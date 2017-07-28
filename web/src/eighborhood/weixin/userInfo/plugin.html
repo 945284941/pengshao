@@ -1,0 +1,85 @@
+<template>
+    <style>
+
+    </style>
+    <div data-page="userinfo" class="page page-on-center">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a class="back"><h3><</h3></a>
+                </div>
+                <div class="center"></div>
+            </div>
+        </div>
+        <div class="page-content infinite-scroll" data-distance="20">
+            <!--个人信息-->
+            <div id="info"></div>
+            <!--发私信-->
+            <a href="#" style="height: 40px;font-size: 17px;padding-top: 9px;margin:15px" class="button active sixin"
+               >发私信</a>
+            <div class="row">
+                <hr style="width:35%;margin-left:10px">TA 的活动<hr style="width:35%;margin-right:10px">
+            </div>
+            <!--帖子列表-->
+            <div id="noteList"></div>
+
+        </div>
+    </div>
+</template>
+<script>
+
+    $f("df", __, function (_page, _data,data) {
+        var creater = _data;
+        var upesnid = data;
+        var url = null;
+        $f("ajax.get", url, null, "__.list", _page,creater,upesnid)();
+    });
+
+    $f("df", "__.list", function (_data, _page,creater,upesnid) {
+
+        var content = $f("TPPL", _page, _data);
+
+        homeView.router.load({content: content});
+        $(".sixin").click(function(){
+            var myId = localStorage.getItem("userId");
+            var yourId = creater;
+            var who = "";
+            var yourName = "";
+            var uuid;
+            if(upesnid==""){
+                who = '1';
+            }else{
+                who = '2';
+            }
+            $.ajax({
+                url: $f("server","archive/weixinUser/addMessagePeople"),
+                type: "POST",
+                data: {
+                    "myId": myId,
+                    "yourId": yourId,
+                    "who":who
+
+                },
+                success: function (resp) {
+                    yourName = resp.data.yourName;
+
+                    uuid = resp.data.uuid;
+                    var data = {"myId": myId,"yourId": yourId,"yourName":yourName,"uuId":uuid};
+                    if(upesnid==""){
+                        $f('plugin', 'eighborhood.weixin.myconcerntab.yezhujiaoliu.yezhuchat',data);
+                    }else{
+                        $f('plugin', 'eighborhood.weixin.myconcerntab.yezhujiaoliu.juweihuichat',data);
+                    }
+
+
+                }
+            });
+
+        });
+
+        $f('plugin','__.info',creater,upesnid)
+        $f('plugin','__.noteList',creater,upesnid)
+
+    });
+
+</script>

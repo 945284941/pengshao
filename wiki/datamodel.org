@@ -1,0 +1,132 @@
+* 基础数据模型
+#+BEGIN_SRC plantuml :file img/datamodel.png :cmdline -charset utf-8
+
+object 帖子 {
+id
+创建人
+创建时间
+版本
+标题
+内容
+图片
+内容类型
+扩展字段
+}
+
+enum 帖子内容类型{
+纯文本
+markdown
+图片
+音频
+视频
+数据
+}
+
+帖子 .. 帖子内容类型
+
+
+
+
+object 分类 {
+id
+创建人
+创建时间
+版本
+上级id
+分类名称
+图片
+分类介绍
+扩展字段
+}
+
+
+
+
+object 回复{
+id
+创建人
+创建时间
+版本
+所属帖子
+回复内容
+内容类型
+扩展字段
+}
+
+
+enum 回复内容类型{
+纯文本
+markdown
+图片
+音频
+视频
+数据
+}
+回复 .. 回复内容类型
+
+object "帖子-分类关系" as 帖子分类{
+创建人
+创建时间
+版本
+分类id
+帖子id
+扩展字段
+}
+
+帖子 "1"-"0..n" 帖子分类
+分类 "1"-"0..n" 帖子分类
+
+
+
+#+END_SRC
+
+#+RESULTS:
+[[file:img/datamodel.png]]
+
+
+* 工作中心数据模型
+
+#+BEGIN_SRC plantuml :file img/workcentermodel.png :cmdline -charset utf-8
+enum 工作状态{
+未读
+代办
+完成
+指派
+待审
+}
+
+
+object 工作{
+开始时间
+结束时间
+状态
+附件
+}
+工作 -|> 帖子
+
+object 一般工作{
+}
+一般工作 -|> 工作
+
+object 会议{
+开会地点
+开始时间
+<s:red>结束时间
+}
+
+会议 -|> 工作
+
+object "工作-指派人" as 指派人 {
+指派人id
+内容类型：数据
+}
+指派人 -|> 帖子回复
+
+工作 "1"-"0..n" 指派人
+
+
+#+END_SRC
+
+#+RESULTS:
+[[file:img/workcentermodel.png]]
+

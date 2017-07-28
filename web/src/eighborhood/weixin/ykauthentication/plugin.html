@@ -1,0 +1,196 @@
+<template>
+    <div data-page="person-info" class="page">
+        <div id="person-info-content" class="page-content">
+           <!-- <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                    </div>
+                    <div class="center">
+                        <span>实名认证</span>
+                    </div>
+                </div>
+            </div>-->
+            <div style="height: 120px;width: 100%;background: #007aff;padding-left: 20px;line-height: 50px;padding-top: 25px;">
+               <div style="display: inline-block;">
+                <span style="font-size: 30px;color: #fff;">实名认证</span></br>
+                <span style="    font-size: 16px;color: #fff;">实名认证，解锁更多功能</span>
+               </div>
+                <img src="img/smrz.png" style="height: 80px;position: absolute;right: 20px;top: 34px;">
+            </div>
+            <div class="content-block-title" style="margin-top:20px;font-size: 16px;color: black;overflow: visible;">姓名</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="pName" id="pName" placeholder="请输入您的姓名">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">手机号</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="phone" id="phone" placeholder="请输入您的手机号">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">身份证号</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="phone" id="sfzh" placeholder="请输入您的身份证号">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">所在居委会</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" id="departid" class="btn" placeholder="所在居委会">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="list-block" style="padding-left: 2%;">
+
+                        <a href="#" style="height: 45px;font-size: 17px;padding-top: 9px;width: 48%;display: inline-block;background: #f44336;border: none;" class="button active zb">暂不认证</a>
+                        <a href="#" style="height: 45px;font-size: 17px;padding-top: 9px;width: 48%;display: inline-block;" class="button active qd">确定认证</a>
+
+
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+   $f("df", __, function (_page, _data) {
+       var url=$f("server","archive/department/findDepartByPid");
+       var data = {
+           "pid":9
+       };
+       $f("ajax.get",url,data, "__.list", _page)();
+
+   });
+
+    $f("df", "__.list", function (_data, _page) {
+        var content = $f("TPPL", _page, _data);
+        homeView.router.load({content: content});
+        //选择居委会插件
+        var arc=[];
+        var arcid=[];
+        for(var i=0;i<_data.data.length;i++){
+            arc.push(_data.data[i].name);
+            arcid.push(_data.data[i].id);
+
+
+        }
+        var pickerDevice = AppFramework.picker({
+            input: '#departid',
+            cols: [
+                {
+                    textAlign: 'center',
+                    values: arc,
+                }
+            ]
+        });
+
+
+        $(".zb").click(function(){
+
+            $f('plugin','eighborhood.weixin.youke',0);
+        });
+
+
+        $(".qd").click(function(){
+            var name = $("#pName").val();
+            var phone = $("#phone").val();
+            var sfzh = $("#sfzh").val();
+
+            //获取单位的id
+            var departid;
+            var depart = $('#departid').val().trim();
+            for (var i = 0; i < arc.length; i++) {
+                if (arc[i] == depart)
+
+                    departid= arcid[i]
+            }
+            if (name == "" || name == null) {
+                alert("姓名不能为空");
+                return;
+            }
+            if (phone == "" || phone == null) {
+                alert("手机号不能为空");
+                return;
+            }
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            if(!myreg.test(phone))
+            {
+                alert('请输入有效的手机号码！');
+                return false;
+            }
+            var isIDCard1=/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$/;
+            var isIDCard2=/^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{4}$/;
+            if (sfzh == "" || sfzh == null) {
+                alert("身份证号不能为空");
+                return;
+            }
+            if(isIDCard1.test(sfzh)||isIDCard2.test(sfzh))
+            {
+            }else{
+                alert('请输入有效的身份证号！');
+                return false;
+            }
+
+            if (departid == "" || departid == null) {
+                alert("请选择所在居委会");
+                return;
+            }
+
+            $.ajax({
+                url:$f("server","archive/weixinUser/addAndUpdateInfo"),
+                type:"POST",
+                data:{
+                    "name":name,
+                    "phone":phone,
+                    "departid":departid,
+                    "sfzh":sfzh,
+                    "userid":localStorage.getItem("userId"),
+
+                },
+                success:function(resp){
+                    alert(resp.message);
+                }
+            });
+        });
+
+
+    });
+
+
+
+</script>

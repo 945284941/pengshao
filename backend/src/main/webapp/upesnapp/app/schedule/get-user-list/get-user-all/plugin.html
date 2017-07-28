@@ -1,0 +1,209 @@
+<template>
+
+    <div class="page-content infinite-scroll list-block" data-distance="20" style="margin-top: 1px; height:78%; padding: 0">
+        <div class="content-a">
+
+            <oo>for(var i = 0; i < data.list.length; i++){</oo>
+            <div class="inner-container">
+                <ul>
+                    <li style="height: 56px; min-height: 56px">
+                    <label class="label-checkbox item-content">
+                        <input type="checkbox" name="meetingcheck" value="<oo>=data.list[i].id</oo>" data-name="<oo>=data.list[i].nick_name</oo>">
+                        <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title">
+                                <img src="<oo>=data.list[i].img</oo>" style="width: 34px; height: 34px;border-radius: 50%"/>
+                            </div>
+                            <div class="item-content">
+                                <oo>=data.list[i].nick_name</oo>
+                            </div>
+                        </div>
+                    </label>
+                </li>
+                </ul>
+            </div>
+            <oo>}</oo>
+
+
+        </div>
+        <div class="infinite-scroll-preloader">
+            <div class="preloader"></div>
+        </div>
+
+    </div>
+
+
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/upesnUser/findMeetingUser");
+        var data = {page: 1, pageSize: 15};
+        $f("ajax.get", url, data, "__.list", _page,_data)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page,data) {
+
+        var content = $f("TPPL", _page, _data);
+
+        $("#userall").html(content);
+        var prev=data;
+        var info=localStorage.getItem("userinfoe");
+        var strs= new Array(); //定义一数组
+        strs=info.split(","); //字符分割
+        for (var i=0;i<strs.length ;i++ )
+        {
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val()+":"+$(this).attr("data-name") == strs[i]) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        }
+
+        $("input[name='meetingcheck']").change(function(){
+
+            var info=localStorage.getItem("userinfoe");
+
+            var val=$(this).val().trim();
+            var valu=$(this).attr("data-name").trim();
+
+            if($(this).is(':checked')){
+                info+=val+":"+valu+",";
+
+                localStorage.setItem("userinfoe",info);
+            }else{
+
+                var strs= new Array(); //定义一数组
+                strs=info.split(","); //字符分割
+                var html="";
+
+                for (var i=0;i<strs.length ;i++ )
+                {
+                    if(strs[i].trim()!=val+":"+valu){
+                        html+=strs[i]+",";
+                    }
+                }
+
+                localStorage.setItem("userinfoe",html);
+
+
+            }
+
+        });
+
+
+        var loading = false;
+        var current_page = 1;
+        var pageSize = 15;
+        if (_data.data.list.length < pageSize) {
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+
+                var data = {"pageSize": pageSize, "page": current_page};
+                $f("ajax.get", $f("tools.serverURL", "archive/upesnUser/findMeetingUser"), data, "__.user-list", _page)();
+                $f("df", "__.user-list", function (_data, _page) {
+
+                    $f("tools.replyDateFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".content-a").append($(html).find(".inner-container"));
+
+
+                    var prev=data;
+                    var info=localStorage.getItem("userinfoe");
+                    var strs= new Array(); //定义一数组
+                    strs=info.split(","); //字符分割
+                    for (var i=0;i<strs.length ;i++ )
+                    {
+                        $("input[name='meetingcheck']").each(function (index) {
+                            //追加到确定旁边
+                            if ($(this).val()+":"+$(this).attr("data-name") == strs[i]) {
+                                //选中打勾
+                                $(this).attr("checked", "true");
+
+                            }
+
+                        });
+
+                    }
+
+                    $("input[name='meetingcheck']").change(function(){
+
+                        var info=localStorage.getItem("userinfoe");
+                        var val=$(this).val();
+                        var valu=$(this).attr("data-name");
+                        if($(this).is(':checked')){
+                            info+=val+":"+valu+",";
+                            localStorage.setItem("userinfoe",info);
+                        }else{
+                            var info=localStorage.getItem("userinfoe");
+                            var strs= new Array(); //定义一数组
+                            strs=info.split(","); //字符分割
+                            var html="";
+                            for (var i=0;i<strs.length ;i++ )
+                            {
+                                if(strs[i]!=val+":"+valu){
+                                    html=+strs[i]+",";
+                                }
+                            }
+                            localStorage.setItem("userinfoe",html);
+
+
+                        }
+
+                    });
+
+
+
+
+
+
+                    if (_data.data.list.length < pageSize) {
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+                        return;
+                    }
+
+                });
+
+            }, 800);
+
+        });
+
+    });
+
+</script>

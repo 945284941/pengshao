@@ -1,0 +1,85 @@
+<template>
+    <style>
+        .card {
+            height: 100%;
+            margin-top: 55px;
+        }
+    </style>
+
+    <div data-page="weixinworkflowdetails" class="page">
+
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                    </div>
+                    <div class="center">
+                        <span>详情</span>
+                    </div>
+                </div>
+            </div>
+        <div class="page-content">
+            <div class="card ks-card-header-pic" style="margin-top: 10px">
+                <!-- <div style="background-image:url(<oo>=data.img</oo>);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">-->
+                <div style="padding: 10px 0 0 15px" class="list-block media-list for-container">
+                    <oo>=data.title</oo>
+                </div>
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <p class="color-gray">
+                            <oo>=data.createtime</oo>
+                        </p>
+                        <p class="">
+                            <oo>=data.context</oo>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="card ks-card-header-pic" style="margin-top: 55px">
+                 &lt;!&ndash; <div style="background-image:url(<oo>=data.img</oo>);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">&ndash;&gt;
+                 <div style="background-image:url(img/pd.jpg);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">
+                     <oo>=data.title</oo>
+                 </div>
+                 <div class="card-content">
+                     <div class="card-content-inner">
+                         <p class="color-gray">
+                             <oo>=data.createtime</oo>
+                         </p>
+                         <p class="">
+                             <oo>=data.context</oo>
+                         </p>
+                     </div>
+                 </div>
+             </div>-->
+            <input type="hidden" id="contact-other-numberOne" value="<oo>=baby</oo>">
+        </div>
+
+    </div>
+
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("div[data-page='weixinworkflowdetails']").remove();
+        mainView.router.load({content: content});
+
+
+    });
+
+
+</script>
+

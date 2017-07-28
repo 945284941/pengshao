@@ -1,0 +1,151 @@
+<template>
+  <style>
+  #baby{
+    display: none;
+  }
+  </style>
+
+  <div class="list-block">
+      <ul>
+          <li>
+              <div class="item-content">
+                  <div class="item-media"><i class="icon icon-form-name"></i></div>
+                  <div class="item-inner">
+
+                      <div class="item-input">
+
+                          <input type="text" id="title" placeholder="请输入标题">
+                      </div>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </div>
+  <div class="list-block">
+      <ul>
+          <li class="align-top">
+              <div class="item-content">
+                  <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                  <div class="item-inner">
+
+                      <div class="item-input">
+                          <img id="photo" class="ac-3" style="border: none;width:150px" src="img/photo-add.jpg"/>
+                      </div>
+                  </div>
+              </div>
+          </li>
+          <li>
+      </ul>
+  </div>jpg
+  <div class="list-block">
+      <ul>
+          <li>
+              <div class="item-content">
+                  <div class="item-media"><i class="icon icon-form-name"></i></div>
+                  <div class="item-inner">
+                      <div class="item-input">
+                          <input type="text" id="typeid" placeholder="点击下面的分类选择类型">
+                      </div>
+                  </div>
+              </div>
+          </li>
+      </ul>
+  </div>
+  <div class="content-block">
+      <oo>for(var i = 0; i < data.length; i++){</oo>
+      <div class="chip fenlei" typeId="<oo>=data[i].id</oo>" data="<oo>=data[i].name</oo>" >
+          <div class="chip-media"><img src="img/icon2.png"></div>
+          <div class="chip-label"><oo>=data[i].name</oo></div>
+          <input type="hidden" value="<oo>=data[i].id</oo>" id="interestId">
+      </div>
+      <oo>}</oo>
+  </div>
+
+  <div id="baby">
+      <input type="file" name="baby" id="findPhoto">
+      <input type="file" id="camera" accept="image/*;capture=camera">
+  </div>
+  <div class="content-block">
+      <a href="#" id="qd" class="button form-to-json">确定</a>
+  </div>
+</template>
+
+<script>
+    $f("df", __, function(_page, _data) {
+        var url = $f("tools.serverURL","archive/classification/getList");
+        $f("ajax.get", url, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+
+        var content = $f("TPPL",_page,_data);
+        $("#home-content").html(content);
+        homeView.router.load({pageName:'home'});
+        $$('.ac-3').on('click', function () {
+            var buttons1 = [
+                {
+                    text: '上传图片',
+                    label: true
+
+                },
+                {
+                    text: '从相册选择图片',
+                    onClick:function(){
+                        return  $("#findPhoto").click();
+
+                    }
+                },
+
+
+
+            ];
+            var buttons2 = [
+                {
+                    text: '取消'
+                    /*color: 'red'*/
+                }
+            ];
+            var groups = [buttons1, buttons2];
+            AppFramework.actions(groups);
+        });
+        //上传图片并预览
+        $("#findPhoto").change(function(){
+            var objUrl = getObjectURL(this.files[0]) ;
+            console.log("objUrl = "+objUrl) ;
+            if (objUrl) {
+                $("#photo").attr("src", objUrl) ;
+            }
+        }) ;
+        function getObjectURL(file) {
+            var url = null ;
+            if (window.createObjectURL!=undefined) { // basic
+                url = window.createObjectURL(file) ;
+            } else if (window.URL!=undefined) { // mozilla(firefox)
+                url = window.URL.createObjectURL(file) ;
+            } else if (window.webkitURL!=undefined) { // webkit or chrome
+                url = window.webkitURL.createObjectURL(file) ;
+            }
+            return url ;
+        }
+        //点击分类显示
+        $(".fenlei").click(function(){
+            var typeId=$(this).attr("typeId");
+            var notice=$(this).attr("data");
+            $("#typeid").attr("data",typeId);
+            $("#typeid").val(notice);
+        })
+        $("#qd").click(function(){
+           var title=$("#title").val();
+            var typeid=$("#typeid").attr("data");
+            if(title==""){
+                alert("标题不能为空");
+            }
+            if(typeid==""){
+                alert("类型不能为空");
+            }
+
+        })
+
+
+    });
+</script>

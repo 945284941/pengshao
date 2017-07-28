@@ -1,0 +1,134 @@
+<template>
+    <div class="card step-card">
+        <div class="card-header" style="font-size: 14px">
+            <div class="title">步骤<oo>=stepNum</oo></div>
+            <div class="close-step" style="width: 20px"><h2 style="margin: 0;color: #ff2d55">×</h2></div>
+         </div>
+        <div class="card-content">
+            <div class="card-content-inner">
+                <div class="list-block">
+                    <ul>
+                        <li class="align-top">
+                            <div class="item-content">
+                                <textarea class="content" placeholder="点这里可以输入拆解内容"></textarea>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="padding: 10px 10px 12px 12px" class="step-assigned">
+
+            </div>
+        </div>
+        <div class="card-footer" style="display: block">
+           <div style="text-align: right !important">
+               <a class="assigned-btn button" style="border:1px solid #ff2d55; font:300 13px/28px consolas; color: #ff2d55;width: 80px; height: 28px; display: inline-block">指派 +</a>
+               <a class="complete-step button" style="border:1px solid #ff2d55; font:300 13px/28px consolas; color: #ff2d55;width: 80px; height: 28px; display: inline-block">保存</a>
+           </div>
+            <!--
+                <oo>if(stepNum == 1){</oo>
+                    <a class="complete button" style="border:1px solid #ff2d55; font:300 13px/25px consolas; color: #ff2d55;width: 80px; height: 25px;">直接指派+</a>
+                <oo>} else{</oo>
+                    <a class="complete button" style="border:1px solid #ff2d55; font:300 13px/25px consolas; color: #ff2d55;width: 80px; height: 25px;">指派</a>
+                <oo>}</oo>
+            -->
+        </div>
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, no, dat,_data) {
+        var url="/schoolcms/archive/note/findReply";
+        var data={"noteId":_data,'pageSize':100}
+        $f("ajax.get", url, data, "__.list",_page,no,dat)();
+;
+    });
+
+    $f("df", "__.list", function (_data, _page, no, noteInfo) {
+        var data = {};
+        data.stepNum = _data.data.list.length+1;
+        var page = $f("TPPL", _page, data);
+        $(".step-container").append(page);
+
+        /**
+         * css样式：
+         * 每个步骤按顺序只能删除最后一个
+         */
+        $(".close-step").hide();
+        $(".close-step:last").show();
+
+        //
+        $(".close-step").click(function(){
+            $(this).parents(".card").remove();
+            $(".close-step:last").show();
+            document.stepNo -= 1;
+        });
+
+        var data_ = "";
+        var ids = [];
+        $(".assigned-btn").click(function(){
+            $f('plugin','agency.get-user-list',data_, function(names){
+                //记录已选取的人员名单
+                data_ = names;
+
+                //清空html页面中前一次选过的名单
+                var assignedCon = $(".step-card:last").find(".step-assigned");
+                assignedCon.empty();
+                ids = [];
+
+                //回调函数 将选取的与会人放到页面中显示
+                var html = "<div style='font: 300 12px/15px consolas; color: #aaaaaa; margin-bottom: 10px; '>指派人:</div>";
+                $.each(names, function(i, n){
+                    html += "<a class='button meeting-list-btn' " +
+                        "style='margin-right: 8px; width:83px; display: inline-block'>" + n.name + "</a>";
+
+                    //将选中的与会人id取出来，放入数组，创给后台持久化
+                    ids.push(n.id);
+                });
+                assignedCon.append(html);
+
+            });
+
+        });
+
+        $(".complete-step").unbind().click(function(){
+            var container = $(".step-card:last");
+            var length = $(".step-card").length;
+            for(var i = 0; i < length; i++){
+                var title = "步骤"+ (i + 1);
+            }
+            var content = container.find('.content').val();
+
+            if(Checkor.isEmpty(content)){
+                alert("请输入指派的任务内容！");
+                return;
+
+            } else if (ids.length == 0) {
+                alert("请选择指派人!");
+                return;
+            }
+            $.ajax({
+                url:$f("tools.serverURL","archive/note/addStepNote"),
+                type: "POST",
+                data: {
+                    noteId: noteInfo.id,
+                    title: title,
+                    content: content,
+                    ids: ids,
+                    userId: localStorage.getItem("userId"),
+                    type: noteInfo.classid
+
+                },
+                success: function (resp) {
+                    alert(resp.message);
+                    container.find(".step-assigned").removeClass("step-assigned");
+                    container.find(".close-step").remove();
+                    container.find(".card-footer").hide();
+                }
+            });
+        });
+
+
+
+    });
+
+</script>

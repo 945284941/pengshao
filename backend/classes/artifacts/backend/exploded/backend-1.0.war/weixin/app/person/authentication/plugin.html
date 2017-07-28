@@ -1,0 +1,141 @@
+<template>
+    <div data-page="person-info" class="page">
+        <div id="person-info-content" class="page-content">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a class="back" style="padding: 10px 20px 10px 0px;"><h2><</h2></a>
+                    </div>
+                    <div style="width: 100%;text-align: center;">
+                        <span>实名认证</span>
+                    </div>
+                </div>
+            </div>
+            <div class="content-block-title" style="margin-top:20px;font-size: 16px;color: black;overflow: visible;">您的姓名</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="pName" id="pName" placeholder="请输入您的姓名">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">手机号</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="phone" id="phone" placeholder="请输入您的手机号">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">孩子姓名</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="name" id="name" placeholder="请输入您孩子的姓名">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block-title" style="font-size: 16px;color: black;overflow: visible;">孩子学号</div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-input">
+                                    <input type="text" name="no" id="no" placeholder="请输入您孩子的学号">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <a href="#" onclick="$f('__.autonym',0);" style="height: 45px;font-size: 17px;padding-top: 9px"class="button active">实名认证</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+   $f("df", __, function (_page, _data) {
+
+       var userId = localStorage.getItem("userId");
+
+       /*var userId = 401;*/
+
+           url = $f("tools.serverURL", "archive/weixinUser/findAuthenInfo");
+           data = {
+               'userid': userId
+           };
+
+
+
+       $f("ajax.get", url, data, "__.list", _page)();
+   });
+
+    $f("df", "__.list", function (_data, _page) {
+        console.log(_page);
+        var content = $f("TPPL", _page, _data);
+        personView.router.load({
+            content:content
+        });
+        if(_data.data!=""){
+            $("#no").val(_data.data.student.no);
+            $("#name").val(_data.data.student.name);
+            $("#pName").val(_data.data.weixinuser.name);
+            $("#phone").val(_data.data.weixinuser.phone);
+        }
+
+        personView.router.load({pageName: "person-info"});
+    });
+
+    $f("df", "__.autonym", function (flag) {
+
+        var no = $("#no").val();
+        var name = $("#name").val();
+        var pName = $("#pName").val();
+        var phone = $("#phone").val();
+        var userId = localStorage.getItem("userId");
+        /*var userId = 401;*/
+        if (no != "" && name != "" && pName != "" && phone != "") {
+            var url = $f("tools.serverURL", "archive/weixinUser/addAndUpdateAuthenInfo");
+            var data = {'no': no, 'name': name, 'pName': pName, 'phone': phone,"userid":userId};
+            $.post(
+                    url,
+                    data,
+                    function (resp) {
+                        alert(resp.message);
+                        $f("plugin", "person.person", 0);
+                    }
+            );
+        } else {
+            alert("所有信息必填");
+        }
+
+    });
+
+
+</script>

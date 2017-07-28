@@ -1,0 +1,85 @@
+<template>
+  <div class="page-content">
+
+      <form class="list-block">
+          <ul>
+              <input type="hidden" value="<oo>=noteIdThere</oo>" id="wowo">
+              <input type="hidden" value="<oo>=noteId</oo>" id="xixi">
+              <li class="align-top">
+                  <div class="item-content">
+                      <div class="item-media"><i class="icon f7-icons">chat</i></div>
+                      <div class="item-inner "><textarea id="contact" style="padding:0;"></textarea></div>
+                  </div>
+              </li>
+          </ul>
+      </form>
+      <div class="content-block">
+        <div class="row">
+          <div class="col-50"><a href="#"  id="baby" class="button button-big button-fill color-green">发表</a></div>
+          <div class="col-50"><a href="#"  onclick="$f('plugin','.note.query.reply','<oo>=noteIdThere</oo>')" class="button button-big button-fill color-red">取消</a></div>
+        </div>
+      </div>
+
+  </div>
+
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+
+    $f("ajax.get", null, null, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    var noteIdOne=$('#JustNoteId').val();
+    var noteIdThere=$('#sedNoteId').val();
+    var noteIdTwo=$('#JustNoteIdTwo').val();
+
+    var noteId="";
+
+    if(noteIdOne==null&&noteIdThere==null){
+        noteId=noteIdTwo;
+    }
+    if(noteIdTwo==null&&noteIdThere==null){
+        noteId=noteIdOne;
+    }
+    if(noteIdTwo==null&&noteIdOne==null){
+         noteId=noteIdThere;
+    }
+
+    var content = $f("TPPL",_page,{"noteId":noteId,"noteIdThere":noteIdThere});
+    $("#home-content").html(content);
+    mainView.router.load({pageName:'home'})
+
+
+    $('#baby').click(function () {
+        var noteId=$('#xixi').val();
+        var noteIdSed=$('#wowo').val();
+        var context=$('#contact').val();
+        console.log("增加+"+noteId,context);
+        var noteImId;
+        if(noteIdSed==null){
+            noteImId=noteId;
+        }else {
+            noteImId=noteIdSed;
+        }
+
+
+        $.ajax({
+            url:$f("tools.serverURL","archive/note/Reply"),
+            type:"GET",
+            data:{
+                "noteId":noteImId,
+                "context":context
+            },
+            success:function(resp){
+                alert(resp.message);
+                //刷新页面
+                $f('plugin','.note.query.reply',noteImId);
+            }
+        });
+
+    });
+
+  });
+
+</script>

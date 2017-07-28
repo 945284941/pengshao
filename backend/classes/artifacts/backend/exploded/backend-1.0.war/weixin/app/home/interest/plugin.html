@@ -1,0 +1,31 @@
+<template>
+  <div class="content-block-title">更多分类</div>
+  <div class="content-block">
+    <oo>for(var i = 0; i < list.length; i++){</oo>
+      <div onclick="$f('plugin','note',this);" typeId="<oo>=list[i].id</oo>" class="chip">
+        <div class="chip-media"><img src="img/icon2.png"></div>
+        <div class="chip-label"><oo>=list[i].classname</oo></div>
+        <input type="hidden" value="<oo>=list[i].id</oo>" id="interestId">
+      </div>
+    <oo>}</oo>
+  </div>
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+    var url = "",
+        data = {};
+
+    url = $f("tools.serverURL","archive/classification/findListForHome");
+    data = {'pageSize': 4};
+
+
+    $f("ajax.get", url, data, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    var html = $f("TPPL", _page, _data.data);
+    $("#interest").html(html);
+
+  });
+
+</script>

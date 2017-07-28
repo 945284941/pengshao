@@ -1,0 +1,183 @@
+<template>
+
+    <style>
+
+
+        #mbx {
+            margin-top: 10px;
+            font-size: 16px;
+            color: red;
+        }
+
+    </style>
+
+
+
+
+
+
+
+    <div style="margin-top: 1px; height:78%; padding: 0">
+        <div class="content-a">
+
+            <oo>for(var j = 0; j < data.list.length; j++){</oo>
+            <div class="inner-container">
+                <ul style="border-bottom: 1px solid #eee;">
+                    <li style="height: 36px; min-height: 36px;list-style-type:none;">
+                        <label class="">
+                            <input type="checkbox" name="meetingcheck" value="<oo>=data.list[j].id</oo>"
+                                   data-name="<oo>=data.list[j].nick_name</oo>" style="margin-right: 30px;">
+
+                            <oo>=data.list[j].nick_name</oo>
+
+
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <oo>}</oo>
+
+
+        </div>
+
+    </div>
+    <oo>if(data.list.length!=0){</oo>
+    <div style="text-align: center" id="page-bar1">
+
+    </div>
+    <oo> }</oo>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addPeople" style="margin-right:10px">确认添加</button>
+        <button type="button" class="btn btn-success" id="quxiaoPeople" data-dismiss="modal">取消</button>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/department/findUserByDepartid");
+        var data = {
+            departid: _data.departid,
+            "pageSize":10,
+            "page":_data.page,
+        }
+        $f("ajax.get", url, data, "__.list", _page, _data)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page, data) {
+
+        var content = $f("TPPL", _page, _data);
+
+
+        $(".xuanren").html(content);
+        initPageBar("#page-bar1", _data);
+        $("#page-bar1").find("button").click(function(){
+
+            var pageNum = $(this).attr("data-page");
+
+            var currentPage=_data.data.pageNumber;
+            var maxPage=_data.data.totalPage;
+            if(pageNum=="next"){
+
+                pageNum=currentPage+1;
+                if(pageNum>maxPage){
+                    pageNum=maxPage;
+                }
+            }
+            if(pageNum=="Prev"){
+
+                pageNum=currentPage-1;
+
+                if(pageNum==0){
+                    pageNum=1;
+                }
+            }
+
+            $f('plugin','schedule.get-user-org-user',{page:pageNum,departid:data.departid})
+
+
+        });
+
+
+
+
+        var info = localStorage.getItem("userinfoe");
+        var strs = new Array(); //定义一数组
+        strs = info.split(","); //字符分割
+        for (var i = 0; i < strs.length; i++) {
+            $("input[name='meetingcheck']").each(function (index) {
+                //追加到确定旁边
+                if ($(this).val() + ":" + $(this).attr("data-name") == strs[i]) {
+                    //选中打勾
+                    $(this).attr("checked", "true");
+
+                }
+
+            });
+
+        }
+        var info="";
+        $("input[name='meetingcheck']").change(function () {
+
+             info = localStorage.getItem("userinfoe");
+            var val = $(this).val();
+            var valu = $(this).attr("data-name");
+            if ($(this).is(':checked')) {
+                info += val + ":" + valu + ",";
+                localStorage.setItem("userinfoe", info);
+            } else {
+                var info = localStorage.getItem("userinfoe");
+                var strs = new Array(); //定义一数组
+                strs = info.split(","); //字符分割
+                var html = "";
+                for (var i = 0; i < strs.length; i++) {
+                    if ((strs[i] != val + ":" + valu)) {
+                        html +=strs[i] + ",";
+                    }
+                }
+                localStorage.setItem("userinfoe", html);
+
+
+            }
+
+        });
+
+
+        $("#quxiaoPeople").click(function(){
+            $(".addpeoplelist").html("");
+            $(".addwork").show();
+            $(".typec").show();
+        });
+        var arr = [];
+        $("#addPeople").click(function(){
+            var html = "";
+            var info=localStorage.getItem("userinfoe");
+            var strs= new Array(); //定义一数组
+            strs=info.split(","); //字符分割
+            for (var i=0;i<strs.length ;i++ )
+            {
+                if(strs[i].split(":")[0]!="" && strs[i].split(":")[0]!="undefined"&&strs[i].split(":")[0]!=0){
+                    arr.push({
+                        id: strs[i].split(":")[0],
+                    });
+                  html+=strs[i].split(":")[1]+"、";
+
+                }
+
+            }
+
+            $("#people").html(html);
+            $(".addpeoplelist").html("");
+            $(".addwork").show();
+            $(".typec").show();
+
+
+
+        });
+
+    });
+
+
+</script>

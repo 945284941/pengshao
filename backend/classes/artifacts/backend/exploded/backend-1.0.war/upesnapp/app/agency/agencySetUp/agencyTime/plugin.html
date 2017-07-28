@@ -1,0 +1,97 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="agency-agencySetUp-agencyTime" class="page">
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>提醒时间</span>
+                </div>
+            </div>
+        </div>
+        <div class="input-title" style="margin-top: 60px;color: #aaaaaa;padding-left: 10px">提醒时间</div>
+        <div class="list-block" style="margin: 6px 0; font-size: 17px;">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="reminderTime" placeholder="选择时间" class="">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <a href="#" class="confirm button active" style="height: 35px; font-size: 16px; line-height: 35px; margin-top: 20px">确认</a>
+
+
+
+
+
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+
+        var p = $f("TPPL", _page, {"data": _data});
+
+        mainView.router.load({content: p});
+        var  myPickerStart  =  AppFramework.picker({
+            input :'#reminderTime',
+            formatValue :function (picker ,values ){
+                return values[0]+"-"+values[1]+"  "+values[2]+":"+values[3];
+            },
+            rotateEffect:true,
+            cols:[
+
+
+                {
+                    values:['00','01','02','03','04','05','06','07','08','09','10','11','12'],
+                },
+                {
+                    values:['00','01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23','24',
+                        '25','26','27','28','29','30','31'],
+                },
+                {
+                    values:['00','01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23'],
+                },
+                {
+
+                    values: ('00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 ').split(" "),
+                }
+
+            ]
+
+        });
+        $('#reminderTime').click(function () {
+            myPickerStart.open();
+        })
+    });
+
+</script>
+2

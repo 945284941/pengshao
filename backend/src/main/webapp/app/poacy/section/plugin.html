@@ -1,0 +1,262 @@
+<template>
+    <style>
+        /*1.table必须加宽度值*/
+        /*2.table必须加table-layour: fixed;属性*/
+        /*3.给每个<td>加四个属性。*/
+        table > tbody > tr > td {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        table {
+            table-layout: fixed;
+        }
+
+        .tool-bar-right{
+            margin: 10px 0;
+            text-align: right
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > td{
+            vertical-align: middle;
+            text-align: center !important
+        }
+
+        .serachInput{
+            padding:0 10px;
+            display: inline-block;
+            height: 34px;
+            font: 400 14px/34px consolas;
+            border-radius: 4px;
+            border:1px solid #CCC;
+            vertical-align: middle
+        }
+        button {
+            vertical-align: middle
+        }
+    </style>
+
+    <div role="tabpanel" class="tab-pane fade in" id="profile">
+        <div class='table-style'>
+<!--            <div class="tool-bar-right">
+                <input type="text" class="serachInput" placeholder="请输入帖子名称">
+                <button type="button" class="btn btn-default search-btn" >搜索</button>
+                <button type="button" class="btn btn-success" onclick="$f('plugin', '__.add', 0);">发布</button>
+            </div>-->
+
+            <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width:100%;">
+                <thead>
+                <tr>
+                    <th style="width: 20%">标题</th>
+                    <th style="width: 20%">内容</th>
+                    <th style="width: 20%">创建时间</th>
+                    <th style="width: 10%">类型</th>
+                    <th style="width: 10%">发布者</th>
+                    <th style="width: 20%">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+                <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+                <tr >
+                    <td class="trText" pid="<oo>=data.list[i].id</oo>"><oo>=data.list[i].title</oo></td>
+                    <td  class="trText" pid="<oo>=data.list[i].id</oo>"><oo>=data.list[i].context</oo></td>
+                    <td><oo>=data.list[i].createtime</oo></td>
+                    <oo>if(data.list[i].type==2){</oo>
+                    <td>工作宣传</td>
+                    <oo>}if(data.list[i].type==1){</oo>
+                    <td>政策引导</td>
+                    <oo>}if(data.list[i].type==""||data.list[i].type==null){</oo>
+                    <td></td>
+                    <oo>}</oo>
+                    <td><oo>=data.list[i].nick_name</oo></td>
+                    <td class="center">
+                        <button class="btn btn-info select" data-id="<oo>=data.list[i].id</oo>"  >
+                            <i class="glyphicon glyphicon-zoom-in icon-white"></i>
+                            详情
+                        </button>
+                        <button class="btn btn-warning btn-sm update"   data-id="<oo>=data.list[i].id</oo>">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                            修改
+                        </button>
+
+                        <button class="btn btn-danger delete" href="#"  data-id="<oo>=data.list[i].id</oo>">
+                            <i class="glyphicon glyphicon-trash icon-white"></i>
+                            删除
+                        </button>
+                    </td>
+                </tr>
+                <oo> } </oo>
+                <tr>
+
+                </tr>
+                </tbody>
+
+            </table>
+            <oo>if(data.list.length==0){</oo>
+            <div style="width:100%;text-align: center;font-size:30px;margin:20px 0px; color:#E0E0E0;" >
+                暂无数据
+            </div>
+            <oo>}</oo>
+            <div style="text-align: center" id="page-bar">
+
+            </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        $('#dynamicsMore').hide();
+        var data={}
+        var url="";
+        var page="";
+        var pid="";
+        var context="";
+        var lei=$('#lei').val();
+
+        context=$('#sousuo').val();
+        pid= $('#grantId').val();
+
+
+        if(lei==null||lei==""){
+            url = "/schoolcms/archive/note/findJobPol";
+            page=_data.page;
+
+            if(pid==null||pid==""){
+                pid=1;
+
+            }
+
+            data={'classId':pid,'page':page,'pageSize':10,'context':context};
+        }
+        else{
+            //工作宣传
+            var classId="";
+            url="/schoolcms/archive/note/findPoacy";
+            if(lei==1){
+                if(pid==null||pid==""){
+                    pid=1;
+                }
+
+                data={"classId":pid,"page":page,"pageSize":10,"disish":"",'context':context};
+
+            }else{
+                //政策引导
+                url="/schoolcms/archive/note/findPoacy";
+                if(pid==null||pid==""){
+                    pid=1;
+                }
+
+                data={"classId":pid,"page":page,"pageSize":10,"disish":1,'context':context};
+            }
+
+
+        }
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data.data.list);
+        var content = $f("TPPL", _page, _data);
+        $("#homeContext").html(content);
+
+         if(_data.data.list.length==0){
+             alert("此条件下没有任何信息");
+         }
+          $('.trText').click(function () {
+              var id=$(this).attr('pid');
+              $f('plugin','poacy.poacyDetails',id);
+          });
+        $('.select').click(function () {
+            var id=$(this).data('id');
+            $f('plugin','poacy.poacyDetails',id);
+        });
+        // 加载分页组件
+        initPageBar("#page-bar", _data);
+        $("#page-bar").find("button").click(function(){
+
+            var pageNum = $(this).attr("data-page");
+
+            var currentPage=_data.data.pageNumber;
+            var maxPage=_data.data.totalPage;
+            if(pageNum=="next"){
+
+                pageNum=currentPage+1;
+                if(pageNum>maxPage){
+                    pageNum=maxPage;
+                }
+            }
+            if(pageNum=="Prev"){
+
+                pageNum=currentPage-1;
+
+                if(pageNum==0){
+                    pageNum=1;
+                }
+            }
+
+            $f('plugin','poacy.section',{page:pageNum})
+
+
+        });
+        $('.delete').click(function () {
+            var id=$(this).data("id");
+            var classid=$('#grantId').val();
+            var mymessage=confirm("确定要删除吗？");
+            if(mymessage==true){
+                $.ajax({
+                    type: "get",
+                    dataType: "json",
+                    data:{
+                        "id":id,
+                        "typeid":classid,
+                    },
+                    url: "/schoolcms/archive/note/deleteNoteById",
+                    success: function (msg) {
+                        alert(msg.message);
+                        $f('plugin','poacy.section',{"classid":classid});
+                    }
+                });
+            }
+        })
+        $('.update').click(function () {
+            var id=$(this).data('id');
+            $f('plugin','poacy.poacyUpdate',id);
+        })
+
+
+
+
+    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

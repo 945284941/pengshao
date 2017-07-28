@@ -1,0 +1,96 @@
+<template>
+    <div id="dynamicsSedComment1" class="modal fade">
+            <div class="row">
+            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">回复</h4>
+                </div>
+                <div class="modal-body col-md-12" style="height:100%; background-color:white;">
+                    <div class="noteList col-md-12" style="padding-top: 10px;margin-top:10px;height:100%;">
+                        <img src="<oo>=data.image</oo>"  class="img-circle col-md-1">
+                        <div class="noteCreater col-md-3" style="margin-left: 10px;">
+                            <div style="margin-top: 5px;">
+                                <oo>=data.nick_name</oo>
+                            </div>
+                            <div class="noteTime">
+                                <oo>=data.createtime</oo>
+                            </div>
+                        </div>
+                        <div class="col-md-10" style="margin-left:80px;overflow: hidden;border-top:1px solid #E0E0E0">
+                            <div style="margin-top: 10px;">
+                            <oo>=data.context</oo>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="noteListText col-md-10" style="margin-left:80px; margin-top:10px;">
+                        回复:
+                        <textarea name="context"  id="replyContext" class="form-control " rows="10" style="resize: vertical ; height:100px;margin-top:10px;"></textarea>
+                        <a class="btn btn-info "  id="addReply" style="float:right;margin: 20px 0px;">
+                            确定
+                        </a>
+
+                    </div>
+
+                    <div class="Comment col-md-12 commentListt" >
+                    </div>
+
+                </div>
+                <input type="hidden" id="dangqianpage" value="1">
+                <input type="hidden" id="noteIDD" value="<oo>=data.id</oo>">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+                </div>
+
+            </div>
+        </div>
+</div>
+        </div>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+        var url="/schoolcms/archive/note/findOneById";
+        var data={"id":_data};
+        $f('ajax.get',url,data,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#dynamicsSedComment1').remove();
+        $('#dynamicsSedComment1').remove();
+
+        $("#wrapper").append(html);
+        $f('plugin','notification.dynamicsSedComment.dynamicsSedCommentList',_data.data.id);
+
+        $('#dynamicsSedComment1').modal();
+
+        $('#addReply').click(function () {
+            var noteId=_data.data.id;
+            var context=$('#replyContext').val();
+            var userBaby=$('#userBaby').val();
+            context=$.trim(context);
+            if(context==null||context==""){
+                alert("回复不能为空，请重新输入");
+                return;
+            }
+
+            $.ajax({
+                url:"/schoolcms/archive/note/addReply",
+                data:{
+/*
+                    userId:localStorage.getItem("userId"),*/
+                    userId:userBaby,
+                    noteId:noteId,
+                    context:context,
+
+                },
+                success:function (_data) {
+                    alert(_data.message);
+                    $f('plugin','notification.dynamicsSedComment',noteId);
+                }
+            })
+
+        })
+    })
+</script>

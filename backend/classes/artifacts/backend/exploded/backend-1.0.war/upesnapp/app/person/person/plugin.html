@@ -1,0 +1,133 @@
+<template>
+    <style>
+        .card {
+            box-shadow: none;
+            margin: 0px;
+            height: 15%;
+        }
+
+    </style>
+
+    <div data-page="person" class="page">
+        <div id="person-content" class="page-content">
+            <div class="card" style="height:15%;margin:10px 0px 15px 0px; ">
+                <div class="card-content">
+                    <div class="list-block media-list">
+                        <ul>
+                            <li class="item-content" style="">
+                                <div class="item-media" style="margin: 5px 0 0 10px" onclick="$f('plugin','person.photo',0)">
+                                    <img src="img/head3.jpg" width="60px" style="border-radius: 50%;">
+                                    <div class="item-title-row" >
+                                        <div class="item-title">
+                                            <oo>=data.name</oo>
+                                        </div>
+                                    </div>
+                                    <div class="item-subtitle" style="margin-left: 12px; font-size: 14px">身份:
+                                        <oo>if(data.identity==0){</oo>
+                                            游客
+                                        <oo>}else{</oo>
+                                            家长
+                                        <oo>}</oo>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="list-block media-list" style="margin:20px 0 20px 0">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/nickname.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>微信昵称</span>
+                                    </div>
+                                    <div>
+                                        <oo>=data.weixin_name</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/phone.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>手机号码</span>
+                                    </div>
+
+                                    <div>
+                                        <oo>=data.phone</oo>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="list-block media-list" style="margin:10px 0 20px 0">
+                <ul>
+                    <li>
+                        <div onclick="$f('plugin','person.authentication',0)" class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/authen.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>实名认证</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div onclick="$f('plugin','person.setting',0)" class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div>
+                                        <img src="img/setting.png" style="width:24px;height: 24px;margin-bottom: -8px;margin-right: 12px;">
+                                        <span>设置</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page) {
+        AppFramework.hideIndicator();
+
+        var userId = localStorage.getItem("userId");
+
+       /* var userId = 401;*/
+
+        url = $f("tools.serverURL", "archive/weixinUser/findOneUser");
+        data = {
+            'userid': userId
+        };
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var content = $f("TPPL", _page, _data);
+        mainView.router.load({
+            content: content
+        });
+
+
+    });
+
+</script>

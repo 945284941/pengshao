@@ -1,0 +1,147 @@
+<template>
+    <style>
+        .div-a {
+
+            overflow-x: auto;
+            font-size: 16px;
+            margin-top: 50px;
+            height: 30px;
+            margin-left: -23px;
+
+        }
+
+        .divul {
+            display: inline;
+            white-space: nowrap;
+
+        }
+
+        .divli {
+            display: inline-block;
+            margin: 0px 10px;
+
+        }
+
+
+        #tab1 {
+            overflow-y: auto;
+        }
+
+        #functionbody {
+            background: #ececec;
+            overflow-y: auto;
+
+        }
+    </style>
+    <div data-page="neighbour-home" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0;" class="backOut"><h2><</h2></a>
+                </div>
+                <div class="center" style="font-weight: bold">邻里互助</div>
+                <div class="right">
+                    <a class="publish-note"><h2>+</h2></a>
+                </div>
+                <!--<div style="width: 100%;text-align: center;">-->
+                    <!--<span>邻里互助</span>-->
+                <!--</div>-->
+
+                <!--<div style="text-align: left;color: #61aafc">-->
+                    <!--<span class="publish-note"><h2>+</h2></span>-->
+                <!--</div>-->
+            </div>
+        </div>
+        <div class="div-a" style="overflow-x: auto;font-size: 16px; margin-top: 50px; height: 30px; margin-left: -23px;">
+            <ul class="divul" style=" display: inline;white-space: nowrap;">
+                <oo>for(var i = 0; i < list.length; i ++){ if(i==0){</oo>
+                <li class="div-span divli neighbour-active" data-id="<oo>=list[i].id</oo>" style="color: #62abfc;display: inline-block; margin: 0px 10px;">
+                    <oo>=list[i].classname</oo>
+                </li>
+                <oo>}else{</oo>
+                <li class="div-span divli" data-id="<oo>=list[i].id</oo>" style="display: inline-block; margin: 0px 10px;"  >
+                    <oo>=list[i].classname</oo>
+                </li>
+                <oo>}}</oo>
+
+            </ul>
+        </div>
+        <div class="every-note-list" style="height: 88%">
+
+        </div>
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page, dynamicId) {
+        var url = $f("tools.serverURL", "archive/classification/findListByPid");
+        var data = {
+            "pid": 147
+        };
+
+        $f("ajax.get", url, data, "__.list", _page, dynamicId)();
+    });
+
+    $f("df", "__.list", function (_data, _page, dynamicId) {
+        var html = $f("TPPL", _page, _data.data);
+        mainView.router.loadContent(html);
+
+        //删除dom中添加页面，使返回时不再回到此界面
+        var replyPage = $("div[data-page='neighbour-note-add']");
+        if(replyPage.length != 0) {
+            replyPage.remove();
+        }
+
+
+        //加载分类帖子列表
+        if(dynamicId == 0){
+            //传参必须以对象形式传入以下三个参数 以便调用下层plugin
+            var param1 = {
+                classId: _data.data.list[0].id,
+                pageSize: 10,
+                page: 1
+            };
+            $f('plugin', '__.note-list', param1);
+        } else{
+            var param2 = {
+                classId: dynamicId,
+                pageSize: 10,
+                page: 1
+            };
+            $f('plugin', '__.note-list', param2);
+        }
+
+
+        //分类查询
+        $(".div-span").click(function () {
+            var id = $(this).data("id");
+            $("#hv").val(id);
+            $('.div-span').css('color', '#000');
+            $(this).css('color', '#62abfc');
+
+            $(this).addClass("neighbour-active");
+            $(this).siblings().removeClass("neighbour-active");
+
+            var data = {
+                classId: id,
+                page: 1,
+                pageSize: 10
+            };
+            $f('plugin', '__.note-list', data);
+        });
+
+        //发帖
+        $(".publish-note").click( function () {
+            var classId = $(".page-on-center").find(".neighbour-active").data("id");
+            $f('plugin','__.note-list.add',classId);
+        });
+
+        $('.backOut').click(function () {
+            yyesn.client.closePage();
+        });
+
+    });
+
+
+</script>
+

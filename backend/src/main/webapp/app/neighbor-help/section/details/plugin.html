@@ -1,0 +1,60 @@
+<template>
+    <div id="note-details" class="modal fade">
+        <div class="row">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" >
+                    <div class="note-details" style="margin:30px; padding:10px 20px; background-color: #EEEEEE; min-height: 270px">
+                        <div><h4><oo>=title</oo></h4></div>
+                        <div style="font-size: 12px; color: gray">
+                            <span><oo>=username</oo></span>
+                            <span><oo>=time</oo></span>
+                            <div style="background-color:#DDDDDD; height:1px; margin:5px 0 10px 0"></div>
+                        </div>
+                        <div><p><oo>=context</oo></p></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df",__,function (_page, data) {
+
+        $f('ajax.get',null,null,"__.list",_page, data)();
+
+    });
+
+    $f("df","__.list",function (_data, _page, data) {
+        var html=$f('TPPL',_page, data);
+        $('#note-details').remove();
+        $("body").append(html);
+        $f('plugin','__.reply-list',data.id);
+
+        $('#note-details').modal();
+
+        $('#addReply').click(function () {
+            var noteId=_data.data.id;
+            var context=$('#replyContext').val();
+            context=$.trim(context);
+            if(context==null||context==""){
+                alert("回复不能为空，请重新输入");
+            }
+            $.ajax({
+                url:"/schoolcms/archive/note/addReply",
+                data:{
+                    userId:localStorage.getItem("userid"),
+                    noteId:noteId,
+                    context:context,
+                },
+                success:function (_data) {
+                    alert(_data.message);
+                    $f('plugin','dynamicsSed.dynamicsSedComment',noteId);
+                }
+            })
+
+        })
+    })
+</script>

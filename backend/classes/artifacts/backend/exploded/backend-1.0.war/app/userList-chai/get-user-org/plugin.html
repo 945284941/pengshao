@@ -1,0 +1,78 @@
+
+
+<template>
+
+    <style>
+
+        #mbx{
+            margin-top: 10px;
+            font-size: 16px;
+            color: red;
+        }
+
+
+    </style>
+
+
+
+
+    <div id="mbx">组织架构</div>
+    <div class="" style=" margin: 10px 0;">
+
+        <oo>for(var i = 0; i < data.depart.length; i++){</oo>
+        <ul>
+            <li style="list-style-type:none;">
+                <div href="#" class="lia" data="<oo>=data.depart[i].id</oo>" data-type="<oo>=data.depart[i].name</oo>" data-val="<oo>=data.depart[i].pid</oo>">
+                    <div style=" font-size: 16px;text-align: center;border-bottom: 1px solid #ccc;">
+                        <div ><oo>=data.depart[i].name</oo></div>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+        <oo>}</oo>
+    </div>
+
+</div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="quxiaoPeople2" >取消</button>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = $f("tools.serverURL", "archive/department/findDepartmentByPid");
+        $f("ajax.get", url, null, "__.list", _page,_data)();
+
+
+    });
+
+    $f("df", "__.list", function (_data, _page,data) {
+
+        var content = $f("TPPL", _page, _data);
+
+        $(".xuanren").html(content);
+        $(".lia").click(function(){
+            var id=$(this).attr("data");
+            var name=$(this).attr("data-type");
+            var html="<span class='mmbx' data=''>组织架构</span>><span class='mmbx' data='"+id+"'>"+name+"</span>"
+            var data1={
+                id:id,
+                name:name,
+                html:html,
+            }
+            $f('plugin','userList-chai.get-user-org-childs',data1);
+
+        });
+
+        $("#quxiaoPeople2").click(function(){
+            $(".addpeoplelist").html("");
+            $(".addwork").show();
+            $(".typec").show();
+        });
+
+
+    });
+
+</script>

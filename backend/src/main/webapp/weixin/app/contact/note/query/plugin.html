@@ -1,0 +1,71 @@
+<template>
+  <style>
+    .header-msg{
+       color: grey;
+       display: inline-block;
+       line-height: 18px;
+       margin-left:13px;
+       vertical-align:top
+    }
+  </style>
+    <div data-page="home-other-class" class="page">
+
+      <div class="page-content">
+        <!--<div class="content-block-title" style="background-image:url(img/back22.jpg);margin:10px;height:30px;font-size:20px;color:white">-->
+            <!--<div style="margin:5px auto;text-align:center"><oo>=data.name</oo></div>-->
+        <!--</div>-->
+        <div class="card ks-card-header-pic">
+          <div style="background-image:url(<oo>=data.img</oo>);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">
+              <oo>=data.title</oo>
+          </div>
+          <div class="card-header" style="font-size:12px">
+            <div class="avatar">
+              <img src="img/head2.jpg" width="34" height="34">
+              <div class="user header-msg">
+                <div class="name"><oo>=data.nick_name</oo></div>
+                <div class="time"><oo>=data.create_user_time</oo></div>
+              </div>
+            </div>
+            <input type="hidden" value="<oo>=data.note_id</oo>" id="babyNoteId">
+            <input type="hidden" value="<oo>=data.note_id</oo>" id="sedNoteId">
+          </div>
+          <div class="card-content">
+              <div class="card-content-inner">
+                  <p class="">
+                      <oo>=data.context</oo>
+                  </p>
+              </div>
+          </div>
+          <div style="text-align:right">
+              <div class="chip" style=" margin:0 15px 10px 0" onclick="$f('plugin','home.note',this);" typeid="<oo>=data.type_id</oo>">
+                  <div class="chip-media"><img src="img/icon2.png"></div>
+                  <div class="chip-label"><oo>=data.type_name</oo></div>
+              </div>
+          </div>
+        </div>
+        <div class="comments" id="note-reply-list">
+
+        </div>
+    </div>
+  </div>
+</template>
+<script>
+  $f("df", __, function(_page, _data) {
+    var n = $(_data).attr("noteid");
+    var t = $(_data).attr("typeid");
+    var url = $f("tools.serverURL","archive/note/findNoteById");
+    var data = {"noteId":n};
+    $f("ajax.get", url, data, "__.list", _page)();
+  });
+
+  $f("df", "__.list", function(_data, _page) {
+    var title=$('#titleSed').val();
+    _data.data.create_user_time = $f("tools.dateFormat",_data.data.create_user_time);
+    var p = $f("TPPL",_page,{"data":_data.data,"title":title});
+    homeView.router.load({content:p});
+    AppFramework.hideIndicator();
+    $f('plugin','__.reply',_data.data.note_id);
+
+  });
+
+</script>

@@ -1,0 +1,84 @@
+<template>
+    <div data-page="weixinworkflowdetails" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>详情</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="speed-dial speed-dial-closed"><a href="#" class="floating-button"><i
+                class="icon f7-icons">add</i><i
+                class="icon f7-icons">close</i></a>
+            <div class="speed-dial-buttons">
+               <!-- <a href="#" id="volumereply"><i style="font-size: 20px" class="icon f7-icons">volume</i></a>-->
+                <a href="#" onclick="$f('plugin','property.replyAdd',0)"><i style="font-size: 20px" class="icon f7-icons">dcompose</i></a>
+                <!--<a href="#" id="camerareply"><i style="font-size: 20px" class="icon f7-icons">camera</i></a>-->
+            </div>
+        </div>
+        <div class="page-content">
+
+            <div class="card ks-card-header-pic" style="margin-top: 55px">
+                <!-- <div style="background-image:url(<oo>=data.img</oo>);padding-left: 20px; height:100px" valign="bottom" class="card-header color-white no-border">-->
+                <div style="padding: 10px 0 0 15px" class="list-block media-list for-container">
+                    <oo>=data.title</oo>
+                </div>
+                <div class="card-content">
+                    <div class="card-content-inner">
+                        <p class="color-gray">
+                            <oo>=data.createtime</oo>
+                        </p>
+                        <p class="">
+                            <oo>=data.context</oo>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+        <input type="hidden" value="<oo>=data.id</oo>" id="noteId">
+
+        <div class="comments" id="note-reply-list">
+
+        </div>
+        </div>
+    </div>
+
+
+
+</template>
+<script>
+
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+        $("div[data-page='weixinworkflowdetails']").remove();
+        homeView.router.load({content: content});
+        $f('plugin', 'property.reply', _data.data.id);
+
+        $("#volumereply").click(function(){
+            alert("敬请期待");
+        });
+        $("#camerareply").click(function(){
+            alert("敬请期待");
+        });
+
+    });
+
+
+</script>
+

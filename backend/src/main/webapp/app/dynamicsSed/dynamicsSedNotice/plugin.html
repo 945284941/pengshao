@@ -1,0 +1,56 @@
+<template>
+    <oo>for(var i=0;i< data.list.length;i++){</oo>
+    <div class="taskbarBlock">
+        <div class="taskbarSmallBloack">
+            <a href="#" style="text-decoration:none;color:black" onclick="$f('plugin','dynamicsSed.dynamicsSedDetails','<oo>=data.list[i].id</oo>')"><oo>=data.list[i].title</oo></a></div>
+        <div class="taskbarSmallBloack" style="border-bottom:1px solid 	#d0d0d0">
+
+            <div class="taskbarCreater"><oo>=data.list[i].nick_name</oo></div>
+
+            <div class="taskbarTime">发起时间:<oo>=data.list[i].createtime</oo></div>
+        </div>
+    </div>
+      <oo>}</oo>
+    <oo>if(data.list.length>3){</oo>
+    <div class="col-md-2 noteTime noticeMore"  pid="<oo>=data.list[0].classid</oo>"  style="float: right;cursor: pointer ; margin-top: 10px;">查看更多</div>
+    <oo>}</oo>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+        var url="";
+        var data={}
+
+        if(_data==0){
+            url="/schoolcms/archive/note/findNoteList";
+                    data={
+                        "classId": 2,
+                        "pageSize":4,
+                    }
+        }
+        else{
+            var userId;
+            if(localStorage.getItem("userId")==null||localStorage.getItem("userId")==""){
+                userId=2;
+            }else {
+                userId=localStorage.getItem("userId");
+            }
+            url="/schoolcms/archive/note/findNoteListByUser"
+            data={
+                "classId": 2,
+                "pageSize":4,
+                /*   "userId":localStorage.setItem("userid"),*/
+                "userId":userId
+            }
+        }
+        $f('ajax.get',url,data,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+
+        var html=$f('TPPL',_page,_data);
+        $('#dynamicsSedNotice').html(html);
+        $('.noticeMore').click(function(){
+            var id=$(this).attr('pid');
+            $f('plugin','insert.search',id);
+        })
+    })
+</script>

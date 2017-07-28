@@ -1,0 +1,93 @@
+<template>
+    <style>
+        .modal-header {
+            color: #aaaaaa;
+            text-align: center !important;
+
+        }
+    </style>
+    <div id="section-add-form1" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">修改板块</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group form-group-sm">
+                        <label>板块名称</label>
+                        <input type="hidden" id="typeid" value="<oo>=data.id</oo>"/>
+                        <input type="text" id="name2" class="form-control" value="<oo>=data.classname</oo>"/>
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        <label>板块介绍(备注)</label>
+                        <textarea id="intro" class="form-control" rows="10" style="resize: vertical"><oo>=data.introduce</oo></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-success confirm" style="margin-left:70%">确认修改</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+
+    $f("df", __, function (_page, data) {
+        var url = $f("tools.serverURL", "archive/classification/findOneById");
+        var data={
+            "id":data
+        }
+        $f("ajax.get", url, data, "__.list", _page, data)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var html = $f("TPPL", _page, _data);
+        $("#section-add-form1").remove();
+        $("#page-inner").append(html);
+        $("#section-add-form1").modal();
+
+
+        //确认添加
+        $('.confirm').click(function () {
+            var name = $('#name2').val().trim();
+            var intro = $('#intro').val();
+            var id=$('#typeid').val();
+
+            if (Checkor.isEmpty(name)) {
+                alert("板块名称不可为空");
+                return;
+            }
+
+            Samous.confirm({message: "确认修改该板块吗？"}).on(function (e) {
+                if (!e) {
+                    return;
+                }
+                $.ajax({
+                    url: $f('tools.serverURL', 'archive/classification/update'),
+                    type: 'POST',
+                    data: {
+                        "name": name,
+                        "id": id,
+                        "intro":intro
+                    },
+                    success: function (resp) {
+                        alert(resp.message);
+                        //刷新页面
+                        $("#section-add-form").modal("toggle");
+                       /* $f('plugin', 'convenience.settypelist', 0);*/
+                        $f('plugin','convenience.search', "crud");
+                    }
+                });
+            });
+        });
+    });
+
+
+</script>
+

@@ -1,0 +1,34 @@
+<template>
+
+    <div data-page="cards" class="page page-on-center">
+        <div class="page-content"></div>
+    </div>
+
+</template>
+<script>
+    $f("df",__,function(_page,_data){
+        var url = "",
+                data = {};
+
+        if (_data != 0) {
+            url = $f("serverURL", "");
+            data = {
+                'typeId': _data.type
+            };
+        } else {
+            url = null;
+            data = null;
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df","__.list",function(_data,_page){
+
+        var content = $f("TPPL",_page,_data);
+        $("#chats-content").html(content);
+        chatView.router.load({pageName:'chats'});
+
+    });
+
+</script>
+

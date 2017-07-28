@@ -1,0 +1,58 @@
+<template>
+    <div id="dynamicsSedDetails" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">帖子详情</h4>
+                </div>
+                <div class="modal-body">
+
+
+                    <div class="form-group form-group-sm">
+
+                        <label>发帖人</label>
+                        <input type="text" name="creater" class="form-control" id="create_user"  value="<oo>=data.nick_name</oo>"readonly/>
+
+                    </div>
+                    <div class="form-group form-group-sm">
+
+                        <label>发帖时间</label>
+                        <input type="text" name="creater" class="form-control" id="create_time"  value="<oo>=data.createtime</oo>"readonly/>
+
+                    </div>
+                    <div class="form-group form-group-sm">
+
+                        <label>帖子标题</label>
+                        <input type="text" name="creater" class="form-control" id="title"  value="<oo>=data.title</oo>"readonly/>
+
+                    </div>
+
+                    <div class="form-group form-group-sm">
+                        <label>帖子内容</label>
+                        <textarea name="context" id="neirong" readonly class="form-control" rows="10" style="resize: vertical; height: 200px"><oo>=data.context</oo></textarea>
+                        <div id="text-count-notice" style="text-align: right"></div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df",__,function (_page,_data) {
+
+        var url="/schoolcms/archive/note/findOneById";
+        var data={"id":_data};
+        $f('ajax.get',url,data,"__.list",_page)();
+    })
+    $f("df","__.list",function (_data,_page) {
+        var html=$f('TPPL',_page,_data);
+        $('#dynamicsSedDetails').remove();
+        $("#page-inner").append(html);
+        $('#dynamicsSedDetails').modal();
+    })
+</script>

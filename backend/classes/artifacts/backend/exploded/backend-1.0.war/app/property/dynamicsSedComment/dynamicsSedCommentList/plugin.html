@@ -1,0 +1,73 @@
+<template>
+    <div class="noteListText col-md-11" style="margin-top:0px;margin-left:55px; ">
+        <div class="noteCreater" style="margin-left: 10px;">
+            <div style="margin-top: 5px;">回复:</div>
+        </div>
+    </div>
+    <hr style="width: 85%" size="1">
+    <oo>if( data.list.length!=0 ){</oo>
+    <div>
+        <oo>for(var i=0;i< data.list.length;i++){</oo>
+        <div class="noteListText col-md-11" style="margin-top:0px;margin-left:55px; ">
+            <div class="noteCreater" style="margin-left: 10px;">
+                <div style="margin-top: 5px;">
+                    <oo>=data.list[i].nick_name</oo>
+                </div>
+                <div class="noteTime">
+                    <oo>=data.list[i].create_time</oo>
+                </div>
+            </div>
+        </div>
+        <div class="noteListText col-md-11" style="margin-top:10px;margin-left:55px; ">
+            <div class="noteCreater" style="margin-left: 10px;">
+                <oo>=data.list[i].reply_context</oo>
+            </div>
+        </div>
+        <hr style="width: 85%" size="1">
+        <oo>}</oo>
+    </div>
+
+    <div id="manyReply"></div>
+    <oo>if(data.list.length==5){</oo>
+    <div class="col-md-12 noteList" style="margin-top:10px;margin-bottom: 10px;" id="moreOtherReply">
+        <div style="text-align: center;line-height:50px;">
+            <div href="#" style="cursor: pointer" id="findmoreReply">查看更多...</div>
+        </div>
+    </div>
+
+    <oo>}</oo>
+
+    <oo>}else{</oo>
+    <div>
+        <div clas="col-sm-1"></div>
+
+        <div class="noteListText col-md-10" style="margin-left:80px; margin-top:10px;">暂无回复</div>
+    </div>
+    <oo>}</oo>
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+
+        var url = "/schoolcms/archive/note/findReply";
+        var data = {"noteId": _data};
+        $f('ajax.get', url, data, "__.list", _page)();
+    });
+    $f("df", "__.list", function (_data, _page) {
+
+        var html = $f('TPPL', _page, {"data": _data.data});
+        var page = $('#dangqianpage').val();
+
+        $(".commentListt").html(html);
+
+        $('#findmoreReply').click(function () {
+            var i = parseInt(page);
+
+            page = i + 1;
+            var noteId = $('#noteIDD').val();
+
+            $f('plugin', 'property.dynamicsSedComment.dynamicsSedMoreReply', {"page": page, "noteId": noteId});
+
+        })
+
+    })
+</script>

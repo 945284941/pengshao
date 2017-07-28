@@ -1,0 +1,145 @@
+<template>
+
+
+
+    <style>
+        table tr td{
+            text-align:center;"
+        }
+        table tr th{
+            text-align:center;"
+        }
+    </style>
+    <br/>
+
+    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive" style="width: 100%;">
+        <thead>
+        <tr>
+            <th style="width:15%">标题</th>
+            <th style="width:40%">内容</th>
+            <th>发布时间</th>
+            <th style="width:10%">发布人</th>
+            <th style="width:15%">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+        <tr>
+
+
+            <td data="<oo>=data.list[i].name</oo>"><oo>=data.list[i].title</oo></td>
+            <td data="<oo>=data.list[i].nickname</oo>"><oo>=data.list[i].context</oo></td>
+            <td><oo>=data.list[i].createtime</oo></td>
+            <td data="<oo>=data.list[i].name</oo>"><oo>=data.list[i].nick_name</oo></td>
+            <td>
+
+                <a class="btn btn-info notedetele"   data="<oo>=data.list[i].id</oo>">
+                    删除
+                </a>
+                <a class="btn btn-danger noteupdata"  data="<oo>=data.list[i].id</oo>">
+                    修改
+                </a>
+
+
+
+            </td>
+        </tr>
+        <oo> } </oo>
+        </tbody>
+    </table>
+
+    <div style="text-align: center" id="page-bar">
+
+    </div>
+
+</template>
+<script>
+
+
+    $f("df", __, function(_page, _data) {
+        var url="/schoolcms/archive/note/findNoteList";
+        if(_data!=0){
+            var data = {
+                "classId": 72,
+                "pageSize":10,
+                "page":_data.page,
+                "name":_data.name,
+                "title":_data.title,
+            }
+        }
+        else{
+            var data = {
+                "classId": 72,
+                "pageSize":10,
+                "page":1,
+            }
+        }
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+
+        var content = $f("TPPL",_page,_data);
+
+        $("#functionbody").html(content);
+        //删除帖子
+        $(".notedetele").click(function(){
+            var id =$(this).attr("data");
+            var mymessage=confirm("确定要删除吗？");
+            if(mymessage==true)
+            {
+
+                $.ajax({
+                    type: "get",
+                    dataType: "json",
+                    data:{
+                        "id":id,
+                        "typeid":72,
+                    },
+                    url: "/schoolcms/archive/note/deleteNoteById",
+                    success: function (msg) {
+                        alert(msg.message);
+                        $f('plugin','point',0);
+                    }
+                });
+            }
+        });
+        //修改帖子
+        $(".noteupdata").click(function(){
+            var id=$(this).attr("data");
+            $f('plugin','point.todayTaskDetail',id);
+        });
+        initPageBar("#page-bar", _data);
+        $("#page-bar").find("button").click(function(){
+
+            var pageNum = $(this).attr("data-page");
+
+            var currentPage=_data.data.pageNumber;
+            var maxPage=_data.data.totalPage;
+            if(pageNum=="next"){
+
+                pageNum=currentPage+1;
+                if(pageNum>maxPage){
+                    pageNum=maxPage;
+                }
+            }
+            if(pageNum=="Prev"){
+
+                pageNum=currentPage-1;
+
+                if(pageNum==0){
+                    pageNum=1;
+                }
+            }
+
+            $f('plugin','point',{page:pageNum})
+
+
+        });
+
+
+
+    });
+
+</script>

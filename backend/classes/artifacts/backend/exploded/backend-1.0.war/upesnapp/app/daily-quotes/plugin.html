@@ -1,0 +1,54 @@
+<template>
+    <style>
+        .demo-card-header-pic .card-header {
+            height: 40vw;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .list-block .item-subtitle {
+            color: grey;
+            font-size: 12px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            max-width: 100%;
+            text-overflow: ellipsis;
+        }
+    </style>
+    <div data-page="daily-quote" class="page">
+        <div class="card demo-card-header-pic" style="background-image:url(<oo>=data.img</oo>);margin:10px">
+            <div valign="bottom" class="card-header color-white no-border"><oo>=data.title</oo></div>
+            <div class="card-content">
+                <div class="card-content-inner color-white">
+                    <p><oo>=data.context</oo></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    $f("df",__, function (_page, _data) {
+        var url = "", data = {};
+        if (_data != 0) {
+            url = $f("tools.serverURL", "archive/note/findOneDailyNote");
+            data = {
+                'classId': _data.type
+            };
+        } else {
+            url = null;
+            data = null;
+        }
+        $f("ajax.get",url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data);
+        var content = $f("TPPL", _page, _data);
+
+        AppFramework.hideIndicator();
+        mainView.router.load({content:content});
+    });
+
+
+</script>

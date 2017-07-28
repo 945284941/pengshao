@@ -1,0 +1,392 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+    </style>
+    <div data-page="poacy-add" class="page">
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="padding: 10px 20px 10px 0px;" class="back" ><h2><</h2></a>
+
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>活动通知</span>
+                </div>
+            </div>
+        </div>
+        <div class="list-block"  style="margin-top:60px;">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="departidupdate" class="btn" placeholder="发布单位">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block" >
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="titleSed" placeholder="请输入标题" value="<oo>=data.title</oo>">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="startTimeUpdate" placeholder="开始时间" value="<oo>=data.startTime</oo>">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="list-block">
+            <ul>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-img"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" id="endTimeUpdate"placeholder="结束时间" value="<oo>=data.endTime</oo>">
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li class="align-top">
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-comment"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <textarea id="contentSed" placeholder="请输入内容"><oo>=data.context</oo></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+            </ul>
+        </div>
+
+
+
+
+
+        <a href="#" id="qd" class="button active confirm" style="height: 35px; font-size: 16px; line-height: 35px">确认</a>
+
+
+
+
+
+
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page,_data) {
+        var url = $f("server","archive/note/findOneById");
+       // var url="/schoolcms/archive/note/findOneById";
+        var data = {
+            "id": _data
+        }
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df","__.list",function(_data, _page) {
+
+
+        if(_data.data.expand==null||_data.data.expand==""){
+
+        }else{
+            var obj=JSON.parse(_data.data.expand);
+            _data.data.startTime=obj.startTime;
+
+            _data.data.endTime=obj.endTime;
+        }
+        var html = $f("TPPL", _page, _data);
+        var id=_data.data.id;
+
+        mainView.router.load({content:html});
+
+        //获取发布单位
+        var arc=[];
+        var arcid=[];
+        $.ajax({
+
+            url:$f("server","archive/department/findDepartByPid"),
+            type:"GET",
+            data:{
+                "pid":9
+            },
+            success:function(resp){
+
+                var dename=""
+                for(var i=0;i<resp.data.length;i++){
+                    if(_data.data.expand!=null&&JSON.parse(_data.data.expand).departid==resp.data[i].id){
+
+                        dename=resp.data[i].name;
+                        $("#departidupdate").val(dename);
+
+                    }
+                    arc.push(resp.data[i].name);
+                    arcid.push(resp.data[i].id);
+
+
+                }
+                var pickerDevice = AppFramework.picker({
+                    input: '#departidupdate',
+                    cols: [
+                        {
+                            textAlign: 'center',
+                            values: arc,
+                        }
+                    ],
+                    //myPickerEnd.cols[0].setValue(year);
+                });
+                $('#departidupdate').click(function () {
+                    pickerDevice.cols[0].setValue(dename);
+
+                })
+
+
+
+
+            }
+        });
+
+
+        var  myPicker  =  AppFramework.picker({
+            input :'#startTimeUpdate',
+            formatValue :function (picker ,values ){
+                return values[0]+"-"+values[1]+"-"+values[2]+"  "+values[3]+":"+values[4];
+            },
+            rotateEffect:true,
+
+            cols:[
+                {
+
+                    values:['2017','2018','2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034'],
+
+                },
+
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23','24',
+                        '25','26','27','28','29','30','31'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23'],
+                },
+                {
+
+                    values: ('1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 ').split(" "),
+                }
+
+            ],
+
+        })
+
+        var  myPickerEnd  =  AppFramework.picker({
+            input :'#endTimeUpdate',
+            formatValue :function (picker ,values ){
+                return values[0]+"-"+values[1]+"-"+values[2]+"  "+values[3]+":"+values[4];
+            },
+            rotateEffect:true,
+            cols:[
+                {
+
+                    values:['2017','2018','2019','2020','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034'],
+
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23','24',
+                        '25','26','27','28','29','30','31'],
+                },
+                {
+                    values:['01','02','03','04','05','06','07','08','09','10','11','12',
+                        '13','14','15','16','17','18','19','20','21','22','23'],
+                },
+                {
+
+                    values: ('1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 ').split(" "),
+                }
+
+            ],
+
+        })
+
+        $('#startTimeUpdate').click(function () {
+            myPicker.open();
+
+
+            var myDate=new Date(_data.data.startTime);
+            var year=myDate.getFullYear();
+            var mouth=myDate.getMonth()+1;
+            if(mouth<10){
+                mouth="0"+mouth;
+            }
+
+            var day=myDate.getDate();
+
+            if(day<10){
+                day="0"+day;
+            }
+            var hour=myDate.getHours();
+            var hour=myDate.getHours();
+            if(hour<10){
+                hour="0"+hour;
+            }
+            var minute=myDate.getMinutes();
+            myPicker.cols[0].setValue(year);
+            myPicker.cols[1].setValue(mouth);
+            myPicker.cols[2].setValue(day);
+            myPicker.cols[3].setValue(hour);
+            myPicker.cols[4].setValue(minute);
+
+
+
+
+        })
+        $('#endTimeUpdate').click(function () {
+            myPickerEnd.open();
+            var myDate=new Date(_data.data.endTime);
+            var year=myDate.getFullYear();
+            var mouth=myDate.getMonth()+1;
+            if(mouth<10){
+                mouth="0"+mouth;
+            }
+
+            var day=myDate.getDate();
+
+            if(day<10){
+                day="0"+day;
+            }
+            var hour=myDate.getHours();
+           if(hour<10){
+               hour="0"+hour;
+           }
+            var minute=myDate.getMinutes();
+            myPickerEnd.cols[0].setValue(year);
+            myPickerEnd.cols[1].setValue(mouth);
+            myPickerEnd.cols[2].setValue(day);
+            myPickerEnd.cols[3].setValue(hour);
+            myPickerEnd.cols[4].setValue(minute);
+            myPickerEnd.cols[4].setValue(minute);
+        })
+
+        $("#qd").click(function(){
+            var pid=id;
+            var title=$("#titleSed").val();
+            var content=$("#contentSed").val();
+
+            var startTime=$('#startTimeUpdate').val();
+            var endTime=$('#endTimeUpdate').val();
+            var a=new Date(startTime);
+            var b=new Date(endTime);
+            //获取单位的id
+            var departid;
+            var depart = $('#departidupdate').val().trim();
+            for (var i = 0; i < arc.length; i++) {
+                if (arc[i] == depart)
+
+                    departid= arcid[i]
+            }
+
+
+
+            if(a>b){
+                alert("开始与结束时间不准确");
+                return
+            }
+            if(startTime == endTime){
+                alert("开始与结束时间不能一致");
+                return
+            }
+            var myDate=new Date();
+            if(a<myDate){
+                alert("开始时间不能早于当前时间");
+                return ;
+            }
+            if(title==""||title==null || title.trim()==""){
+                alert("标题不能为空");
+                return
+            }
+            if (depart == "" || depart == null || depart.trim()=="") {
+                alert("单位不能为空");
+                return;
+            }
+            if(content==""||content==null || content.trim()==""){
+                alert("内容不能为空");
+                return
+            }
+
+
+            if (title.length>50) {
+                alert("标题字数不能超过50个");
+                return;
+            }
+
+
+            $.ajax({
+                 url :$f("server","archive/note/updateNote"),
+               //url:"/schoolcms/archive/note/updateNote",
+                type:"POST",
+                data:{
+                    "title":title,
+                    "content":content,
+                    "departId":departid,
+                    "id":pid,
+                    "startTime":startTime,
+                    "endTime":endTime
+                },
+                success:function(resp){
+                    alert(resp.message);
+                    //刷新页面
+
+                    $f('plugin','eighborhood.upesnapp.notification',0);
+                }
+            });
+
+        });
+
+    });
+
+
+</script>
+
+
+

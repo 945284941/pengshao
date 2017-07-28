@@ -1,0 +1,69 @@
+<template>
+    <style>
+        .header-msg {
+            color: grey;
+            display: inline-block;
+            line-height: 18px;
+            margin-left: 13px;
+            vertical-align: top
+        }
+
+         .demo-card-header-pic .card-header {
+             height: 40vw;
+             background-size: cover;
+             background-position: center;
+         }
+
+
+        img{
+            border-radius: 50%;
+            width:60px;
+        }
+
+        .app-item{
+            text-align: center;
+            display: inline-block;
+            height:90px;
+            margin-top: 20px;
+        }
+    </style>
+
+    <div data-page="agency-agencySetUp-addWork" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left ">
+                    <a style="" class="back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>新增日程</span>
+                </div>
+            </div>
+        </div>
+
+<!--        <div class="card demo-card-header-pic app-list row" style="margin:50px 10px 10px 10px;background-color:#EFEFF4;">-->
+        <div style="height: 40vw; background-size: cover;background-position: center;margin:50px 10px 10px 10px;background-color:#EFEFF4;">
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','__.addNotice',0)"><img src="img/app5.jpg" style="border-radius: 50%;width:60px;"/><div>一般通知</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','contact.notification',163)"><img src="img/app3.jpg"style="border-radius: 50%;width:60px;" /><div>日常工作</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','contact.poacy.procon',7)"><img src="img/app2.jpg" style="border-radius: 50%;width:60px;"/><div>紧急工作</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;"onclick="$f('plugin','__.addMeeting',0);"><img src="img/app4.jpg" style="border-radius: 50%;width:60px;"/><div>会议</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','property.search',0)"><img src="img/app1.jpg" style="border-radius: 50%;width:60px;"/><div>活动开展</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" style="text-align: center;display: inline-block;height:90px;margin-top: 20px;" onclick="$f('plugin','workflow',0)"><img src="img/app6.jpg" style="border-radius: 50%;width:60px;"/><div>请假</div></div>
+            <div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','resident',0)"><img src="img/app7.jpg" style="border-radius: 50%;width:60px;"/><div>调休</div></div>
+            <!--<div class="app-item col-25" style="text-align: center;display: inline-block;height:90px;margin: 10px 10px;" onclick="$f('plugin','schedule',0)"><img src="img/app8.jpg" style="border-radius: 50%;width:60px;"/><div>我的日程</div></div>-->
+
+
+  <!--      </div>-->
+    </div>
+</template>
+<script>
+    $f("df", __, function (_page) {
+        $f("ajax.get", null, null, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        var page = $f("TPPL", _page, {"data": _data});
+        mainView.router.load({content: page});
+
+    });
+
+</script>

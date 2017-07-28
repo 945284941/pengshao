@@ -1,0 +1,54 @@
+<template>
+    <div data-page="daily-quote" class="page">
+        <div class="content-block-title">今日任务</div>
+        <div class="card">
+            <oo>for(var i = 0; i < list.length; i++){</oo>
+            <div style="margin:0 0 2px 0" class="card ks-card-header-pic" onclick="$f('plugin','.note.query',this);"
+                 noteid="<oo>=list[i].id</oo>"
+                 typeid="<oo>=list[i].type_id</oo>">
+                <div style="background-image:url(<oo>=list[i].img</oo>);padding-left: 20px; height:90px" valign="bottom"
+                     class="card-header color-white no-border">
+                    <oo>=list[i].title</oo>
+                </div>
+                <div class="card-content">
+                    <div class="card-content-inner ">
+                        <p class="color-gray">
+                            <oo>=list[i].createtime</oo>
+                        </p>
+                        <p>
+                            <oo>=list[i].context</oo>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <oo>}</oo>
+
+            <div class="card-footer" style="background-color: #FFFFFF" onclick="$f('plugin','note',this);" typeId="<oo>=list[0].classid</oo>">
+                <span>查看更多...</span>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+    $f("df", __, function (_page, _data) {
+        var url = "",
+            data = {};
+
+        url = $f("tools.serverURL", "archive/note/findDailyTask");
+        data = {'pageSize': _data.pageSize};
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+        $f("tools.dateListFormat", _data.data.list);//修改时间格式\
+        var content = $f("TPPL", _page, _data.data);
+
+        AppFramework.hideIndicator();
+        mainView.router.load({content:content});
+
+    });
+
+
+</script>

@@ -1,0 +1,259 @@
+<template>
+    <style>
+        .button {
+            padding: 2px 10px;
+            margin-top: -10px;
+            height: 35px;
+            font-size: 17px;
+        }
+
+    </style>
+    <div data-page="resdent" class="page">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left">
+                    <a style="padding: 10px 20px 10px 0px;" class="div-r-back"><h2><</h2></a>
+                </div>
+                <div style="width: 100%;text-align: center;">
+                    <span>居委会职责</span>
+                </div>
+                <div style="text-align: left;color: #61aafc;font-size: 35px; padding-left: 20px;">
+                    <span id="addcontent1" onclick="$f('plugin','__.add',146);">+</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content infinite-scroll" data-distance="20">
+            <div class="workflow-container" style="margin-top: 55px">
+                <oo>for(var i = 0; i < data.list.length; i++){</oo>
+
+               <!-- onclick="$f('plugin','__.details',<oo>=data.list[i].id</oo>);"-->
+                <div class="card note-card demo-card-header-pic dynamic-card" >
+                    <div style="margin-left:15px" class="list-block media-list for-container">
+                        <div class="item-inner" style="padding-bottom: 0px; ">
+                            <div class="item-subtitle" style="margin-bottom: 12px;font-size: 18px;">
+                                <div style="float: left;display: inline;text-overflow: ellipsis;overflow: hidden;width: 100%;">
+                                    <oo>=data.list[i].title</oo>
+                                </div>
+
+                            </div>
+                            <div class="item-text" style="height: 32px;padding-bottom: 12px;">
+                                <span style="    line-height: 45px;"><oo>=data.list[i].createtime</oo></span>
+                               <sapn style="    float: right;">
+                                <a href="#"  data="<oo>=data.list[i].id</oo>" class="item-link list-button detail" style="display: inline-block;padding-left:20px;color:#8e8e93">详情</a>
+                                <a href="#" data="<oo>=data.list[i].id</oo>" class="item-link list-button updatac" style="display: inline-block;padding-left:5px;color:#8e8e93">修改</a>
+                                <a href="#" data="<oo>=data.list[i].id</oo>" class="item-link list-button detelec" style="display: inline-block;padding-left:5px;color:#8e8e93">删除</a>
+                               </sapn>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <oo>}</oo>
+            </div>
+
+
+
+
+
+            <!-- 加载提示符 -->
+            <oo>if(data.list.length==0){</oo>
+            <div style="text-align: center;font-size: 20px;">暂无数据</div>
+            <oo> }</oo>
+
+            <div class="infinite-scroll-preloader">
+                <div class="preloader"></div>
+            </div>
+        </div>
+    </div>
+
+</template>
+<script>
+
+    $f("df", __, function (_page, _data) {
+        var url = "/schoolcms/archive/note/findNoteList";
+        if (_data != 0) {
+            var data = {
+                "classId": 146,
+                "pageSize": 7,
+                "page": _data.page,
+                "name": _data.name,
+                "title": _data.title,
+            }
+        }
+        else {
+            var data = {
+                "classId": 146,
+                "pageSize": 7,
+                "page": 1,
+            }
+        }
+
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function (_data, _page) {
+
+        var content = $f("TPPL", _page, _data);
+
+        mainView.router.load({content: content});
+
+
+        //点击添加
+        $("#addcontent1").click(function(){
+
+            var hv=$("#hv").val();
+
+            $f('plugin', '__.add', hv);
+        })
+        //查看详情
+        $(".detail").click(function(){
+            var id=$(this).attr("data");
+            $f('plugin', 'resident.details', id);
+
+        })
+        //删除
+        $(".detelec").click(function(){
+            var id=$(this).attr("data");
+
+            var mymessage=confirm("确定要删除吗？");
+            if(mymessage==true)
+            {
+
+                $.ajax({
+                    type: "get",
+                    dataType: "json",
+                    data:{
+                        "id":id,
+                        "typeid":149,
+                    },
+
+                    url: $f("tools.serverURL", "archive/note/deleteNoteById"),
+                    success: function (msg) {
+                        alert(msg.message);
+                        $f('plugin','resident',148);
+                    }
+                });
+            }
+
+        })
+        //修改
+        $(".updatac").click(function(){
+            var id=$(this).attr("data");
+            $f('plugin', 'resident.update', id);
+
+        })
+
+
+
+
+        // 加载flag
+        var loading = false;
+
+        // 拉取次数
+        var current_page = 1;
+
+        var pageSize = 7;
+        if (_data.data.list.length < pageSize) {
+            // 加载完毕，则注销无限加载事件，以防不必要的加载
+            AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+            // 删除加载提示符
+            $$('.infinite-scroll-preloader').remove();
+            return;
+        }
+        AppFramework.attachInfiniteScroll($$('.infinite-scroll'));
+
+        // 每次加载添加多少条目
+        $$('.infinite-scroll').on('infinite', function () {
+
+            // 如果正在加载，则退出
+            if (loading) return;
+            // 设置flag
+            loading = true;
+            // 模拟1s的加载过程
+            setTimeout(function () {
+                // 重置加载flag
+                loading = false;
+
+                if (_data.data.list.length < pageSize) {
+                    // 加载完毕，则注销无限加载事件，以防不必要的加载
+                    AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+                    // 删除加载提示符
+                    $$('.infinite-scroll-preloader').remove();
+                    return;
+                }
+                current_page += 1;
+                var url = "/schoolcms/archive/note/findNoteList";
+                var data = {"classId": 146, "pageSize": pageSize, "page": current_page};
+                $f("ajax.get", url, data, "__.infiScr", _page)();
+                $f("df", "__.infiScr", function(_data,_page) {
+
+                    $f("tools.dateListFormat", _data.data.list);
+
+                    var html = $f("TPPL", _page, _data);
+
+                    $(".workflow-container").append($(html).find(".note-card"));
+                    //查看详情
+                    $(".detail").click(function(){
+                        var id=$(this).attr("data");
+                        $f('plugin', 'resident.details', id);
+
+                    })
+                    //删除
+                    $(".detelec").click(function(){
+                        var id=$(this).attr("data");
+
+                        var mymessage=confirm("确定要删除吗？");
+                        if(mymessage==true)
+                        {
+
+                            $.ajax({
+                                type: "get",
+                                dataType: "json",
+                                data:{
+                                    "id":id,
+                                    "typeid":149,
+                                },
+
+                                url: $f("tools.serverURL", "archive/note/deleteNoteById"),
+                                success: function (msg) {
+                                    alert(msg.message);
+                                    $f('plugin','resident',148);
+                                }
+                            });
+                        }
+
+                    })
+                    //修改
+                    $(".updatac").click(function(){
+                        var id=$(this).attr("data");
+                        $f('plugin', 'resident.update', id);
+
+                    })
+
+
+                    if (_data.data.list.length < pageSize) {
+
+                        // 加载完毕，则注销无限加载事件，以防不必要的加载
+                        AppFramework.detachInfiniteScroll($$('.infinite-scroll'));
+
+                        // 删除加载提示符
+                        $$('.infinite-scroll-preloader').remove();
+
+
+                    }
+
+                });
+
+            }, 800);
+
+        });
+        $(".div-r-back").click(function(){
+            yyesn.client.closePage();
+
+        })
+
+
+    });
+
+</script>

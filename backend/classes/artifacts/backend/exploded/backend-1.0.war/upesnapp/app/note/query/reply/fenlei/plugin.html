@@ -1,0 +1,34 @@
+<template>
+
+
+    <div class="content-block">
+        <oo>for(var i = 0; i < data.length; i++){</oo>
+        <div onclick="$f('plugin','note',this);" typeId="<oo>=data[i].id</oo>" class="chip">
+            <div class="chip-media"><img src="img/icon2.png"></div>
+            <div class="chip-label"><oo>=data[i].classname</oo></div>
+            <input type="hidden" value="<oo>=data[i].id</oo>" id="interestId">
+        </div>
+        <oo>}</oo>
+    </div>
+    <input type="hidden" id="contact-other-baby" value="<oo>=baby</oo>">
+</template>
+<script>
+    $f("df", __, function(_page, _data) {
+        var n = _data;
+        var url = $f("tools.serverURL","archive/note/findClassificationByNotes");
+        var data = {"id":n};
+        $f("ajax.get", url, data, "__.list", _page)();
+    });
+
+    $f("df", "__.list", function(_data, _page) {
+        var title=$('#titleSed').val();
+        var baby=$('#contact-other-numberOne').val();
+        _data.data.create_user_time = $f("tools.dateFormat",_data.data.create_user_time);
+        var p = $f("TPPL",_page,{"data":_data.data,"title":title,"baby":baby});
+        $("#fenlei1").html(p);
+        AppFramework.hideIndicator();
+
+
+    });
+
+</script>

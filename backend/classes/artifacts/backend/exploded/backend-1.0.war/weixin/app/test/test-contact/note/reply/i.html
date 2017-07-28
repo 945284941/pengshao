@@ -1,0 +1,35 @@
+
+
+<div class="page-content">
+
+    <oo>if(data.list.length == 0){</oo>
+    <div class="title" style="margin-left: 10px;">
+        <span>暂无回复</span>
+    </div>
+
+    <input type="hidden" value="<oo>=noteId</oo>" id="JustNoteId">
+    <oo>}else{</oo>
+    <div class="title" style="margin-left:10px">
+        <span>回复</span>
+    </div>
+    <oo>for(var i = 0; i < data.list.length; i ++){</oo>
+
+    <div class="card">
+        <div class="card-header" style="font-size:12px; width:40%">
+            <div class="avatar">
+                <img src="img/head1.jpg" width="34" height="34">
+            </div>
+            <div class="user flex-column" style="color: grey">
+                <div class="name"><oo>=data.list[i].nick_name</oo></div>
+                <div class="time"><oo>=data.list[i].reply_time</oo></div>
+                <input type="hidden" value="<oo>=data.list[i].reply_note</oo>" id="JustNoteIdTwo">
+            </div>
+        </div>
+        <div class="card-content-inner">
+            <div class="text"><oo>=data.list[i].reply_context</oo> </div>
+
+        </div>
+    </div>
+    <oo>}}</oo>
+
+</div>
